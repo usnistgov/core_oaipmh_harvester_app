@@ -2,7 +2,7 @@ from unittest.case import TestCase
 from bson.objectid import ObjectId
 from mock.mock import Mock, patch
 import core_oaipmh_harvester_app.components.oai_harvester_set.api as harvester_set_api
-from core_main_app.commons.exceptions import MDCSError
+from core_main_app.commons import exceptions
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
 
 
@@ -29,7 +29,7 @@ class TestOaiHarvesterSetGetById(TestCase):
         mock_get_by_id.side_effect = Exception()
 
         # Act + Assert
-        with self.assertRaises(MDCSError):
+        with self.assertRaises(exceptions.ApiError):
             harvester_set_api.get_by_id(mock_absent_id)
 
 
@@ -57,7 +57,7 @@ class TestOaiHarvesterSetGetBySetSpecAndRegistry(TestCase):
         mock_get.side_effect = Exception()
 
         # Act + Assert
-        with self.assertRaises(MDCSError):
+        with self.assertRaises(exceptions.ApiError):
             harvester_set_api.get_by_set_spec_and_registry(mock_absent_set_spec, mock_absent_registry)
 
 
@@ -100,7 +100,7 @@ class TestOaiHarvesterSetGetAllByRegistry(TestCase):
         mock_get_all.side_effect = Exception()
 
         # Act + Assert
-        with self.assertRaises(MDCSError):
+        with self.assertRaises(exceptions.ApiError):
             harvester_set_api.get_all_by_registry(mock_absent_registry)
 
 
@@ -131,7 +131,7 @@ class TestOaiHarvesterSetGetAllToHarvestByRegistry(TestCase):
         mock_get_all.side_effect = Exception()
 
         # Act + Assert
-        with self.assertRaises(MDCSError):
+        with self.assertRaises(exceptions.ApiError):
             harvester_set_api.get_all_to_harvest_by_registry(mock_absent_registry)
 
 
@@ -177,8 +177,8 @@ class TestOaiHarvestSetSaveOrUpdate(TestCase):
         mock_get_by_set_spec_and_registry.side_effect = Exception()
 
         # Act
-        result = harvester_set_api.save_or_update(mock_oai_harvester_set.setSpec, mock_oai_harvester_set.setName,
-                                                  mock_oai_harvester_set.raw, mock_oai_harvester_set.registry,
+        result = harvester_set_api.save_or_update(mock_oai_harvester_set.setSpec, mock_oai_harvester_set.registry,
+                                                  mock_oai_harvester_set.setName, mock_oai_harvester_set.raw,
                                                   mock_oai_harvester_set.harvest)
 
         # Assert
@@ -192,8 +192,8 @@ class TestOaiHarvestSetSaveOrUpdate(TestCase):
         mock_get_by_set_spec_and_registry.return_value = mock_oai_harvester_set
 
         # Act
-        result = harvester_set_api.save_or_update(mock_oai_harvester_set.setSpec, mock_oai_harvester_set.setName,
-                                                  mock_oai_harvester_set.raw, mock_oai_harvester_set.registry,
+        result = harvester_set_api.save_or_update(mock_oai_harvester_set.setSpec, mock_oai_harvester_set.registry,
+                                                  mock_oai_harvester_set.setName, mock_oai_harvester_set.raw,
                                                   mock_oai_harvester_set.harvest)
 
         # Assert
@@ -209,7 +209,7 @@ class TestOaiHarvesterSetDeleteAllByRegistry(TestCase):
         mock_delete_all.side_effect = Exception()
 
         # Act + Assert
-        with self.assertRaises(MDCSError):
+        with self.assertRaises(exceptions.ApiError):
             harvester_set_api.delete_all_by_registry(mock_absent_registry)
 
 
@@ -223,7 +223,7 @@ class TestOaiHarvesterSetUpdateForAllByRegistry(TestCase):
         mock_update_all.side_effect = Exception()
 
         # Act + Assert
-        with self.assertRaises(MDCSError):
+        with self.assertRaises(exceptions.ApiError):
             harvester_set_api.update_for_all_harvest_by_registry(registry=mock_absent_registry, harvest=True)
 
 
