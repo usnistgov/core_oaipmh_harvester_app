@@ -7,28 +7,39 @@ from core_main_app.commons import exceptions
 from core_main_app.utils.xml import raw_xml_to_dict
 
 
-def save_or_update(set_spec, registry, set_name, raw, harvest=None):
+def upsert(oai_harvester_set):
     """
     Create or update an OaiHarvesterSet
-    :param set_spec:
-    :param set_name:
-    :param raw:
-    :param registry:
-    :param harvest:
+    :param oai_harvester_set:
     :return:
     """
     try:
-        oai_harvester_set = get_by_set_spec_and_registry(set_spec=set_spec, registry=registry)
-        oai_harvester_set = _update(oai_harvester_set, set_name=set_name, raw=raw, harvest=harvest)
-    except exceptions.ApiError:
-        oai_harvester_set = _save(set_spec=set_spec, registry=registry, set_name=set_name, raw=raw, harvest=True)
+        if oai_harvester_set.raw and isinstance(oai_harvester_set.raw, str):
+            try:
+                oai_harvester_set.raw = raw_xml_to_dict(oai_harvester_set.raw)
+            except exceptions.XMLError:
+                oai_harvester_set.raw = {}
 
-    return oai_harvester_set
+        return oai_harvester_set.save()
+    except:
+        raise exceptions.ApiError('Save OaiHarvesterSet failed.')
+
+
+def delete(oai_harvester_set):
+    """
+    Delete an OaiHarvesterSet
+    :param oai_harvester_set:
+    :return:
+    """
+    try:
+        oai_harvester_set.delete()
+    except:
+        raise exceptions.ApiError('Impossible to delete OaiHarvesterSet.')
 
 
 def get_by_id(oai_harvester_set_id):
     """
-    Get an OaiHarvesterSet
+    Get an OaiHarvesterSet by its id
     :param oai_harvester_set_id:
     :return:
     """
@@ -38,16 +49,16 @@ def get_by_id(oai_harvester_set_id):
         raise exceptions.ApiError('No OaiHarvesterSet could be found with the given id')
 
 
-def get_by_set_spec_and_registry(set_spec, registry):
+def get_by_set_spec_and_registry(set_spec, registry_id):
     """
-    Get an OaiHarvesterSet by setSpec and registry
+    Get an OaiHarvesterSet by its setSpec and registry_id
     :param set_spec:
-    :param registry:
+    :param registry_id:
     :return:
     """
     try:
         return OaiHarvesterSet.get_by_set_spec_and_registry(set_spec=set_spec,
-                                                            registry=registry)
+                                                            registry_id=registry_id)
     except:
         raise exceptions.ApiError('No OaiHarvesterSet could be found with the given setSpec and registry')
 
@@ -72,6 +83,17 @@ def get_all_by_registry(registry, order_by_field=None):
                                                    order_by_field=order_by_field)
     except:
         raise exceptions.ApiError('No OaiHarvesterSet could be found with the given registry.')
+
+
+def get_all_by_list_registry_ids(list_registry_ids, order_by_field=None):
+    """
+    Return a list of OaiHarvesterSet by a list of registry ids.
+    :param list_registry_ids:
+    :param order_by_field:
+    :return:
+    """
+    return OaiHarvesterSet.get_all_by_list_registry_ids(list_registry_ids=list_registry_ids,
+                                                        order_by_field=order_by_field)
 
 
 def get_all_to_harvest_by_registry(registry, order_by_field=None):
@@ -114,38 +136,14 @@ def update_for_all_harvest_by_registry(registry, harvest):
         raise exceptions.ApiError('No OaiHarvesterSet could be found with the given registry.')
 
 
-def _save(set_spec, set_name, raw, registry, harvest):
+def update_for_all_harvest_by_list_ids(list_oai_set_ids, harvest):
     """
-    Create an OaiHarvesterSet
-    :param set_spec:
-    :param set_name:
-    :param raw:
-    :param registry:
+    Update the harvest for all OaiHarvesterSet by a list of ids
+    :param list_oai_set_ids:
     :param harvest:
     :return:
     """
-    dict_raw = raw_xml_to_dict(raw)
-    new_oai_harvester_set = OaiHarvesterSet.create_oai_harvester_set(set_spec=set_spec,
-                                                                     set_name=set_name,
-                                                                     raw=dict_raw,
-                                                                     registry=registry,
-                                                                     harvest=harvest)
-    return new_oai_harvester_set
-
-
-def _update(oai_harvester_set, set_name, raw, harvest=None):
-    """
-    Update an OaiHarvesterSet
-    :param oai_harvester_set:
-    :param set_name:
-    :param raw:
-    :param harvest:
-    :return:
-    """
-    oai_harvester_set.raw = raw_xml_to_dict(raw)
-    oai_harvester_set.setName = set_name
-    if harvest is not None:
-        oai_harvester_set.harvest = harvest
-
-    oai_harvester_set.update_object()
-    return oai_harvester_set
+    try:
+        OaiHarvesterSet.update_for_all_harvest_by_list_ids(list_oai_set_ids, harvest)
+    except:
+        raise exceptions.ApiError('Something went wrong during the harvest update for the given list of ids.')

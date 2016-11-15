@@ -12,14 +12,6 @@ class OaiHarvesterSet(OaiSet):
     registry = fields.StringField(unique=True)
     harvest = fields.BooleanField(blank=True)
 
-    def update_object(self):
-        """
-        Update an OaiHarvesterSet
-        :param:
-        :return:
-        """
-        self.update()
-
     @staticmethod
     def get_all_by_registry(registry, order_by_field=None):
         """
@@ -42,14 +34,14 @@ class OaiHarvesterSet(OaiSet):
         return OaiHarvesterSet.objects(registry=registry, harvest=harvest).order_by(order_by_field)
 
     @staticmethod
-    def get_by_set_spec_and_registry(set_spec, registry):
+    def get_by_set_spec_and_registry(set_spec, registry_id):
         """
         Return a OaiHarvesterSet by setSpec and registry.
         :param set_spec:
-        :param registry:
+        :param registry_id:
         :return:
         """
-        return OaiHarvesterSet.objects().get(setSpec=set_spec, registry=registry)
+        return OaiHarvesterSet.objects().get(setSpec=set_spec, registry=str(registry_id))
 
     @staticmethod
     def delete_all_by_registry(registry):
@@ -61,24 +53,6 @@ class OaiHarvesterSet(OaiSet):
         OaiHarvesterSet.get_all_by_registry(registry).delete()
 
     @staticmethod
-    def create_oai_harvester_set(set_spec, set_name, raw, registry, harvest):
-        """
-        Create a new OaiHarvesterSet
-        :param set_spec:
-        :param set_name:
-        :param raw:
-        :param registry:
-        :param harvest:
-        :return:
-        """
-        new_oai_harvester_set = OaiHarvesterSet(setSpec=set_spec,
-                                                setName=set_name,
-                                                raw=raw,
-                                                registry=registry,
-                                                harvest=harvest).save()
-        return new_oai_harvester_set
-
-    @staticmethod
     def update_for_all_harvest_by_registry(registry, harvest):
         """
         Update the harvest for all OaiHarvesterSet used by the registry
@@ -87,3 +61,13 @@ class OaiHarvesterSet(OaiSet):
         :return:
         """
         OaiHarvesterSet.get_all_by_registry(registry).update(set__harvest=harvest)
+
+    @staticmethod
+    def update_for_all_harvest_by_list_ids(list_oai_set_ids, harvest):
+        """
+        Update the harvest for all OaiHarvesterSet by a list of ids
+        :param list_oai_set_ids:
+        :param harvest:
+        :return:
+        """
+        OaiHarvesterSet.get_all_by_list_ids(list_oai_set_ids).update(set__harvest=harvest)
