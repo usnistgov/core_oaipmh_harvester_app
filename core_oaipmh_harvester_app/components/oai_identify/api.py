@@ -1,0 +1,34 @@
+"""
+OaiIdentify API
+"""
+
+from core_main_app.commons import exceptions
+from core_main_app.utils.xml import raw_xml_to_dict
+
+
+def upsert(oai_identify):
+    """ Create or update an OaiIdentify.
+    Args:
+        oai_identify: OaiIdentify to create or update.
+
+    Returns:
+        OaiIdentify instance.
+
+    """
+    if oai_identify.raw and isinstance(oai_identify.raw, str):
+        try:
+            oai_identify.raw = raw_xml_to_dict(oai_identify.raw)
+        except exceptions.XMLError:
+            oai_identify.raw = {}
+
+    return oai_identify.save()
+
+
+def delete(oai_identify):
+    """ Delete an OaiIdentify
+
+    Args:
+        oai_identify: OaiIdentify to delete
+
+    """
+    oai_identify.delete()
