@@ -3,87 +3,119 @@ OaiHarvesterMetadataFormat model
 """
 
 from django_mongoengine import fields
-from mongoengine.queryset.base import PULL
+from mongoengine.queryset.base import PULL, CASCADE
 from core_oaipmh_common_app.components.oai_metadata_format.models import OaiMetadataFormat
+from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_main_app.components.template.models import Template
+from mongoengine import errors as mongoengine_errors
+from core_main_app.commons import exceptions
 
 
 class OaiHarvesterMetadataFormat(OaiMetadataFormat):
     """Represents a metadata format for Oai-Pmh Harvester"""
     raw = fields.DictField()
     template = fields.ReferenceField(Template, reverse_delete_rull=PULL, blank=True)
-    registry_id = fields.StringField(unique=True)
+    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rull=CASCADE, unique=True)
     hash = fields.StringField(blank=True)
     harvest = fields.StringField(blank=True)
     lastUpdate = fields.DateTimeField(blank=True)
 
     @staticmethod
     def get_all_by_registry_id(registry_id, order_by_field=None):
+        """ Return a list of OaiHarvesterMetadataFormat by registry id. Possibility to order_by the list
+
+        Args:
+            registry_id: The registry id.
+            order_by_field: Order by field.
+
+        Returns:
+            List of OaiHarvesterMetadataFormat
+
         """
-        Return a list of OaiHarvesterMetadataFormat by registry id. Possibility to order_by the list
-        :param registry_id:
-        :param order_by_field:
-        :return:
-        """
-        return OaiHarvesterMetadataFormat.objects(registry_id=str(registry_id)).order_by(order_by_field)
+        return OaiHarvesterMetadataFormat.objects(registry__id=str(registry_id)).order_by(order_by_field)
 
     @staticmethod
     def get_all_by_list_registry_ids(list_registry_ids, order_by_field=None):
+        """ Return a list of OaiHarvesterMetadataFormat by a list of registry ids. Possibility to order_by the list
+
+        Args:
+            list_registry_ids: List of registry ids.
+            order_by_field: Order by field.
+
+        Returns:
+            List of OaiHarvesterMetadataFormat.
+
         """
-        Return a list of OaiHarvesterMetadataFormat by a list of registry ids. Possibility to order_by the list
-        :param list_registry_ids:
-        :param order_by_field:
-        :return:
-        """
-        return OaiHarvesterMetadataFormat.objects(registry_id__in=list_registry_ids).order_by(order_by_field)
+        return OaiHarvesterMetadataFormat.objects(registry__id__in=list_registry_ids).order_by(order_by_field)
 
     @staticmethod
     def get_all_by_registry_id_and_harvest(registry_id, harvest, order_by_field=None):
         """
-        Return a list of OaiHarvesterMetadataFormat by registry id and harvest. Possibility to order_by the list
-        :param registry_id:
-        :param harvest:
-        :param order_by_field:
-        :return:
+
+        Args:
+            registry_id: The registry id.
+            harvest: Harvest (True/False).
+            order_by_field: Order by field.
+
+        Returns:
+            List of OaiHarvesterMetadataFormat.
+
         """
-        return OaiHarvesterMetadataFormat.objects(registry_id=str(registry_id), harvest=harvest).\
+        return OaiHarvesterMetadataFormat.objects(registry__id=str(registry_id), harvest=harvest).\
             order_by(order_by_field)
 
     @staticmethod
     def get_by_metadata_prefix_and_registry_id(metadata_prefix, registry_id):
+        """ Return an OaiHarvesterMetadataFormat by metadata_prefix and registry id.
+
+        Args:
+            metadata_prefix: The metadata prefix.
+            registry_id:  The registry id.
+
+        Returns:
+            OaiHarvesterMetadataFormat instance.
+
+        Raises:
+            DoesNotExist: The OaiHarvesterMetadataFormat doesn't exist.
+            ModelError: Internal error during the process.
+
         """
-        Return a OaiHarvesterMetadataFormat by metadata_prefix and registry id.
-        :param metadata_prefix:
-        :param registry_id:
-        :return:
-        """
-        return OaiHarvesterMetadataFormat.objects().get(metadataPrefix=metadata_prefix, registry_id=str(registry_id))
+        try:
+            return OaiHarvesterMetadataFormat.objects().get(metadataPrefix=metadata_prefix,
+                                                            registry__id=str(registry_id))
+        except mongoengine_errors.DoesNotExist as e:
+            raise exceptions.DoesNotExist(e.message)
+        except Exception as e:
+            raise exceptions.ModelError(e.message)
 
     @staticmethod
     def delete_all_by_registry_id(registry_id):
+        """ Delete all OaiHarvesterMetadataFormat used by a registry.
+
+        Args:
+            registry_id: The registry id.
+
         """
-        Delete all OaiHarvesterMetadataFormat used by a registry
-        :param registry_id:
-        :return:
-        """
-        OaiHarvesterMetadataFormat.get_all_by_registry_id(str(registry_id)).delete()
+        OaiHarvesterMetadataFormat.get_all_by_registry_id(registry_id).delete()
 
     @staticmethod
     def update_for_all_harvest_by_registry_id(registry_id, harvest):
-        """
-        Update the harvest for all OaiHarvesterMetadataFormat used by the registry
-        :param registry_id:
-        :param harvest:
-        :return:
+        """ Update the harvest for all OaiHarvesterMetadataFormat used by the registry.
+
+        Args:
+            registry_id: The registry id.
+            harvest: Harvest (True/False).
+
         """
         OaiHarvesterMetadataFormat.get_all_by_registry_id(registry_id).update(set__harvest=harvest)
 
     @staticmethod
     def update_for_all_harvest_by_list_ids(list_oai_metadata_format_ids, harvest):
-        """
-        Update the harvest for all OaiHarvesterMetadataFormat by a list of ids
-        :param list_oai_metadata_format_ids:
-        :param harvest:
-        :return:
+        """ Update the harvest for all OaiHarvesterMetadataFormat by a list of ids.
+
+        Args:
+            list_oai_metadata_format_ids: List of OaiHarvesterMetadataFormat ids.
+            harvest: Harvest (True/False)
+
         """
         OaiHarvesterMetadataFormat.get_all_by_list_ids(list_oai_metadata_format_ids).update(set__harvest=harvest)
