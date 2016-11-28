@@ -81,7 +81,7 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
 
         """
         try:
-            return OaiHarvesterMetadataFormat.objects().get(metadataPrefix=metadata_prefix,
+            return OaiHarvesterMetadataFormat.objects().get(metadata_prefix=metadata_prefix,
                                                             registry__id=str(registry_id))
         except mongoengine_errors.DoesNotExist as e:
             raise exceptions.DoesNotExist(e.message)

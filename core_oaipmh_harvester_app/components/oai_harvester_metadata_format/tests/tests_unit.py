@@ -56,7 +56,7 @@ class TestOaiHarvesterMetadataFormatGetByMetadataPrefixAndRegistryId(TestCase):
 
         # Act
         result = harvester_metadata_format_api.\
-            get_by_metadata_prefix_and_registry_id(mock_oai_harvester_metadata_format.metadataPrefix,
+            get_by_metadata_prefix_and_registry_id(mock_oai_harvester_metadata_format.metadata_prefix,
                                                    mock_oai_harvester_metadata_format.registry.id)
 
         # Assert
@@ -252,10 +252,10 @@ def _set_oai_harvester_metadata_format_fields(oai_harvester_metadata_format):
         OaiHarvesterMetadataFormat with assigned fields.
 
     """
-    oai_harvester_metadata_format.metadataPrefix = "test"
+    oai_harvester_metadata_format.metadata_prefix = "test"
     oai_harvester_metadata_format.schema = "http://test.com/test.xsd"
-    oai_harvester_metadata_format.xmlSchema = "<root><test>Hello</test></root>"
-    oai_harvester_metadata_format.metadataNamespace = 'http://test.com/meta'
+    oai_harvester_metadata_format.xml_schema = "<root><test>Hello</test></root>"
+    oai_harvester_metadata_format.metadata_namespace = 'http://test.com/meta'
     oai_harvester_metadata_format.raw = dict()
     oai_harvester_metadata_format.template = ObjectId()
     oai_harvester_metadata_format.registry = OaiRegistry()
