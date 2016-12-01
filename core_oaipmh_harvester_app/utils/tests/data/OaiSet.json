@@ -1,0 +1,52 @@
+[
+    {
+        "setName": "all",
+        "setSpec": "all",
+        "raw": "<set xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><setSpec>all</setSpec><setName>all</setName><setDescription><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/             http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:description xml:lang=\"en\">\n                    Get all records\n                </dc:description></oai_dc:dc></setDescription></set>"
+    },
+    {
+        "setName": "software",
+        "setSpec": "soft",
+        "raw": "<set xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><setSpec>soft</setSpec><setName>software</setName><setDescription><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/             http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:description xml:lang=\"en\">\n                    Get software records\n                </dc:description></oai_dc:dc></setDescription></set>"
+    },
+    {
+        "setName": "service",
+        "setSpec": "serv",
+        "raw": "<set xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><setSpec>serv</setSpec><setName>service</setName><setDescription><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/             http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:description xml:lang=\"en\">\n                    Get service records\n                </dc:description></oai_dc:dc></setDescription></set>"
+    },
+    {
+        "setName": "repository",
+        "setSpec": "repo",
+        "raw": "<set xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><setSpec>repo</setSpec><setName>repository</setName><setDescription><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/             http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:description xml:lang=\"en\">\n                    Get repository records\n                </dc:description></oai_dc:dc></setDescription></set>"
+    },
+    {
+        "setName": "projectarchive",
+        "setSpec": "proj",
+        "raw": "<set xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><setSpec>proj</setSpec><setName>projectarchive</setName><setDescription><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/             http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:description xml:lang=\"en\">\n                    Get projectarchive records\n                </dc:description></oai_dc:dc></setDescription></set>"
+    },
+    {
+        "setName": "organization",
+        "setSpec": "org",
+        "raw": "<set xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><setSpec>org</setSpec><setName>organization</setName><setDescription><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/             http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:description xml:lang=\"en\">\n                    Get organization records\n                </dc:description></oai_dc:dc></setDescription></set>"
+    },
+    {
+        "setName": "database",
+        "setSpec": "database",
+        "raw": "<set xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><setSpec>database</setSpec><setName>database</setName><setDescription><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/             http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:description xml:lang=\"en\">\n                    Get database records\n                </dc:description></oai_dc:dc></setDescription></set>"
+    },
+    {
+        "setName": "informational",
+        "setSpec": "info",
+        "raw": "<set xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><setSpec>info</setSpec><setName>informational</setName><setDescription><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/             http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:description xml:lang=\"en\">\n                    Get informational records\n                </dc:description></oai_dc:dc></setDescription></set>"
+    },
+    {
+        "setName": "datacollection",
+        "setSpec": "datacol",
+        "raw": "<set xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><setSpec>datacol</setSpec><setName>datacollection</setName><setDescription><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/             http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:description xml:lang=\"en\">\n                    Get datacollection records\n                </dc:description></oai_dc:dc></setDescription></set>"
+    },
+    {
+        "setName": "dataset",
+        "setSpec": "dataset",
+        "raw": "<set xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><setSpec>dataset</setSpec><setName>dataset</setName><setDescription><oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/             http://www.openarchives.org/OAI/2.0/oai_dc.xsd\"><dc:description xml:lang=\"en\">\n                    Get dataset records\n                </dc:description></oai_dc:dc></setDescription></set>"
+    }
+]

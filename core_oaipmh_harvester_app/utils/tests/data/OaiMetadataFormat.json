@@ -1,0 +1,74 @@
+[
+    {
+        "metadataPrefix": "oai_dc",
+        "metadataNamespace": "http://www.openarchives.org/OAI/2.0/oai_dc/",
+        "schema": "http://www.openarchives.org/OAI/2.0/oai_dc.xsd",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/</metadataNamespace><metadataPrefix>oai_dc</metadataPrefix><schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd</schema></metadataFormat>"
+    },
+    {
+        "metadataPrefix": "oai_all",
+        "metadataNamespace": "http://www.w3.org/2001/XMLSchema",
+        "schema": "http://127.0.0.1:8000/oai_pmh/server/XSD/AllResources.xsd",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.w3.org/2001/XMLSchema</metadataNamespace><metadataPrefix>oai_all</metadataPrefix><schema>http://127.0.0.1:8000/oai_pmh/server/XSD/AllResources.xsd</schema></metadataFormat>"
+    },
+    {
+        "metadataPrefix": "oai_soft",
+        "metadataNamespace": "http://www.w3.org/2001/XMLSchema",
+        "schema": "http://127.0.0.1:8000/oai_pmh/server/XSD/Software.xsd",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.w3.org/2001/XMLSchema</metadataNamespace><metadataPrefix>oai_soft</metadataPrefix><schema>http://127.0.0.1:8000/oai_pmh/server/XSD/Software.xsd</schema></metadataFormat>"
+    },
+    {
+        "metadataPrefix": "oai_serv",
+        "metadataNamespace": "http://www.w3.org/2001/XMLSchema",
+        "schema": "http://127.0.0.1:8000/oai_pmh/server/XSD/Service.xsd",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.w3.org/2001/XMLSchema</metadataNamespace><metadataPrefix>oai_serv</metadataPrefix><schema>http://127.0.0.1:8000/oai_pmh/server/XSD/Service.xsd</schema></metadataFormat>"
+    },
+    {
+        "metadataPrefix": "oai_repo",
+        "metadataNamespace": "http://www.w3.org/2001/XMLSchema",
+        "schema": "http://127.0.0.1:8000/oai_pmh/server/XSD/Repository.xsd",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.w3.org/2001/XMLSchema</metadataNamespace><metadataPrefix>oai_repo</metadataPrefix><schema>http://127.0.0.1:8000/oai_pmh/server/XSD/Repository.xsd</schema></metadataFormat>"
+    },
+    {
+        "metadataPrefix": "oai_proj",
+        "metadataNamespace": "http://www.w3.org/2001/XMLSchema",
+        "schema": "http://127.0.0.1:8000/oai_pmh/server/XSD/ProjectArchive.xsd",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.w3.org/2001/XMLSchema</metadataNamespace><metadataPrefix>oai_proj</metadataPrefix><schema>http://127.0.0.1:8000/oai_pmh/server/XSD/ProjectArchive.xsd</schema></metadataFormat>"
+    },
+    {
+        "metadataPrefix": "oai_org",
+        "metadataNamespace": "http://www.w3.org/2001/XMLSchema",
+        "schema": "http://127.0.0.1:8000/oai_pmh/server/XSD/Organization.xsd",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.w3.org/2001/XMLSchema</metadataNamespace><metadataPrefix>oai_org</metadataPrefix><schema>http://127.0.0.1:8000/oai_pmh/server/XSD/Organization.xsd</schema></metadataFormat>"
+    },
+    {
+        "metadataPrefix": "oai_database",
+        "metadataNamespace": "http://www.w3.org/2001/XMLSchema",
+        "schema": "http://127.0.0.1:8000/oai_pmh/server/XSD/Database.xsd",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.w3.org/2001/XMLSchema</metadataNamespace><metadataPrefix>oai_database</metadataPrefix><schema>http://127.0.0.1:8000/oai_pmh/server/XSD/Database.xsd</schema></metadataFormat>"
+    },
+    {
+        "metadataPrefix": "oai_info",
+        "metadataNamespace": "http://www.w3.org/2001/XMLSchema",
+        "schema": "http://127.0.0.1:8000/oai_pmh/server/XSD/Informational.xsd",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.w3.org/2001/XMLSchema</metadataNamespace><metadataPrefix>oai_info</metadataPrefix><schema>http://127.0.0.1:8000/oai_pmh/server/XSD/Informational.xsd</schema></metadataFormat>"
+    },
+    {
+        "metadataPrefix": "oai_datacol",
+        "metadataNamespace": "http://www.w3.org/2001/XMLSchema",
+        "schema": "http://127.0.0.1:8000/oai_pmh/server/XSD/DataCollection.xsd",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.w3.org/2001/XMLSchema</metadataNamespace><metadataPrefix>oai_datacol</metadataPrefix><schema>http://127.0.0.1:8000/oai_pmh/server/XSD/DataCollection.xsd</schema></metadataFormat>"
+    },
+    {
+        "metadataPrefix": "oai_dataset",
+        "metadataNamespace": "http://www.w3.org/2001/XMLSchema",
+        "schema": "http://127.0.0.1:8000/oai_pmh/server/XSD/Dataset.xsd",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.w3.org/2001/XMLSchema</metadataNamespace><metadataPrefix>oai_dataset</metadataPrefix><schema>http://127.0.0.1:8000/oai_pmh/server/XSD/Dataset.xsd</schema></metadataFormat>"
+    },
+    {
+        "metadataPrefix": "oai_marc",
+        "metadataNamespace": "http://www.openarchives.org/OAI/1.1/oai_marc",
+        "schema": "http://www.openarchives.org/OAI/1.1/oai_marc.xsd",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.openarchives.org/OAI/1.1/oai_marc</metadataNamespace><metadataPrefix>oai_marc</metadataPrefix><schema>http://www.openarchives.org/OAI/1.1/oai_marc.xsd</schema></metadataFormat>"
+    }
+]

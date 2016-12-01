@@ -6,7 +6,6 @@ from core_main_app.commons import exceptions
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 import datetime
-from core_main_app.utils.xml import OrderedDict
 
 
 class TestOaiHarvesterMetadataFormatGetById(TestCase):

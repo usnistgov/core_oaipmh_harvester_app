@@ -1,1 +1,2 @@
 core-oaipmh-common-app==1.0.0-alpha1
+sickle==0.5
