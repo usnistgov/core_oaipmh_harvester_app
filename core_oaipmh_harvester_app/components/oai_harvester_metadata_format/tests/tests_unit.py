@@ -5,7 +5,11 @@ import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as
 from core_main_app.commons import exceptions
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_main_app.components.template.models import Template
 import datetime
+import requests
+from rest_framework import status
+from core_main_app.components.template import api as api_template
 
 
 class TestOaiHarvesterMetadataFormatGetById(TestCase):
@@ -215,6 +219,90 @@ class TestOaiHarvesterMetadataFormatUpdateForAllByListIds(TestCase):
             harvester_metadata_format_api.update_for_all_harvest_by_list_ids(mock_absent_list_ids, True)
 
 
+class TestInitSchemaInfo(TestCase):
+    @patch.object(api_template, 'get_all_by_hash')
+    @patch.object(requests, 'get')
+    def test_init_schema_info_return_object(self, mock_get, mock_get_all_by_hash):
+        # Arrange
+        mock_oai_harvester_metadata_format = _create_mock_oai_harvester_metadata_format()
+
+        mock_get.return_value.status_code = status.HTTP_200_OK
+        mock_get.return_value.text = '<test>Hello</test>'
+        mock_get_all_by_hash.return_value = [Template()]
+
+        # Act
+        result = harvester_metadata_format_api.init_schema_info(mock_oai_harvester_metadata_format)
+
+        # Assert
+        self.assertIsInstance(result, OaiHarvesterMetadataFormat)
+
+    @patch.object(api_template, 'get_all_by_hash')
+    @patch.object(requests, 'get')
+    def test_init_schema_info_return_object_with_xml_schema(self, mock_get, mock_get_all_by_hash):
+        # Arrange
+        text = '<test>Hello</test>'
+        mock_oai_harvester_metadata_format = _create_mock_oai_harvester_metadata_format()
+
+        mock_get.return_value.status_code = status.HTTP_200_OK
+        mock_get.return_value.text = text
+        mock_get_all_by_hash.return_value = [Template()]
+
+        # Act
+        result = harvester_metadata_format_api.init_schema_info(mock_oai_harvester_metadata_format)
+
+        # Assert
+        self.assertEquals(result.xml_schema, text)
+
+    @patch.object(harvester_metadata_format_api, 'get_hash')
+    @patch.object(api_template, 'get_all_by_hash')
+    @patch.object(requests, 'get')
+    def test_init_schema_info_return_object_with_hash(self, mock_get, mock_get_all_by_hash, mock_get_hash):
+        # Arrange
+        mock_oai_harvester_metadata_format = _create_mock_oai_harvester_metadata_format()
+        hash_ = 'eaedb2e2d29fffeee628a51284a237e057a38a28'
+
+        mock_get_hash.return_value = hash_
+        mock_get.return_value.status_code = status.HTTP_200_OK
+        mock_get.return_value.text = '<test>Hello</test>'
+        mock_get_all_by_hash.return_value = [Template()]
+
+        # Act
+        result = harvester_metadata_format_api.init_schema_info(mock_oai_harvester_metadata_format)
+
+        # Assert
+        self.assertEquals(result.hash, hash_)
+
+    @patch.object(api_template, 'get_all_by_hash')
+    @patch.object(requests, 'get')
+    def test_init_schema_info_return_object_with_template(self, mock_get, mock_get_all_by_hash):
+        # Arrange
+        mock_oai_harvester_metadata_format = _create_mock_oai_harvester_metadata_format()
+        list_template = [Template()]
+
+        mock_get.return_value.status_code = status.HTTP_200_OK
+        mock_get.return_value.text = '<test>Hello</test>'
+        mock_get_all_by_hash.return_value = list_template
+
+        # Act
+        result = harvester_metadata_format_api.init_schema_info(mock_oai_harvester_metadata_format)
+
+        # Assert
+        self.assertEquals(result.template, list_template[0])
+
+    @patch.object(requests, 'get')
+    def test_init_schema_info_raises_api_error_if_bad_status_code(self, mock_get):
+        # Arrange
+        mock_oai_harvester_metadata_format = _create_mock_oai_harvester_metadata_format()
+        text = '<test>Hello</test>'
+
+        mock_get.return_value.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        mock_get.return_value.text = text
+
+        # Act + Assert
+        with self.assertRaises(Exception):
+            harvester_metadata_format_api.init_schema_info(mock_oai_harvester_metadata_format)
+
+
 def _create_oai_harvester_metadata_format():
     """ Get an OaiHarvesterMetadataFormat object.
 
@@ -253,12 +341,9 @@ def _set_oai_harvester_metadata_format_fields(oai_harvester_metadata_format):
     """
     oai_harvester_metadata_format.metadata_prefix = "test"
     oai_harvester_metadata_format.schema = "http://test.com/test.xsd"
-    oai_harvester_metadata_format.xml_schema = "<root><test>Hello</test></root>"
-    oai_harvester_metadata_format.metadata_namespace = 'http://test.com/meta'
+    oai_harvester_metadata_format.metadataNamespace = 'http://test.com/meta'
     oai_harvester_metadata_format.raw = dict()
-    oai_harvester_metadata_format.template = ObjectId()
     oai_harvester_metadata_format.registry = OaiRegistry()
-    oai_harvester_metadata_format.hash = 'eaedb2e2d29fffeee628a51284a237e057a38a28'
     oai_harvester_metadata_format.harvest = True
     oai_harvester_metadata_format.lastUpdate = datetime.datetime.now()
 

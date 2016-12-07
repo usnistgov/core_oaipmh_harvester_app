@@ -4,6 +4,7 @@ OaiIdentify API
 
 from core_main_app.commons import exceptions
 from core_main_app.utils.xml import raw_xml_to_dict
+from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
 
 
 def upsert(oai_identify):
@@ -22,6 +23,19 @@ def upsert(oai_identify):
             oai_identify.raw = {}
 
     return oai_identify.save()
+
+
+def get_by_registry_id(registry_id):
+    """ Get an OaiIdentify by its registry_id.
+
+    Args:
+        registry_id:  The registry id.
+
+    Returns:
+        OaiIdentify instance.
+
+    """
+    return OaiIdentify.get_by_registry_id(registry_id=registry_id)
 
 
 def delete(oai_identify):

@@ -3,6 +3,11 @@ OaiHarvesterMetadataFormat API
 """
 
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
+from rest_framework import status
+import requests
+from core_main_app.utils.xml import get_hash
+from core_main_app.components.template import api as api_template
+from core_main_app.commons import exceptions
 
 
 def upsert(oai_harvester_metadata_format):
@@ -139,3 +144,37 @@ def update_for_all_harvest_by_list_ids(list_oai_metadata_format_ids, harvest):
 
     """
     OaiHarvesterMetadataFormat.update_for_all_harvest_by_list_ids(list_oai_metadata_format_ids, harvest)
+
+
+def init_schema_info(oai_harvester_metadata_format):
+    """ Init schema information for an OaiHarvesterMetadataFormat.
+
+    Args:
+        oai_harvester_metadata_format: The OaiHarvesterMetadataFormat to init.
+
+    Returns:
+        Init OaiHarvesterMetadataFormat.
+
+    """
+    http_response = requests.get(oai_harvester_metadata_format.schema)
+    if http_response.status_code == status.HTTP_200_OK:
+        string_xml = http_response.text
+        oai_harvester_metadata_format.xml_schema = string_xml
+        try:
+            oai_harvester_metadata_format.hash = get_hash(string_xml)
+        except exceptions.XSDError:
+            raise exceptions.ApiError("Impossible to hash the schema for the following "
+                                      "metadata format: {0}.")
+        list_template = api_template.get_all_by_hash(oai_harvester_metadata_format.hash)
+        # FIXME: What to do if several templates with the same hash.
+        if len(list_template) == 1:
+            oai_harvester_metadata_format.template = list_template[0]
+        else:
+            raise exceptions.ApiError("Several templates have the same hash. "
+                                      "Impossible to determine a template for the following "
+                                      "metadata format: {0}.".format(oai_harvester_metadata_format.metadata_prefix))
+    else:
+        raise exceptions.ApiError("Impossible to init schema information for the following "
+                                  "metadata format: {0}.".format(oai_harvester_metadata_format.metadata_prefix))
+
+    return oai_harvester_metadata_format

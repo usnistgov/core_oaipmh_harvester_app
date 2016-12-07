@@ -15,9 +15,9 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
     """Represents a metadata format for Oai-Pmh Harvester"""
     raw = fields.DictField()
     template = fields.ReferenceField(Template, reverse_delete_rull=PULL, blank=True)
-    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rull=CASCADE, unique=True)
+    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rull=CASCADE, unique_with='metadata_prefix')
     hash = fields.StringField(blank=True)
-    harvest = fields.StringField(blank=True)
+    harvest = fields.BooleanField(default=False)
     lastUpdate = fields.DateTimeField(blank=True)
 
     @staticmethod
@@ -32,7 +32,7 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
             List of OaiHarvesterMetadataFormat
 
         """
-        return OaiHarvesterMetadataFormat.objects(registry__id=str(registry_id)).order_by(order_by_field)
+        return OaiHarvesterMetadataFormat.objects(registry=str(registry_id)).order_by(order_by_field)
 
     @staticmethod
     def get_all_by_list_registry_ids(list_registry_ids, order_by_field=None):
@@ -46,7 +46,7 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
             List of OaiHarvesterMetadataFormat.
 
         """
-        return OaiHarvesterMetadataFormat.objects(registry__id__in=list_registry_ids).order_by(order_by_field)
+        return OaiHarvesterMetadataFormat.objects(registry__in=list_registry_ids).order_by(order_by_field)
 
     @staticmethod
     def get_all_by_registry_id_and_harvest(registry_id, harvest, order_by_field=None):
@@ -61,7 +61,7 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
             List of OaiHarvesterMetadataFormat.
 
         """
-        return OaiHarvesterMetadataFormat.objects(registry__id=str(registry_id), harvest=harvest).\
+        return OaiHarvesterMetadataFormat.objects(registry=str(registry_id), harvest=harvest).\
             order_by(order_by_field)
 
     @staticmethod
@@ -81,8 +81,7 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
 
         """
         try:
-            return OaiHarvesterMetadataFormat.objects().get(metadata_prefix=metadata_prefix,
-                                                            registry__id=str(registry_id))
+            return OaiHarvesterMetadataFormat.objects().get(metadata_prefix=metadata_prefix, registry=str(registry_id))
         except mongoengine_errors.DoesNotExist as e:
             raise exceptions.DoesNotExist(e.message)
         except Exception as e:

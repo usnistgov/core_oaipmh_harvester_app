@@ -13,7 +13,7 @@ from core_main_app.commons import exceptions
 class OaiHarvesterSet(OaiSet):
     """Represents a set for Oai-Pmh Harvester"""
     raw = fields.DictField()
-    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rull=CASCADE, unique=True)
+    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rull=CASCADE, unique_with='set_spec')
     harvest = fields.BooleanField(blank=True)
 
     @staticmethod

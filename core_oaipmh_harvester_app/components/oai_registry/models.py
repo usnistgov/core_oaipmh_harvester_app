@@ -5,8 +5,6 @@ OaiRegistry model
 from django_mongoengine import fields, Document
 from mongoengine import errors as mongoengine_errors
 from core_main_app.commons import exceptions
-from mongoengine.queryset.base import NULLIFY
-from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
 
 
 class OaiRegistry(Document):
@@ -14,14 +12,13 @@ class OaiRegistry(Document):
     name = fields.StringField()
     url = fields.URLField(unique=True)
     harvest_rate = fields.IntField(blank=True)
-    identify = fields.ReferenceField(OaiIdentify, reverse_delete_rule=NULLIFY)
     description = fields.StringField(blank=True)
-    harvest = fields.BooleanField()
+    harvest = fields.BooleanField(default=False)
     last_update = fields.DateTimeField(blank=True)
-    is_harvesting = fields.BooleanField()
-    is_updating = fields.BooleanField()
-    is_deactivated = fields.BooleanField()
-    is_queued = fields.BooleanField()
+    is_harvesting = fields.BooleanField(default=False)
+    is_updating = fields.BooleanField(default=False)
+    is_activated = fields.BooleanField(default=True)
+    is_queued = fields.BooleanField(default=False)
 
     @staticmethod
     def get_by_id(oai_registry_id):
@@ -76,18 +73,25 @@ class OaiRegistry(Document):
         return OaiRegistry.objects().all()
 
     @staticmethod
-    def get_all_by_is_deactivated(is_deactivated, order_by_field=None):
-        """ Return all OaiRegistry by their is_deactivated field
+    def get_all_by_is_activated(is_activated, order_by_field=None):
+        """ Return all OaiRegistry by their is_activated field
 
-            Returns:
-                List of OaiRegistry
+        Params:
+            is_activated: True or False.
+            order_by_field: Field to order on.
 
-            """
-        return OaiRegistry.objects(is_deactivated=is_deactivated).order_by(order_by_field)
+        Returns:
+            List of OaiRegistry
+
+        """
+        return OaiRegistry.objects(is_activated=is_activated).order_by(order_by_field)
 
     @staticmethod
     def check_registry_url_already_exists(oai_registry_url):
         """ Check if an OaiRegistry with the given url already exists.
+
+        Params:
+            oai_registry_url: URL to check.
 
         Returns:
             Yes or No (bool).
