@@ -169,7 +169,7 @@ def init_schema_info(oai_harvester_metadata_format):
         # FIXME: What to do if several templates with the same hash.
         if len(list_template) == 1:
             oai_harvester_metadata_format.template = list_template[0]
-        else:
+        elif len(list_template) > 1:
             raise exceptions.ApiError("Several templates have the same hash. "
                                       "Impossible to determine a template for the following "
                                       "metadata format: {0}.".format(oai_harvester_metadata_format.metadata_prefix))

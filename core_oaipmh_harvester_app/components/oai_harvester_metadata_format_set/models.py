@@ -12,8 +12,8 @@ from core_main_app.commons import exceptions
 
 class OaiHarvesterMetadataFormatSet(Document):
     """Association table between OaiHarvesterMetadataFormat and OaiHarvesterSet"""
-    harvester_set = fields.ReferenceField(OaiHarvesterSet, reverse_delete_rull=CASCADE)
-    harvester_metadata_format = fields.ReferenceField(OaiHarvesterMetadataFormat, reverse_delete_rull=CASCADE)
+    harvester_set = fields.ReferenceField(OaiHarvesterSet, reverse_delete_rule=CASCADE)
+    harvester_metadata_format = fields.ReferenceField(OaiHarvesterMetadataFormat, reverse_delete_rule=CASCADE)
     lastUpdate = fields.DateTimeField(blank=True)
 
     @staticmethod

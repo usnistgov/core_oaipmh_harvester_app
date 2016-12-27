@@ -1,0 +1,25 @@
+.view-registry-modal .modal-body{
+    height: 500px;
+    overflow-y: auto;
+}
+@media (min-height: 600px) {
+    .view-registry-modal .modal-body { height: 500px; }
+}
+table.data {
+    width: 100%;
+}
+table.data td {
+    width: 40%;
+    max-width: 40%;
+    min-width: 40%;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: hidden;
+    padding-right: 10%;
+}
+table.data tr {
+    border-bottom: 1px solid black !important;
+}
+table.data tr.grey {
+    background-color:#f0f0f0;
+}

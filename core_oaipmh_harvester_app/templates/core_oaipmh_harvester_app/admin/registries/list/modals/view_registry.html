@@ -1,0 +1,17 @@
+{% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+
+{% block modal_id %}view-registry-modal{% endblock %}
+{% block modal_title %}View data provider <i class="view-registry-name"></i>{% endblock %}
+{% block modal_class %}view-registry-modal{% endblock %}
+
+{% block modal_body %}
+<div class="alert alert-warning" id="banner_wait" style="display: none;">
+    <h4><i class='fa fa-circle-o-notch fa-spin fa-1x'></i>&nbsp;&nbsp;Please wait ...</h4>
+</div>
+<div id="view-registry-modal-table">
+</div>
+{% endblock %}
+
+{% block modal_footer %}
+<a class="btn btn-default pull-right" data-dismiss="modal" href="#"><i class="fa fa-check"></i> Ok</a>
+{% endblock %}

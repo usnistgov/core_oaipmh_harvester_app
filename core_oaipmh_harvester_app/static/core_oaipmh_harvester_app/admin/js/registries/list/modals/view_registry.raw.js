@@ -1,0 +1,1 @@
+var viewRegistryGetUrl = "{% url 'admin:core_oaipmh_harvester_app_view_registry' %}";

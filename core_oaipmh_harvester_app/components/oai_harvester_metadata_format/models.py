@@ -14,8 +14,8 @@ from core_main_app.commons import exceptions
 class OaiHarvesterMetadataFormat(OaiMetadataFormat):
     """Represents a metadata format for Oai-Pmh Harvester"""
     raw = fields.DictField()
-    template = fields.ReferenceField(Template, reverse_delete_rull=PULL, blank=True)
-    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rull=CASCADE, unique_with='metadata_prefix')
+    template = fields.ReferenceField(Template, reverse_delete_rule=PULL, blank=True)
+    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE, unique_with='metadata_prefix')
     hash = fields.StringField(blank=True)
     harvest = fields.BooleanField(default=False)
     lastUpdate = fields.DateTimeField(blank=True)

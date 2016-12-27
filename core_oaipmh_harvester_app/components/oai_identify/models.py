@@ -25,7 +25,7 @@ class OaiIdentify(Document):
     sample_identifier = fields.StringField(blank=True)
     scheme = fields.StringField(blank=True)
     raw = fields.DictField(blank=True)
-    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rull=CASCADE, unique=True)
+    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE, unique=True)
 
     @staticmethod
     def get_by_registry_id(registry_id):

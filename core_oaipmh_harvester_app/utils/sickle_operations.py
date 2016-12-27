@@ -45,7 +45,7 @@ def sickle_list_sets(url):
     try:
         sickle = Sickle(url)
         list_sets = sickle.ListSets()
-        serializer = sickle_serializers.SetSerializer(list_sets)
+        serializer = sickle_serializers.SetSerializer(list_sets, many=True)
         return serializer.data, status.HTTP_200_OK
     except NoSetHierarchy as e:
         content = OaiPmhMessage.get_message_labelled('%s' % e.message)
@@ -70,7 +70,7 @@ def sickle_list_metadata_formats(url):
     try:
         sickle = Sickle(url)
         list_metadata_formats = sickle.ListMetadataFormats()
-        serializer = sickle_serializers.SetSerializer(list_metadata_formats)
+        serializer = sickle_serializers.MetadataFormatSerializer(list_metadata_formats, many=True)
         return serializer.data, status.HTTP_200_OK
     except NoMetadataFormat as e:
         # This repository does not support sets

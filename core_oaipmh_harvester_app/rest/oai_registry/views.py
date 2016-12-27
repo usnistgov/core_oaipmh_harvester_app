@@ -236,10 +236,10 @@ def deactivate_registry(request):
 
 @api_view(['POST'])
 @api_staff_member_required()
-def reactivate_registry(request):
-    """ Reactivate a given registry (Data provider).
+def activate_registry(request):
+    """ Activate a given registry (Data provider).
 
-    POST http://<server_ip>:<server_port>/oai_pmh/api/reactivate/registry
+    POST http://<server_ip>:<server_port>/oai_pmh/api/activate/registry
 
     Args:
         request (HttpRequest): request.
@@ -260,7 +260,7 @@ def reactivate_registry(request):
         else:
             raise exceptions_oai.OAIAPISerializeLabelledException(errors=serializer.errors,
                                                                   status_code=status.HTTP_400_BAD_REQUEST)
-        content = OaiPmhMessage.get_message_labelled('Registry {0} reactivated with success.'.format(registry.name))
+        content = OaiPmhMessage.get_message_labelled('Registry {0} activated with success.'.format(registry.name))
 
         return Response(content, status=status.HTTP_200_OK)
     except exceptions.DoesNotExist:

@@ -1,0 +1,116 @@
+<table class="data">
+    <tr class="grey">
+        <td colspan="2">
+            <strong>Identify</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>Admin Email</td>
+        <td>
+            <span class='value'>{{ identify.admin_email }</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Base URL</td>
+        <td>
+            <span class='value'>{{ identify.base_url }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td>
+            <span class='value'>{{ identify.repository_name }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Has Deleted Record</td>
+        <td>
+            <span class='value'>{{ identify.deleted_record }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Delimiter</td>
+        <td>
+            <span class='value'> {{identify.delimiter }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td>
+            <span class='value'> {{identify.description }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Earliest Datestamp</td>
+        <td>
+            <span class='value'> {{identify.earliest_datestamp }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Granularity</td>
+        <td>
+            <span class='value'> {{identify.granularity }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Oai Identifier</td>
+        <td>
+            <span class='value'> {{identify.oai_identifier }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Protocol Version</td>
+        <td>
+            <span class='value'> {{identify.protocol_version }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Repository Identifier</td>
+        <td>
+            <span class='value'> {{identify.repository_identifier }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Sample Identifier</td>
+        <td>
+            <span class='value'> {{identify.sample_identifier }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Scheme</td>
+        <td>
+            <span class='value'> {{identify.scheme }}</span>
+        </td>
+    </tr>
+    <!--TODO Uncomment when render_xml_as_html working-->
+    <!--<tr>-->
+        <!--<td>-->
+            <!--<div class="panel panel-default">-->
+                <!--<div class="panel-heading" role="tab" id="IdentifyHeadingOne">-->
+                    <!--<h4 class="panel-title">-->
+                        <!--<a style=""class="collapsed font-medium" role="button" data-toggle="collapse" data-parent="#IdentifyAccordion" href="#Identify" aria-expanded="false" aria-controls="collapseOne">-->
+                          <!--RAW-->
+                        <!--</a>-->
+                    <!--</h4>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</td>-->
+        <!--<td>-->
+            <!--<span class='value'>-->
+            <!--</span>-->
+        <!--</td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+        <!--<td colspan="2">-->
+            <!--<div id="Identify" class="panel-collapse collapse collapse-data" role="tabpanel" aria-labelledby="IdentifyHeadingOne">-->
+                <!--<div class="panel-body">-->
+                    <!--<div id="IdentifyXMLHolder">-->
+                     <!--{% autoescape off %}-->
+                        <!--{{ identify.raw }} "|render_xml_as_html"-->
+                     <!--{% endautoescape %}-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</td>-->
+    <!--</tr>-->
+</table>

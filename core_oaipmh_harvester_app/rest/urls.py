@@ -17,8 +17,8 @@ urlpatterns = [
         name='core_oaipmh_harvester_app_rest_update_registry_conf'),
     url(r'^deactivate/registry$', oai_registry_views.deactivate_registry,
         name='core_oaipmh_harvester_app_rest_deactivate_registry'),
-    url(r'^reactivate/registry$', oai_registry_views.reactivate_registry,
-        name='core_oaipmh_harvester_app_rest_reactivate_registry'),
+    url(r'^activate/registry$', oai_registry_views.activate_registry,
+        name='core_oaipmh_harvester_app_rest_activate_registry'),
     url(r'^delete/registry$', oai_registry_views.delete_registry,
         name='core_oaipmh_harvester_app_rest_delete_registry'),
 ]

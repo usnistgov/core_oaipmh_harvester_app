@@ -193,7 +193,7 @@ class OaiRecord(Document):
             List of OaiRecord.
 
         """
-        return OaiRecord.objects(registry__id=str(registry_id)).order_by(order_by_field)
+        return OaiRecord.objects(registry=str(registry_id)).order_by(order_by_field)
 
     @staticmethod
     def get_count_by_registry_id(registry_id):
@@ -206,7 +206,7 @@ class OaiRecord(Document):
             Number of OaiRecord (int).
 
         """
-        return OaiRecord.objects(registry__id=str(registry_id)).count()
+        return OaiRecord.objects(registry=str(registry_id)).count()
 
     @staticmethod
     def delete_all_by_registry_id(registry_id):

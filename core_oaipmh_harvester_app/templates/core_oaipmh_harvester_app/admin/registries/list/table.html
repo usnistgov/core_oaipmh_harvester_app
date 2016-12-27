@@ -1,0 +1,102 @@
+{% extends 'core_main_app/_render/admin/theme/tools/box.html' %}
+
+{% block box_title %}OAI PMH providers list{% endblock %}
+
+{% block box_tools %}
+<div class="btn-group pull-right">
+<a href="#" class="btn btn-default add-registry-btn">
+    <i class="fa fa-plus-circle"></i> Add
+</a>
+<a href="#" class="btn btn-default check-all-registries-btn">
+    <i class="fa fa-check-circle"></i> Check All
+</a>
+<a href="#" class="btn btn-default update-all-registries-btn">
+    <i class="fa fa-refresh "></i> Update All
+</a>
+<a href="#" class="btn btn-default harvest-all-registries-btn">
+    <i class="fa fa-download "></i> Harvest All
+</a>
+</div>
+{% endblock %}
+
+{% block box_body %}
+<table class="table table-bordered table-striped table-hover">
+    <tr>
+        <th>Name</th>
+        <th>URL</th>
+        <th>Status</th>
+        <th>Harvest</th>
+        <th>Harvest Rate</th>
+        <th>Last Update</th>
+        <th>Actions</th>
+    </tr>
+
+    <div id="Refreshing" style="display: none;"><i class="fa fa-spinner fa-spin"></i> Refreshing...</div>
+    <div id="RefreshInfo"><i class='fa fa-refresh' aria-hidden='true'>&nbsp;</i>Refresh in
+        <div id="countdown" style="display:inline-block;"></div> sec.
+    </div>
+
+    {% for registry in data.registries %}
+        <tr id="bannerHarvest{{registry.id}}" style="display: {{ registry.is_harvesting|yesno:',none' }};">
+            <td class="alert alert-warning" colspan="7">
+                <h4><i class='fa fa-circle-o-notch fa-spin fa-1x'></i>&nbsp;&nbsp;Data harvesting ...</h4>
+            </td>
+        </tr>
+        <tr id="bannerUpdate{{registry.id}}" style="display: {{ registry.is_updating|yesno:',none' }};">
+            <td class="alert alert-warning" colspan="7">
+                <h4><i class='fa fa-circle-o-notch fa-spin fa-1x'></i>&nbsp;&nbsp;Updating Data Provider information ...</h4>
+            </td>
+        </tr>
+        <tr objectid="{{ registry.id }}" url="{{ registry.url }}">
+            <td>{{ registry.name }}</td>
+            <td>{{ registry.url }}</td>
+            <td>
+            {% if not registry.is_activated %}
+                <p style='color:red'>Deactivated</p>
+            {% else %}
+                <a class="btn btn-default check-registry-btn">Check</a>
+            {% endif %}
+            </td>
+            <td>{{ registry.harvest }}</td>
+            <td>{{ registry.harvest_rate }}</td>
+            <td>{{ registry.last_update }}</td>
+            <td>
+                <a class="btn btn-default view-registry-btn" href="#">
+                    <i class="fa fa-eye"></i> View
+                </a>
+                {% if registry.is_activated %}
+                    <a class="btn btn-default edit-registry-btn" href="#">
+                        <i class="fa fa-edit"></i> Edit
+                    </a>
+                    <a class="btn btn-default edit-harvest-registry-btn" href="#">
+                        <i class="fa fa-clock-o"></i> Edit harvest
+                    </a>
+                    <a class="btn btn-default deactivate-registry-btn" href="#">
+                        <i class="fa fa-ban"></i> Deactivate
+                    </a>
+                    <a class="btn btn-default update-registry-btn" href="#"  style="display: {{ registry.is_updating|yesno:'none,' }};">
+                        <i class="fa fa-refresh"></i> Update
+                    </a>
+                    <a class="btn btn-default harvest-registry-btn" href="#" style="display: {{ registry.is_harvesting|yesno:'none,' }};">
+                        <i class="fa fa-download"></i> Harvest
+                    </a>
+                {% else %}
+                    <a class="btn btn-default activate-registry-btn" href="#">
+                        <i class="fa fa-refresh"></i> Restore
+                    </a>
+                    <a class="btn btn-danger delete-registry-btn" href="#">
+                        <i class="fa fa-trash"></i> Delete definitely
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td class="empty" colspan="7">
+                There are currently no Data Provider registered. Please
+                <a href="#" class="add-registry-btn">add a new one</a>.
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

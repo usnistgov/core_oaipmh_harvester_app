@@ -205,6 +205,9 @@ def _get_sets_as_object(url):
     if status_code not in (status.HTTP_200_OK, status.HTTP_204_NO_CONTENT):
         raise oai_pmh_exceptions.OAIAPILabelledException(message=sets_response[OaiPmhMessage.label],
                                                          status_code=status_code)
+    elif status_code == status.HTTP_204_NO_CONTENT:
+        sets_response = []
+
     return sets_response
 
 
@@ -223,6 +226,9 @@ def _get_metadata_formats_as_object(url):
         raise oai_pmh_exceptions.OAIAPILabelledException(
             message=metadata_formats_response[OaiPmhMessage.label],
             status_code=status_code)
+    elif status_code == status.HTTP_204_NO_CONTENT:
+        metadata_formats_response = []
+
     return metadata_formats_response
 
 
@@ -263,8 +269,9 @@ def _upsert_identify_for_registry(identify, registry):
         identify_db = oai_identify_api.get_by_registry_id(registry.id)
         identify.id = identify_db.id
     except exceptions.DoesNotExist:
-        identify.registry = registry
+        pass
 
+    identify.registry = registry
     api_oai_identify.upsert(identify)
 
 
@@ -281,8 +288,8 @@ def _upsert_metadata_format_for_registry(metadata_format, registry):
             get_by_metadata_prefix_and_registry_id(metadata_format.metadata_prefix, registry.id)
         # Update current OaiHarvesterMetadataFormat
         metadata_format_to_save.metadata_namespace = metadata_format.metadata_namespace
-        metadata_format_to_save.schema = metadata_format.metadata_namespace.schema
-        metadata_format_to_save.raw = metadata_format.metadata_namespace.raw
+        metadata_format_to_save.schema = metadata_format.schema
+        metadata_format_to_save.raw = metadata_format.raw
     except exceptions.DoesNotExist:
         # Creation OaiHarvesterMetadataFormat
         metadata_format_to_save = metadata_format

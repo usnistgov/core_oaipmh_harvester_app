@@ -1,0 +1,37 @@
+.edit-harvest-registry-modal .modal-body{
+    height: 500px;
+    overflow-y: auto;
+}
+@media (min-height: 600px) {
+    .edit-harvest-registry-modal .modal-body { height: 500px; }
+}
+ul {
+    list-style: none; /* Remove list bullets */
+    padding: 0;
+    margin: 0;
+}
+table.data-edit-harvest {
+    width: 100%;
+    margin-bottom: 1.5em;
+}
+table.data-edit-harvest tr td:first-child {
+    width: 90%;
+    max-width: 80%;
+    min-width: 80%;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: hidden;
+    padding-right: 3%;
+}
+table.data-edit-harvest tr td:last-child {
+    width: 10%;
+    max-width: 10%;
+    min-width: 10%;
+    padding-right: 3%;
+}
+table.data-edit-harvest tr {
+    border-bottom: 1px solid black !important;
+}
+table.data-edit-harvest tr.grey {
+    background-color:#f0f0f0;
+}

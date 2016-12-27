@@ -1,0 +1,43 @@
+<table autofocus class="data">
+    <tr class="grey">
+        <td colspan="2">
+            <strong>General</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>Base URL</td>
+        <td>
+            <span class='value'>{{ registry.url }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td>
+            <span class='value'>{{ registry.name }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Number of metadata formats </td>
+        <td>
+            <span class='value'>{{ metadata_formats|length }}</span>
+        </td>
+    </tr>
+    <tr >
+        <td>Number of sets</td>
+        <td>
+            <span class='value'>{{ sets|length }}</span>
+        </td>
+    </tr>
+    <tr >
+        <td>Number of harvested records</td>
+        <td>
+            <span class='value'>{{ nb_records }}</span>
+        </td>
+    </tr>
+    <tr >
+        <td>Last update</td>
+        <td>
+            <span class='value'>{{ registry.lastUpdate }}</span>
+        </td>
+    </tr>
+</table>

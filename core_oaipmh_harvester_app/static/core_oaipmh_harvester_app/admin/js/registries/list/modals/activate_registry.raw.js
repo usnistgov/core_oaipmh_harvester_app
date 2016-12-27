@@ -1,0 +1,1 @@
+var activateRegistryGetUrl = "{% url 'admin:core_oaipmh_harvester_app_activate_registry' %}";

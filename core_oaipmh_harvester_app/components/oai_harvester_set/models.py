@@ -13,7 +13,7 @@ from core_main_app.commons import exceptions
 class OaiHarvesterSet(OaiSet):
     """Represents a set for Oai-Pmh Harvester"""
     raw = fields.DictField()
-    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rull=CASCADE, unique_with='set_spec')
+    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE, unique_with='set_spec')
     harvest = fields.BooleanField(blank=True)
 
     @staticmethod
@@ -28,7 +28,7 @@ class OaiHarvesterSet(OaiSet):
             List of OaiHarvesterSet.
 
         """
-        return OaiHarvesterSet.objects(registry__id=str(registry_id)).order_by(order_by_field)
+        return OaiHarvesterSet.objects(registry=str(registry_id)).order_by(order_by_field)
 
     @staticmethod
     def get_all_by_registry_id_and_harvest(registry_id, harvest, order_by_field=None):
@@ -43,7 +43,7 @@ class OaiHarvesterSet(OaiSet):
             List of OaiHarvesterSet.
 
         """
-        return OaiHarvesterSet.objects(registry__id=str(registry_id), harvest=harvest).\
+        return OaiHarvesterSet.objects(registry=str(registry_id), harvest=harvest).\
             order_by(order_by_field)
 
     @staticmethod

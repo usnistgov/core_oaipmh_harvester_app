@@ -31,7 +31,7 @@ def identify_as_object(url):
 
     """
     data, status_code = identify(url)
-    if status_code != status.HTTP_500_INTERNAL_SERVER_ERROR:
+    if status_code == status.HTTP_200_OK:
         data = transform_operations.transform_dict_identifier_to_oai_identifier(data)
 
     return data, status_code
@@ -63,7 +63,7 @@ def list_metadata_formats_as_object(url):
 
     """
     data, status_code = list_metadata_formats(url)
-    if status_code != status.HTTP_500_INTERNAL_SERVER_ERROR:
+    if status_code == status.HTTP_200_OK:
         data = transform_operations.transform_dict_metadata_format_to_oai_harvester_metadata_format(data)
 
     return data, status_code
@@ -95,7 +95,7 @@ def list_sets_as_object(url):
 
     """
     data, status_code = list_sets(url)
-    if status_code != status.HTTP_500_INTERNAL_SERVER_ERROR:
+    if status_code == status.HTTP_200_OK:
         data = transform_operations.transform_dict_set_to_oai_harvester_set(data)
 
     return data, status_code
