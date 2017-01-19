@@ -1,2 +1,4 @@
 include README.md
 include requirements.txt
+recursive-include core_oaipmh_harvester_app/static *
+recursive-include core_oaipmh_harvester_app/templates *
