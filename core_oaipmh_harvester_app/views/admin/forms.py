@@ -78,3 +78,43 @@ class EditHarvestRegistryForm(forms.Form):
             self.fields['metadata_formats'].queryset = metadata_formats
             self.fields['sets'].initial = [set_.id for set_ in sets if set_.harvest]
             self.fields['sets'].queryset = sets
+
+
+class RequestForm(forms.Form):
+    """
+        A request form
+    """
+    data_provider = forms.ChoiceField(label='Data Provider', choices=[], required=False,
+                                      widget=forms.Select(attrs={"class": "form-control"}))
+    verb = forms.ChoiceField(label='Verb', choices=VERBS, required=False,
+                             widget=forms.Select(attrs={"class": "form-control"}))
+    set = forms.ChoiceField(label='Set', choices=[], required=False,
+                            widget=forms.Select(attrs={'disabled': 'true',
+                                                       "class": "form-control"}))
+    identifiers = forms.CharField(label='Identifier', required=False,
+                                  widget=forms.TextInput(attrs={'class': 'form-control',
+                                                                'style': 'width:198px'}))
+    metadata_prefix = forms.ChoiceField(label='Metadata Prefix', choices=[], required=False,
+                                        widget=forms.Select(attrs={'disabled': 'true',
+                                                                   "class": "form-control"}))
+    From = forms.CharField(label='From', required=False,
+                           widget=forms.DateInput(attrs={'data-date-format': 'yyyy-mm-ddThh:ii:00Z',
+                                                         'class': 'form-control',
+                                                         'style': 'width:160px'}))
+    until = forms.CharField(label='Until', required=False,
+                            widget=forms.DateInput(attrs={'data-date-format': 'yyyy-mm-ddThh:ii:00Z',
+                                                          'class': 'form-control',
+                                                          'style': 'width:160px'}))
+    resumption_token = forms.CharField(label='Resumption Token', required=False,
+                                       widget=forms.TextInput(attrs={'class': 'form-control',
+                                                                     'style': 'width:198px;height:30px'}))
+
+    def __init__(self):
+        super(RequestForm, self).__init__()
+        self.data_providers = []
+        self.data_providers.append(('0', 'Pick one'))
+        self.fields['metadata_prefix'].choices = self.data_providers
+        self.fields['set'].choices = self.data_providers
+        for o in oai_registry_api.get_all_activated_registry():
+            self.data_providers.append((str(o.id)+'|'+o.url, str(o.name.encode('utf8'))))
+        self.fields['data_provider'].choices = self.data_providers

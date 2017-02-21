@@ -37,6 +37,14 @@ admin_urls = [
         name='core_oaipmh_harvester_app_update_registry'),
     url(r'^harvesters/registry/harvest', admin_ajax.harvest_registry,
         name='core_oaipmh_harvester_app_harvest_registry'),
+    url(r'^harvesters/registry/all/sets', admin_ajax.all_sets,
+        name='core_oaipmh_harvester_app_all_sets'),
+    url(r'^harvesters/registry/all/metadataPrefix', admin_ajax.all_metadata_prefix,
+        name='core_oaipmh_harvester_app_all_metadata_prefix'),
+    url(r'^harvesters/registry/get/data', admin_ajax.get_data,
+        name='core_oaipmh_harvester_app_get_data'),
+    url(r'^harvesters/build/download/data', admin_ajax.download_xml_build_req,
+        name='core_oaipmh_harvester_app_download_xml_build_req'),
 ]
 
 urls = admin.site.get_urls()

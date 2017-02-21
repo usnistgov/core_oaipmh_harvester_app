@@ -1,0 +1,1 @@
+var dataGetUrl = "{% url 'admin:core_oaipmh_harvester_app_get_data' %}";
