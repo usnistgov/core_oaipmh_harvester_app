@@ -263,8 +263,7 @@ def harvest_registry(request):
     """
     try:
         registry = oai_registry_api.get_by_id(request.GET['id'])
-        # TODO: Create harvest_registry in oai_registry_api
-        # oai_registry_api.harvest_registry(registry)
+        oai_registry_api.harvest_registry(registry)
 
         return HttpResponse(json.dumps({}), content_type='application/javascript')
     except Exception, e:
@@ -284,7 +283,7 @@ def check_harvest_registry(request):
             update_info = []
             registries = oai_registry_api.get_all()
             for registry in registries:
-                result_json = {'registry_id': str(registry.id), 'is_updating': registry.is_harvesting}
+                result_json = {'registry_id': str(registry.id), 'is_harvesting': registry.is_harvesting}
                 update_info.append(result_json)
 
             return HttpResponse(json.dumps(update_info), content_type='application/javascript')

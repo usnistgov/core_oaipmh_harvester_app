@@ -4,6 +4,7 @@ OaiRegistry API
 
 
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_harvester_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
@@ -12,7 +13,14 @@ from core_oaipmh_harvester_app.components.oai_identify import api as api_oai_ide
 from core_oaipmh_harvester_app.components.oai_identify import api as oai_identify_api
 from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_harvester_set_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api as oai_harvester_metadata_format_api
+from core_oaipmh_harvester_app.components.oai_record import api as oai_record_api
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set.models import OaiHarvesterMetadataFormatSet
 from core_main_app.commons import exceptions
+from core_oaipmh_common_app.utils import UTCdatetime
+from core_main_app.utils.xml import raw_xml_to_dict
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set import api as \
+    oai_harvester_metadata_format_set_api
+import datetime
 
 
 def upsert(oai_registry):
@@ -174,6 +182,51 @@ def update_registry_info(registry):
                                                          status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+def harvest_registry(registry):
+    """ Harvest the registry given in parameter.
+    Args:
+        registry: The registry to harvest.
+
+    Returns:
+        all_errors: List of errors.
+
+    """
+    try:
+        # We are harvesting
+        registry.is_harvesting = True
+        upsert(registry)
+        # Set the last update date
+        harvest_date = datetime.datetime.now()
+        # Get all metadata formats to harvest
+        metadata_formats = oai_harvester_metadata_format_api.get_all_to_harvest_by_registry_id(registry.id)
+        # Get all sets
+        registry_all_sets = oai_harvester_set_api.get_all_by_registry_id(registry.id, "set_name")
+        # Get all available  sets
+        registry_sets_to_harvest = oai_harvester_set_api.get_all_to_harvest_by_registry_id(registry.id, "set_name")
+        # Check if we have to retrieve all sets or not. If all sets, no need to provide the set parameter in the
+        # harvest request. Avoid to retrieve same records for nothing (If records are in many sets).
+        search_by_sets = len(registry_all_sets) != len(registry_sets_to_harvest)
+        # Search by sets
+        if search_by_sets and len(registry_all_sets) != 0:
+            all_errors = _harvest_by_metadata_formats_and_sets(registry, metadata_formats, registry_sets_to_harvest,
+                                                               registry_all_sets)
+        # If we don't have to search by set or the OAI Registry doesn't support sets
+        else:
+            all_errors = _harvest_by_metadata_formats(registry, metadata_formats, registry_all_sets)
+        # Stop harvesting
+        registry.is_harvesting = False
+        # Set the last update date
+        registry.lastUpdate = harvest_date
+        upsert(registry)
+
+        return all_errors
+    except Exception as e:
+        registry.is_harvesting = False
+        upsert(registry)
+        raise oai_pmh_exceptions.OAIAPILabelledException(message=e.message,
+                                                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 def _get_identify_as_object(url):
     """ Get the identify information for the given URL.
 
@@ -324,3 +377,151 @@ def _upsert_set_for_registry(set_, registry):
         set_to_save.harvest = True
 
     oai_harvester_set_api.upsert(set_to_save)
+
+
+def _harvest_by_metadata_formats_and_sets(registry, metadata_formats, registry_sets_to_harvest, registry_all_sets):
+    """ Harvest data by metadata formats and sets.
+    Args:
+        registry: Registry.
+        metadata_formats: List of metadata formats to harvest.
+        registry_sets_to_harvest: List of sets to harvest.
+        registry_all_sets: List of all sets.
+
+    Returns:
+        List of potential errors.
+
+    """
+    all_errors = []
+    for metadata_format in metadata_formats:
+        current_update_mf = datetime.datetime.now()
+        errors_during_harvest = False
+        for set_ in registry_sets_to_harvest:
+            current_update_mf_set = datetime.datetime.now()
+            try:
+                # Retrieve the last update for this metadata format and this set
+                last_update = oai_harvester_metadata_format_set_api.\
+                    get_last_update_by_metadata_format_and_set(metadata_format, set_)
+            except:
+                last_update = None
+            errors = _harvest_records(registry, metadata_format, last_update, registry_all_sets, set_)
+            # If no exceptions was thrown and no errors occurred, we can update the lastUpdate date
+            if len(errors) == 0:
+                try:
+                    oai_h_mf_set = oai_harvester_metadata_format_set_api.\
+                        get_by_metadata_format_and_set(metadata_format, set_)
+                except exceptions.DoesNotExist:
+                    oai_h_mf_set = OaiHarvesterMetadataFormatSet(harvester_metadata_format=metadata_format,
+                                                                 harvester_set=set_)
+                oai_h_mf_set.lastUpdate = current_update_mf_set
+                oai_harvester_metadata_format_set_api.upsert(oai_h_mf_set)
+            else:
+                errors_during_harvest = True
+                all_errors.append(errors)
+        # Set the last update date if no exceptions was thrown
+        # Would be useful if we do a _harvest_by_metadata_formats in the future: won't retrieve everything
+        if not errors_during_harvest:
+            metadata_format.lastUpdate = current_update_mf
+            oai_harvester_metadata_format_api.upsert(metadata_format)
+    return all_errors
+
+
+def _harvest_by_metadata_formats(registry, metadata_formats, registry_all_sets):
+    """ Harvest data by metadata formats.
+    Args:
+        registry: Registry.
+        metadata_formats: List of metadata formats to harvest.
+        registry_all_sets: List of all sets.
+
+    Returns:
+        List of potential errors.
+
+    """
+    all_errors = []
+    for metadata_format in metadata_formats:
+        try:
+            # Retrieve the last update for this metadata format
+            last_update = UTCdatetime.datetime_to_utc_datetime_iso8601(metadata_format.lastUpdate)
+        except:
+            last_update = None
+        # Update the new date for the metadataFormat
+        current_update_mf = datetime.datetime.now()
+        errors = _harvest_records(registry, metadata_format, last_update, registry_all_sets)
+        # If no exceptions was thrown and no errors occurred, we can update the lastUpdate date
+        if len(errors) == 0:
+            # Update the update date for all sets
+            # Would be useful if we do a _harvest_by_metadata_formats_and_sets in the future: won't retrieve everything
+            if len(registry_all_sets) != 0:
+                for set_ in registry_all_sets:
+                    try:
+                        oai_h_mf_set = oai_harvester_metadata_format_set_api.\
+                            get_by_metadata_format_and_set(metadata_format, set_)
+                    except exceptions.DoesNotExist:
+                        oai_h_mf_set = OaiHarvesterMetadataFormatSet(harvester_metadata_format=metadata_format,
+                                                                     harvester_set=set_)
+                    oai_h_mf_set.lastUpdate = current_update_mf
+                    oai_harvester_metadata_format_set_api.upsert(oai_h_mf_set)
+            # Update the update date
+            metadata_format.lastUpdate = current_update_mf
+            oai_harvester_metadata_format_api.upsert(metadata_format)
+        else:
+            all_errors.append(errors)
+    return all_errors
+
+
+def _harvest_records(registry, metadata_format, last_update, registry_all_sets, set_=None):
+    """ Harvest records.
+    Args:
+        registry: Registry to harvest.
+        metadata_format: Metadata Format to harvest.
+        last_update: Last update date.
+        registry_all_sets: List of all sets.
+        set_: Set to harvest
+
+    Returns:
+        List of potential errors.
+
+    """
+    errors = []
+    has_data = True
+    resumption_token = None
+    # Get all records. Use of the resumption token.
+    while has_data:
+        # Get the list of records
+        set_h = None
+        if set_ is not None:
+            set_h = set_.set_spec
+        http_response, resumption_token = oai_verbs_api.list_records(url=registry.url,
+                                                                     metadata_prefix=metadata_format.metadata_prefix,
+                                                                     set_h=set_h, from_date=last_update,
+                                                                     resumption_token=resumption_token)
+        if http_response.status_code == status.HTTP_200_OK:
+            rtn = http_response.data
+            for info in rtn:
+                # Get corresponding sets.
+                sets = [x for x in registry_all_sets if x.set_spec in info['sets']]
+                raw = raw_xml_to_dict(info['raw'])
+                metadata = raw_xml_to_dict(info['metadata']) if not info['deleted'] else None
+                try:
+                    obj_record = oai_record_api.get_by_identifier_and_metadata_format(info['identifier'],
+                                                                                      metadata_format)
+                except exceptions.DoesNotExist:
+                    obj_record = OaiRecord()
+                obj_record.identifier = info['identifier']
+                obj_record.datestamp = UTCdatetime.utc_datetime_iso8601_to_datetime(info['datestamp'])
+                obj_record.deleted = info['deleted']
+                obj_record.harvester_metadata_format = metadata_format
+                obj_record.harvester_sets = sets
+                obj_record.metadata = metadata
+                obj_record.raw = raw
+                obj_record.registry = registry
+                # Custom Save to keep the order of metadata's XML
+                oai_record_api.upsert(obj_record)
+        # Else, we get the status code with the error message provided by the http_response
+        else:
+            error = {'status_code': http_response.status_code,
+                     'error': http_response.data[oai_pmh_exceptions.OaiPmhMessage.label]}
+            errors.append(error)
+        # There is more records if we have a resumption token.
+        has_data = resumption_token is not None and resumption_token != ''
+
+    return errors

@@ -173,6 +173,28 @@ class OaiRecord(Document):
             raise exceptions.ModelError(e.message)
 
     @staticmethod
+    def get_by_identifier_and_metadata_format(identifier, harvester_metadata_format):
+        """Get an OaiRecord by its identifier and metadata format.
+
+        Args:
+            identifier: Identifier of the OaiRecord.
+            harvester_metadata_format: harvester_metadata_format of the OaiRecord.
+
+        Returns: The OaiRecord instance.
+
+        Raises:
+            DoesNotExist: The OaiRecord doesn't exist.
+            ModelError: Internal error during the process.
+
+        """
+        try:
+            return OaiRecord.objects().get(identifier=identifier, harvester_metadata_format=harvester_metadata_format)
+        except mongoengine_errors.DoesNotExist as e:
+            raise exceptions.DoesNotExist(e.message)
+        except Exception as e:
+            raise exceptions.ModelError(e.message)
+
+    @staticmethod
     def get_all():
         """ Return all OaiRecord.
 

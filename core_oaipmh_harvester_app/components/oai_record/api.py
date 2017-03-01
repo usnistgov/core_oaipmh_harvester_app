@@ -33,6 +33,19 @@ def get_by_id(oai_record_id):
     return OaiRecord.get_by_id(oai_record_id)
 
 
+def get_by_identifier_and_metadata_format(identifier, harvester_metadata_format):
+    """Get an OaiRecord by its identifier and metadata format.
+
+    Args:
+        identifier: Identifier of the OaiRecord.
+        harvester_metadata_format: harvester_metadata_format of the OaiRecord.
+
+    Returns: The OaiRecord instance.
+
+    """
+    return OaiRecord.get_by_identifier_and_metadata_format(identifier, harvester_metadata_format)
+
+
 def get_all():
     """ Return all OaiRecord.
 
