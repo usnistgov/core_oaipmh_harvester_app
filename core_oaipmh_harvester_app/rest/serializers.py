@@ -1,26 +1,32 @@
 """
     Serializers used throughout the Rest API
 """
-from rest_framework import serializers
-from rest_framework_mongoengine.serializers import MongoEngineModelSerializer
+from rest_framework.serializers import Serializer, CharField, IntegerField, BooleanField
+from rest_framework_mongoengine.serializers import DocumentSerializer
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
-class AddRegistrySerializer(serializers.Serializer):
-    url = serializers.CharField(required=True)
-    harvest_rate = serializers.IntegerField(required=True)
-    harvest = serializers.BooleanField(required=True)
+
+class AddRegistrySerializer(Serializer):
+    url = CharField(required=True)
+    harvest_rate = IntegerField(required=True)
+    harvest = BooleanField(required=True)
 
 
-class RegistryIdSerializer(serializers.Serializer):
-    registry_id = serializers.CharField(required=True)
+class RegistryIdSerializer(Serializer):
+    registry_id = CharField(required=True)
 
 
-class RegistrySerializer(MongoEngineModelSerializer):
+class RegistrySerializer(DocumentSerializer):
     class Meta:
         model = OaiRegistry
+        fields = "__all__"
         
 
-class UpdateRegistrySerializer(serializers.Serializer):
-    registry_id = serializers.CharField(required=True)
-    harvest_rate = serializers.IntegerField(required=True)
-    harvest = serializers.BooleanField(required=True)
+class UpdateRegistrySerializer(Serializer):
+    registry_id = CharField(required=True)
+    harvest_rate = IntegerField(required=True)
+    harvest = BooleanField(required=True)
+
+
+class SelectRegistrySerializer(Serializer):
+    registry_name = CharField(required=True)

@@ -7,7 +7,7 @@ from core_oaipmh_harvester_app.rest.oai_registry import views as oai_registry_vi
 urlpatterns = [
     url(r'^select/registry$', oai_registry_views.select_registry,
         name='core_oaipmh_harvester_app_rest_select_registry'),
-    url(r'^select/all/registries$', oai_registry_views.select_all_registries,
+    url(r'^select/all/registries', oai_registry_views.select_all_registries,
         name='core_oaipmh_harvester_app_rest_select_all_registries'),
     url(r'^add/registry$', oai_registry_views.add_registry,
         name='core_oaipmh_harvester_app_rest_add_registry'),
@@ -21,4 +21,6 @@ urlpatterns = [
         name='core_oaipmh_harvester_app_rest_activate_registry'),
     url(r'^delete/registry$', oai_registry_views.delete_registry,
         name='core_oaipmh_harvester_app_rest_delete_registry'),
+    url(r'^harvest/registry$', oai_registry_views.harvest_registry,
+        name='core_oaipmh_harvester_app_rest_harvest_registry'),
 ]

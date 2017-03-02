@@ -34,7 +34,7 @@ def select_registry(request):
 
     """
     try:
-        serializer = serializers.AddRegistrySerializer(data=request.DATA)
+        serializer = serializers.SelectRegistrySerializer(data=request.query_params)
         if serializer.is_valid():
             registry_name = serializer.data.get('registry_name')
             registry = oai_registry_api.get_by_name(registry_name)
@@ -56,7 +56,7 @@ def select_registry(request):
 
 @api_view(['GET'])
 @api_permission_required(rights.oai_pmh_content_type, rights.oai_pmh_access)
-def select_all_registries():
+def select_all_registries(request):
     """ Return all registries (Data provider).
 
     GET http://<server_ip>:<server_port>/oai_pmh/api/select/all/registries
@@ -67,7 +67,7 @@ def select_all_registries():
     """
     try:
         registry = oai_registry_api.get_all()
-        serializer = serializers.RegistrySerializer(registry)
+        serializer = serializers.RegistrySerializer(registry, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Exception as e:
@@ -96,7 +96,7 @@ def add_registry(request):
 
     """
     try:
-        serializer = serializers.AddRegistrySerializer(data=request.DATA)
+        serializer = serializers.AddRegistrySerializer(data=request.data)
         if serializer.is_valid():
             url = serializer.data.get('url')
             harvest_rate = serializer.data.get('harvest_rate')
@@ -133,7 +133,7 @@ def update_registry_info(request):
 
     """
     try:
-        serializer = serializers.RegistryIdSerializer(data=request.DATA)
+        serializer = serializers.RegistryIdSerializer(data=request.data)
         if serializer.is_valid():
             registry_id = serializer.data.get('registry_id')
             registry = oai_registry_api.get_by_id(registry_id)
@@ -173,7 +173,7 @@ def update_registry_conf(request):
 
     """
     try:
-        serializer = serializers.UpdateRegistrySerializer(data=request.DATA)
+        serializer = serializers.UpdateRegistrySerializer(data=request.data)
         if serializer.is_valid():
             registry = oai_registry_api.get_by_id(serializer.data.get('registry_id'))
             registry.harvest_rate = serializer.data.get('harvest_rate')
@@ -213,7 +213,7 @@ def deactivate_registry(request):
 
     """
     try:
-        serializer = serializers.RegistryIdSerializer(data=request.DATA)
+        serializer = serializers.RegistryIdSerializer(data=request.data)
         if serializer.is_valid():
             registry = oai_registry_api.get_by_id(serializer.data.get('registry_id'))
             registry.is_activated = False
@@ -252,7 +252,7 @@ def activate_registry(request):
 
     """
     try:
-        serializer = serializers.RegistryIdSerializer(data=request.DATA)
+        serializer = serializers.RegistryIdSerializer(data=request.data)
         if serializer.is_valid():
             registry = oai_registry_api.get_by_id(serializer.data.get('registry_id'))
             registry.is_activated = True
@@ -291,7 +291,7 @@ def delete_registry(request):
 
     """
     try:
-        serializer = serializers.RegistryIdSerializer(data=request.DATA)
+        serializer = serializers.RegistryIdSerializer(data=request.data)
         if serializer.is_valid():
             registry = oai_registry_api.get_by_id(serializer.data.get('registry_id'))
             oai_registry_api.delete(registry)
@@ -303,6 +303,49 @@ def delete_registry(request):
         return Response(content, status=status.HTTP_200_OK)
     except exceptions.DoesNotExist:
         content = OaiPmhMessage.get_message_labelled('No registry found with the given id.')
+        return Response(content, status=status.HTTP_404_NOT_FOUND)
+    except exceptions_oai.OAIAPIException as e:
+        return e.response()
+    except Exception as e:
+        content = OaiPmhMessage.get_message_labelled(e.message)
+        return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@api_staff_member_required()
+def harvest_registry(request):
+    """ Harvest a given registry (Data provider).
+
+    POST http://<server_ip>:<server_port>/oai_pmh/api/harvest/registry
+
+    Args:
+        request (HttpRequest): request.
+
+    Returns:
+        Response object.
+
+    Examples:
+        >>> {"registry_id":"value"}
+
+    """
+    try:
+        serializer = serializers.RegistryIdSerializer(data=request.data)
+        if serializer.is_valid():
+            registry_id = serializer.data.get('registry_id')
+            registry = oai_registry_api.get_by_id(registry_id)
+            all_errors = oai_registry_api.harvest_registry(registry)
+            if len(all_errors) > 0:
+                raise exceptions_oai.OAIAPISerializeLabelledException(errors=all_errors,
+                                                                      status_code=status.HTTP_400_BAD_REQUEST)
+            else:
+                content = OaiPmhMessage.get_message_labelled('Registry {0} harvested with success.'.
+                                                             format(registry.name))
+                return Response(content, status=status.HTTP_200_OK)
+        else:
+            raise exceptions_oai.OAIAPISerializeLabelledException(errors=serializer.errors,
+                                                                  status_code=status.HTTP_400_BAD_REQUEST)
+    except exceptions.DoesNotExist as e:
+        content = OaiPmhMessage.get_message_labelled(e.message)
         return Response(content, status=status.HTTP_404_NOT_FOUND)
     except exceptions_oai.OAIAPIException as e:
         return e.response()
