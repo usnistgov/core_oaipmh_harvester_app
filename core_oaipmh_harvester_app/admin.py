@@ -11,8 +11,6 @@ admin_urls = [
         name='core_oaipmh_harvester_app_request_builder'),
     url(r'^harvesters/list', admin_views.registries_view,
         name='core_oaipmh_harvester_app_registries'),
-    url(r'^harvesters/config', admin_views.local_configuration_view,
-        name='core_oaipmh_harvester_app_local_configuration'),
     url(r'^harvesters/registry/add', admin_ajax.add_registry,
         name='core_oaipmh_harvester_app_add_registry'),
     url(r'^harvesters/registry/deactivate', admin_ajax.deactivate_registry,

@@ -113,8 +113,3 @@ def registries_view(request):
 
     return admin_render(request, "core_oaipmh_harvester_app/admin/registries/list.html", modals=modals,
                         assets=assets, context=context)
-
-
-@staff_member_required
-def local_configuration_view(request):
-    return admin_render(request, "core_oaipmh_harvester_app/admin/registries/configuration.html")
