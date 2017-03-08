@@ -6,7 +6,7 @@ from rest_framework import status
 from sickle import Sickle
 from sickle.models import Record
 from sickle.oaiexceptions import NoSetHierarchy, NoMetadataFormat
-from core_oaipmh_harvester_app.commons.messages import OaiPmhMessage
+from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.utils import sickle_serializers
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 

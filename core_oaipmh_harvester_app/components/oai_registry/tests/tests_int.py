@@ -4,7 +4,7 @@ from core_main_app.utils.integration_tests.integration_base_test_case import Mon
 from mock.mock import patch
 from rest_framework import status
 from unittest import skip
-from core_oaipmh_harvester_app.commons import exceptions as oai_pmh_exceptions
+from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api

@@ -7,8 +7,8 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
 import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
-from core_oaipmh_harvester_app.commons import exceptions as exceptions_oai
-from core_oaipmh_harvester_app.commons.messages import OaiPmhMessage
+from core_oaipmh_common_app.commons import exceptions as exceptions_oai
+from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.rest import serializers
 from core_oaipmh_harvester_app.commons import rights
 

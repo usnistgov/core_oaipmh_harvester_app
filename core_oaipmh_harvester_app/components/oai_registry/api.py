@@ -5,8 +5,8 @@ OaiRegistry API
 
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
-from core_oaipmh_harvester_app.commons import exceptions as oai_pmh_exceptions
-from core_oaipmh_harvester_app.commons.messages import OaiPmhMessage
+from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
+from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
 from rest_framework import status
 from core_oaipmh_harvester_app.components.oai_identify import api as api_oai_identify

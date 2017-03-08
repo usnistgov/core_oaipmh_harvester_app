@@ -4,7 +4,7 @@
 from core_oaipmh_harvester_app.utils import sickle_operations, transform_operations
 from rest_framework import status
 from rest_framework.response import Response
-from core_oaipmh_harvester_app.commons import exceptions as oai_pmh_exceptions
+from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 import requests
