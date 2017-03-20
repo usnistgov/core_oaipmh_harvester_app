@@ -52,7 +52,7 @@ submit = function() {
         data_url['identifier'] = $("#id_identifiers").val();
     }
 
-    if ($("#id_resumptionToken").val() != '')
+    if (typeof $("#id_resumptionToken").val() !== 'undefined' && $("#id_resumptionToken").val() != '')
     {
         data_url['resumptionToken'] = $("#id_resumption_token").val();
     }

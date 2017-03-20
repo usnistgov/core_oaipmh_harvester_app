@@ -92,8 +92,7 @@ class RequestForm(forms.Form):
                             widget=forms.Select(attrs={'disabled': 'true',
                                                        "class": "form-control"}))
     identifiers = forms.CharField(label='Identifier', required=False,
-                                  widget=forms.TextInput(attrs={'class': 'form-control',
-                                                                'style': 'width:198px'}))
+                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
     metadata_prefix = forms.ChoiceField(label='Metadata Prefix', choices=[], required=False,
                                         widget=forms.Select(attrs={'disabled': 'true',
                                                                    "class": "form-control"}))
