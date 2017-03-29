@@ -18,7 +18,7 @@ from core_oaipmh_harvester_app.commons import rights
 def select_registry(request):
     """ Get a registry (Data provider) by its name.
 
-    GET http://<server_ip>:<server_port>/oai_pmh/api/select/registry
+    GET http://<server_ip>:<server_port>/<rest_oai_pmh_url>/select/registry
 
     Params:
         request (HttpRequest): request.
@@ -59,7 +59,7 @@ def select_registry(request):
 def select_all_registries(request):
     """ Return all registries (Data provider).
 
-    GET http://<server_ip>:<server_port>/oai_pmh/api/select/all/registries
+    GET http://<server_ip>:<server_port>/<rest_oai_pmh_url>/select/all/registries
 
     Returns:
         Response object.
@@ -80,7 +80,7 @@ def select_all_registries(request):
 def add_registry(request):
     """ Add a new registry (Data provider).
 
-    POST http://<server_ip>:<server_port>/oai_pmh/api/add/registry
+    POST http://<server_ip>:<server_port>/<rest_oai_pmh_url>/add/registry
 
     Args:
         request (HttpRequest): request.
@@ -120,7 +120,7 @@ def add_registry(request):
 def update_registry_info(request):
     """ Update oai-pmh information for a given registry (Data provider).
 
-    POST http://<server_ip>:<server_port>/oai_pmh/api/update/registry/info
+    POST http://<server_ip>:<server_port>/<rest_oai_pmh_url>/update/registry/info
 
     Args:
         request (HttpRequest): request.
@@ -160,7 +160,7 @@ def update_registry_info(request):
 def update_registry_conf(request):
     """ Update oai-pmh configuration for a given registry (Data provider).
 
-    PUT http://<server_ip>:<server_port>/oai_pmh/api/update/registry/conf
+    PUT http://<server_ip>:<server_port>/<rest_oai_pmh_url>/update/registry/conf
 
     Args:
         request (HttpRequest): request.
@@ -176,8 +176,7 @@ def update_registry_conf(request):
         serializer = serializers.UpdateRegistrySerializer(data=request.data)
         if serializer.is_valid():
             registry = oai_registry_api.get_by_id(serializer.data.get('registry_id'))
-            registry.harvest_rate = serializer.data.get('harvest_rate')
-            registry.harvest = serializer.data.get('harvest')
+            serializer.update(registry, serializer.data)
             oai_registry_api.upsert(registry)
         else:
             raise exceptions_oai.OAIAPISerializeLabelledException(errors=serializer.errors,
@@ -200,7 +199,7 @@ def update_registry_conf(request):
 def deactivate_registry(request):
     """ Deactivate a given registry (Data provider).
 
-    POST http://<server_ip>:<server_port>/oai_pmh/api/deactivate/registry
+    POST http://<server_ip>:<server_port>/<rest_oai_pmh_url>/deactivate/registry
 
     Args:
         request (HttpRequest): request.
@@ -239,7 +238,7 @@ def deactivate_registry(request):
 def activate_registry(request):
     """ Activate a given registry (Data provider).
 
-    POST http://<server_ip>:<server_port>/oai_pmh/api/activate/registry
+    POST http://<server_ip>:<server_port>/<rest_oai_pmh_url>/activate/registry
 
     Args:
         request (HttpRequest): request.
@@ -278,7 +277,7 @@ def activate_registry(request):
 def delete_registry(request):
     """ Delete a given registry (Data provider).
 
-    POST http://<server_ip>:<server_port>/oai_pmh/api/delete/registry
+    POST http://<server_ip>:<server_port>/<rest_oai_pmh_url>/delete/registry
 
     Args:
         request (HttpRequest): request.
@@ -316,7 +315,7 @@ def delete_registry(request):
 def harvest_registry(request):
     """ Harvest a given registry (Data provider).
 
-    POST http://<server_ip>:<server_port>/oai_pmh/api/harvest/registry
+    POST http://<server_ip>:<server_port>/<rest_oai_pmh_url>/harvest/registry
 
     Args:
         request (HttpRequest): request.
