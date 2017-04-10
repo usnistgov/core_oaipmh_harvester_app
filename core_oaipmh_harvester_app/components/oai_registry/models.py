@@ -14,7 +14,8 @@ class OaiRegistry(Document):
     harvest_rate = fields.IntField(blank=True)
     description = fields.StringField(blank=True)
     harvest = fields.BooleanField(default=False)
-    last_update = fields.DateTimeField(blank=True)
+    # FIXME: Change to last_update (No camel case). Check in the other models.
+    lastUpdate = fields.DateTimeField(blank=True)
     is_harvesting = fields.BooleanField(default=False)
     is_updating = fields.BooleanField(default=False)
     is_activated = fields.BooleanField(default=True)
