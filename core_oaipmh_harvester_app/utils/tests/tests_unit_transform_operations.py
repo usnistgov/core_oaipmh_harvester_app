@@ -1,7 +1,7 @@
 """
     Transform operation test class
 """
-
+from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.utils import transform_operations
 from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
@@ -16,7 +16,7 @@ DUMP_OAI_PMH_TEST_PATH = os.path.join(os.path.dirname(__file__), 'data')
 
 class TestTransformOaiIdentify(TestCase):
     def setUp(self):
-        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'OaiIdentify.json')) as f:
+        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'oai_identify_v1.json')) as f:
             data = f.read()
         self.data = json.loads(data)
 
@@ -46,7 +46,7 @@ class TestTransformOaiIdentify(TestCase):
 
 class TestTransformOaiHarvesterMetadataFormat(TestCase):
     def setUp(self):
-        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'OaiMetadataFormat.json')) as f:
+        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'oai_metadata_format_v1.json')) as f:
             data = f.read()
         self.data = json.loads(data)
 
@@ -76,7 +76,7 @@ class TestTransformOaiHarvesterMetadataFormat(TestCase):
 
 class TestTransformOaiHarvesterSet(TestCase):
     def setUp(self):
-        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'OaiSet.json')) as f:
+        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'oai_set_v1.json')) as f:
             data = f.read()
         self.data = json.loads(data)
 
@@ -102,3 +102,33 @@ class TestTransformOaiHarvesterSet(TestCase):
         # Act + Assert
         with self.assertRaises(exceptions.XMLError):
             transform_operations.transform_dict_set_to_oai_harvester_set(self.data)
+
+
+class TestTransformOaiRecord(TestCase):
+    def setUp(self):
+        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'oai_record_v1.json')) as f:
+            data = f.read()
+        self.data = json.loads(data)
+
+    def test_transform_oai_record_return_list_object(self):
+        # Act
+        result = transform_operations.transform_dict_record_to_oai_record(self.data)
+
+        # Assert
+        self.assertTrue(all(isinstance(item, OaiRecord) for item in result))
+
+    def test_transform_oai_record_catch_key_error(self):
+        # Arrange
+        del self.data[0]['identifier']
+
+        # Act + Assert
+        with self.assertRaises(Exception):
+            transform_operations.transform_dict_record_to_oai_record(self.data)
+
+    def test_transform_oai_record_raises_xml_error(self):
+        # Arrange
+        self.data[0]['raw'] = "<test?Hello</test>"
+
+        # Act + Assert
+        with self.assertRaises(exceptions.XMLError):
+            transform_operations.transform_dict_record_to_oai_record(self.data)

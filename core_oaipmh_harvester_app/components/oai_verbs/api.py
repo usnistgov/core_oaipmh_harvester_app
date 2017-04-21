@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from xml_utils.xsd_tree.xsd_tree import XSDTree
-
+from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 import requests
 
 
@@ -37,7 +37,12 @@ def identify_as_object(url):
     """
     data, status_code = identify(url)
     if status_code == status.HTTP_200_OK:
-        data = transform_operations.transform_dict_identifier_to_oai_identifier(data)
+        try:
+            data = transform_operations.transform_dict_identifier_to_oai_identifier(data)
+        except Exception as e:
+            data = OaiPmhMessage.get_message_labelled('An error occurred when attempting to identify resource: %s'
+                                                      % e.message)
+            status_code = status.HTTP_400_BAD_REQUEST
 
     return data, status_code
 
@@ -69,7 +74,12 @@ def list_metadata_formats_as_object(url):
     """
     data, status_code = list_metadata_formats(url)
     if status_code == status.HTTP_200_OK:
-        data = transform_operations.transform_dict_metadata_format_to_oai_harvester_metadata_format(data)
+        try:
+            data = transform_operations.transform_dict_metadata_format_to_oai_harvester_metadata_format(data)
+        except Exception as e:
+            data = OaiPmhMessage.get_message_labelled('An error occurred when attempting to get the metadata '
+                                                      'formats: %s' % e.message)
+            status_code = status.HTTP_400_BAD_REQUEST
 
     return data, status_code
 
@@ -101,7 +111,12 @@ def list_sets_as_object(url):
     """
     data, status_code = list_sets(url)
     if status_code == status.HTTP_200_OK:
-        data = transform_operations.transform_dict_set_to_oai_harvester_set(data)
+        try:
+            data = transform_operations.transform_dict_set_to_oai_harvester_set(data)
+        except Exception as e:
+            data = OaiPmhMessage.get_message_labelled('An error occurred when attempting to get the sets: %s'
+                                                      % e.message)
+            status_code = status.HTTP_400_BAD_REQUEST
 
     return data, status_code
 
@@ -156,7 +171,8 @@ def list_records(url, metadata_prefix=None, resumption_token=None, set_h=None, f
     except oai_pmh_exceptions.OAIAPIException as e:
         return e.response(), resumption_token
     except Exception as e:
-        content = 'An error occurred during the list_records process: %s' % e.message
+        content = OaiPmhMessage.get_message_labelled('An error occurred during the list_records process: %s'
+                                                     % e.message)
         return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR), resumption_token
 
 

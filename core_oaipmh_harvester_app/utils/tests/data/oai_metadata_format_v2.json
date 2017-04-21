@@ -1,0 +1,8 @@
+[
+    {
+        "metadataPrefix": "oai_dc",
+        "metadataNamespace": "http://www.openarchives.org/OAI/2.0/oai_dc/2",
+        "schema": "http://www.openarchives.org/OAI/2.0/oai_dc.xsd/2",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/2</metadataNamespace><metadataPrefix>oai_dc</metadataPrefix><schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd/2</schema></metadataFormat>"
+    }
+]

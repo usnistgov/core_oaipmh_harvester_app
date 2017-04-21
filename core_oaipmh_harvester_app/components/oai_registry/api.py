@@ -17,14 +17,14 @@ from core_oaipmh_harvester_app.components.oai_record import api as oai_record_ap
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set.models import OaiHarvesterMetadataFormatSet
 from core_main_app.commons import exceptions
 from core_oaipmh_common_app.utils import UTCdatetime
-from core_main_app.utils.xml import raw_xml_to_dict
+from core_oaipmh_harvester_app.utils import transform_operations
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set import api as \
     oai_harvester_metadata_format_set_api
 import datetime
 
 
 def upsert(oai_registry):
-    """ Create or update an OaiRegistry.
+    """ Creates or updates an OaiRegistry.
 
     Args:
         oai_registry: The OaiRegistry to create or update
@@ -36,7 +36,7 @@ def upsert(oai_registry):
 
 
 def get_by_id(oai_registry_id):
-    """ Get an OaiRegistry by its id
+    """ Returns an OaiRegistry by its id
 
     Args:
         oai_registry_id: OaiRegistry id.
@@ -52,7 +52,7 @@ def get_by_id(oai_registry_id):
 
 
 def get_by_name(oai_registry_name):
-    """ Get an OaiRegistry by its name.
+    """ Returns an OaiRegistry by its name.
 
     Args:
         oai_registry_name: OaiRegistry name.
@@ -68,7 +68,7 @@ def get_by_name(oai_registry_name):
 
 
 def get_all():
-    """ Return all OaiRegistry
+    """ Returns all OaiRegistry
 
     Returns:
         List of OaiRegistry
@@ -78,7 +78,7 @@ def get_all():
 
 
 def get_all_activated_registry(order_by_field=None):
-    """ Return all activated OaiRegistry.
+    """ Returns all activated OaiRegistry.
 
         Returns:
             List of OaiRegistry
@@ -88,7 +88,7 @@ def get_all_activated_registry(order_by_field=None):
 
 
 def check_registry_url_already_exists(oai_registry_url):
-    """ Check if an OaiRegistry with the given url already exists.
+    """ Checks if an OaiRegistry with the given url already exists.
 
     Returns:
         Yes or No (bool).
@@ -98,7 +98,7 @@ def check_registry_url_already_exists(oai_registry_url):
 
 
 def delete(oai_registry):
-    """ Delete an OaiRegistry
+    """ Deletes an OaiRegistry
 
     Args:
         oai_registry: OaiRegistry to delete
@@ -108,7 +108,7 @@ def delete(oai_registry):
 
 
 def add_registry_by_url(url, harvest_rate, harvest):
-    """ Add a registry in database. Take care of all surrounding objects. Use OAI-PMH verbs to gather information.
+    """ Adds a registry in database. Takes care of all surrounding objects. Uses OAI-PMH verbs to gather information.
 
     Args:
         url: Url of the registry to add.
@@ -147,7 +147,7 @@ def add_registry_by_url(url, harvest_rate, harvest):
 
 
 def update_registry_info(registry):
-    """ Update information of a registry in database by its id.
+    """ Updates information of a registry in database by its id.
 
         Args:
             registry: OaiRegistry to update.
@@ -183,7 +183,7 @@ def update_registry_info(registry):
 
 
 def harvest_registry(registry):
-    """ Harvest the registry given in parameter.
+    """ Harvests the registry given in parameter.
     Args:
         registry: The registry to harvest.
 
@@ -228,7 +228,7 @@ def harvest_registry(registry):
 
 
 def _get_identify_as_object(url):
-    """ Get the identify information for the given URL.
+    """ Returns the identify information for the given URL.
 
     Args:
         url: URL.
@@ -245,7 +245,7 @@ def _get_identify_as_object(url):
 
 
 def _get_sets_as_object(url):
-    """ Get the sets information for the given URL.
+    """ Returns the sets information for the given URL.
 
     Args:
         url: URL.
@@ -265,7 +265,7 @@ def _get_sets_as_object(url):
 
 
 def _get_metadata_formats_as_object(url):
-    """ Get the metadata formats information for the given URL.
+    """ Returns the metadata formats information for the given URL.
 
     Args:
         url: URL.
@@ -286,7 +286,7 @@ def _get_metadata_formats_as_object(url):
 
 
 def _init_registry(url, harvest, harvest_rate, repository_name, description):
-    """ Return an init OaiRegistry object.
+    """ Returns an init OaiRegistry object.
 
     Args:
         url: url of the registry.
@@ -311,7 +311,7 @@ def _init_registry(url, harvest, harvest_rate, repository_name, description):
 
 
 def _upsert_identify_for_registry(identify, registry):
-    """ Add or update an identify object for a registry.
+    """ Adds or updates an identify object for a registry.
 
     Args:
         identify: OaiIdentify instance.
@@ -329,7 +329,7 @@ def _upsert_identify_for_registry(identify, registry):
 
 
 def _upsert_metadata_format_for_registry(metadata_format, registry):
-    """ Add or update an OaiHarvesterMetadataFormat object for a registry.
+    """ Adds or updates an OaiHarvesterMetadataFormat object for a registry.
 
     Args:
         metadata_format: OaiHarvesterMetadataFormat instance.
@@ -358,7 +358,7 @@ def _upsert_metadata_format_for_registry(metadata_format, registry):
 
 
 def _upsert_set_for_registry(set_, registry):
-    """ Add or update an OaiHarvesterSet object for a registry.
+    """ Adds or updates an OaiHarvesterSet object for a registry.
 
     Args:
         set_: OaiHarvesterSet instance.
@@ -380,7 +380,7 @@ def _upsert_set_for_registry(set_, registry):
 
 
 def _harvest_by_metadata_formats_and_sets(registry, metadata_formats, registry_sets_to_harvest, registry_all_sets):
-    """ Harvest data by metadata formats and sets.
+    """ Harvests data by metadata formats and sets.
     Args:
         registry: Registry.
         metadata_formats: List of metadata formats to harvest.
@@ -426,7 +426,7 @@ def _harvest_by_metadata_formats_and_sets(registry, metadata_formats, registry_s
 
 
 def _harvest_by_metadata_formats(registry, metadata_formats, registry_all_sets):
-    """ Harvest data by metadata formats.
+    """ Harvests data by metadata formats.
     Args:
         registry: Registry.
         metadata_formats: List of metadata formats to harvest.
@@ -469,7 +469,7 @@ def _harvest_by_metadata_formats(registry, metadata_formats, registry_all_sets):
 
 
 def _harvest_records(registry, metadata_format, last_update, registry_all_sets, set_=None):
-    """ Harvest records.
+    """ Harvests records.
     Args:
         registry: Registry to harvest.
         metadata_format: Metadata Format to harvest.
@@ -495,27 +495,13 @@ def _harvest_records(registry, metadata_format, last_update, registry_all_sets, 
                                                                      set_h=set_h, from_date=last_update,
                                                                      resumption_token=resumption_token)
         if http_response.status_code == status.HTTP_200_OK:
-            rtn = http_response.data
-            for info in rtn:
-                # Get corresponding sets.
-                sets = [x for x in registry_all_sets if x.set_spec in info['sets']]
-                raw = raw_xml_to_dict(info['raw'])
-                metadata = raw_xml_to_dict(info['metadata']) if not info['deleted'] else None
-                try:
-                    obj_record = oai_record_api.get_by_identifier_and_metadata_format(info['identifier'],
-                                                                                      metadata_format)
-                except exceptions.DoesNotExist:
-                    obj_record = OaiRecord()
-                obj_record.identifier = info['identifier']
-                obj_record.datestamp = UTCdatetime.utc_datetime_iso8601_to_datetime(info['datestamp'])
-                obj_record.deleted = info['deleted']
-                obj_record.harvester_metadata_format = metadata_format
-                obj_record.harvester_sets = sets
-                obj_record.metadata = metadata
-                obj_record.raw = raw
-                obj_record.registry = registry
-                # Custom Save to keep the order of metadata's XML
-                oai_record_api.upsert(obj_record)
+            try:
+                list_oai_record = transform_operations.transform_dict_record_to_oai_record(http_response.data,
+                                                                                           registry_all_sets)
+                for oai_record in list_oai_record:
+                    _upsert_record_for_registry(oai_record, metadata_format, registry)
+            except Exception as e:
+                errors.append({'status_code': status.HTTP_400_BAD_REQUEST, 'error': e.message})
         # Else, we get the status code with the error message provided by the http_response
         else:
             error = {'status_code': http_response.status_code,
@@ -525,3 +511,24 @@ def _harvest_records(registry, metadata_format, last_update, registry_all_sets, 
         has_data = resumption_token is not None and resumption_token != ''
 
     return errors
+
+
+def _upsert_record_for_registry(record, metadata_format, registry):
+    """ Adds or updates an OaiRecord object for a registry.
+
+    Args:
+        record: Record to update or create.
+        metadata_format: OaiHarvesterMetadataFormat instance.
+        registry: OaiRegistry instance.
+
+    """
+    try:
+        record_db = oai_record_api.get_by_identifier_and_metadata_format(record.identifier, metadata_format)
+        record.id = record_db.id
+    except exceptions.DoesNotExist:
+        pass
+
+    record.harvester_metadata_format = metadata_format
+    record.registry = registry
+
+    oai_record_api.upsert(record)

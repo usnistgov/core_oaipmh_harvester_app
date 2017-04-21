@@ -1,5 +1,10 @@
 [
     {
+        "metadataPrefix": "oai_demo",
+        "metadataNamespace": "http://www.w3.org/2001/XMLSchema",
+        "schema": "http://127.0.0.1:8000/oai_pmh/server/XSD/demo.diffusion/1/",
+        "raw": "<metadataFormat xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><metadataNamespace>http://www.w3.org/2001/XMLSchema</metadataNamespace><metadataPrefix>oai_demo</metadataPrefix><schema>http://127.0.0.1:8000/oai_pmh/server/XSD/demo.diffusion/1/</schema></metadataFormat>"},
+    {
         "metadataPrefix": "oai_dc",
         "metadataNamespace": "http://www.openarchives.org/OAI/2.0/oai_dc/",
         "schema": "http://www.openarchives.org/OAI/2.0/oai_dc.xsd",

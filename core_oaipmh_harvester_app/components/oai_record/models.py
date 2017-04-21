@@ -21,7 +21,7 @@ class OaiRecord(Document):
     identifier = fields.StringField()
     datestamp = fields.DateTimeField()
     deleted = fields.BooleanField()
-    harvester_sets = fields.ListField(fields.ReferenceField(OaiHarvesterSet, reverse_delete_rule=PULL))
+    harvester_sets = fields.ListField(fields.ReferenceField(OaiHarvesterSet, reverse_delete_rule=PULL), blank=True)
     harvester_metadata_format = fields.ReferenceField(OaiHarvesterMetadataFormat, reverse_delete_rule=PULL)
     metadata = fields.DictField(blank=True)
     raw = fields.DictField()

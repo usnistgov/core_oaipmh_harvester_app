@@ -53,7 +53,7 @@ def sickle_list_sets(url):
         content = OaiPmhMessage.get_message_labelled('%s' % e.message)
         return content, status.HTTP_204_NO_CONTENT
     except Exception as e:
-        content = OaiPmhMessage.get_message_labelled('An error occurred when attempting to identify resource: %s'
+        content = OaiPmhMessage.get_message_labelled('An error occurred when attempting to get the sets: %s'
                                                      % e.message)
         return content, status.HTTP_500_INTERNAL_SERVER_ERROR
 
@@ -79,7 +79,7 @@ def sickle_list_metadata_formats(url):
         content = OaiPmhMessage.get_message_labelled('%s' % e.message)
         return content, status.HTTP_204_NO_CONTENT
     except Exception as e:
-        content = OaiPmhMessage.get_message_labelled('An error occurred when attempting to identify resource: %s'
+        content = OaiPmhMessage.get_message_labelled('An error occurred when attempting to get the metadata formats: %s'
                                                      % e.message)
         return content, status.HTTP_500_INTERNAL_SERVER_ERROR
 

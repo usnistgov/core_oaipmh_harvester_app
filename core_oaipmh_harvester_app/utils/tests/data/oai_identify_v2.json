@@ -1,0 +1,16 @@
+{
+    "adminEmail": "yy@admin.com",
+    "baseURL": "http://localhost:8000/oai_pmh/server/",
+    "repositoryName": "localhost",
+    "deletedRecord": "non-persistent",
+    "delimiter": "*",
+    "description": "Hello",
+    "earliestDatestamp": "2017-10-04T11:00:21Z",
+    "granularity": "YYYY-MM-DDThh:mmZ",
+    "oai_identifier": null,
+    "protocolVersion": "2.1",
+    "repositoryIdentifier": "server-localhost",
+    "sampleIdentifier": "oai:server-localhost:id/12345678a123aff6ff5f2d9e",
+    "scheme": "oai",
+    "raw": "<Identify xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><repositoryName>localhost</repositoryName><baseURL>http://localhost:8000/oai_pmh/server/</baseURL><protocolVersion>2.1</protocolVersion><adminEmail>yy@admin.com</adminEmail><earliestDatestamp>2017-10-04T11:00:21Z</earliestDatestamp><deletedRecord>non-persistent</deletedRecord><granularity>YYYY-MM-DDThh:mmZ</granularity><!--<compression></compression>--><description><oai-identifier xmlns=\"http://www.openarchives.org/OAI/2.0/oai-identifier\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai-identifier http://www.openarchives.org/OAI/2.0/oai-identifier.xsd\"><scheme>oai</scheme><repositoryIdentifier>server-localhost</repositoryIdentifier><delimiter>:</delimiter><sampleIdentifier>oai:server-localhost:id/12345678a123aff6ff5f2d9e</sampleIdentifier></oai-identifier></description></Identify>"
+}
