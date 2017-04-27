@@ -256,3 +256,16 @@ class OaiRecord(Document):
         full_text_query.update({'deleted':  False}, {'harvester_metadata_format__id': {'$in': list_metadata_format_id}})
 
         return OaiRecord.objects.find(full_text_query)
+
+    @staticmethod
+    def execute_query(query):
+        """Executes a query on the OaiRecord collection.
+
+        Args:
+            query: Query to execute.
+
+        Returns:
+            Results of the query.
+
+        """
+        return OaiRecord.objects(__raw__=query)

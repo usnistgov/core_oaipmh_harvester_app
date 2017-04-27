@@ -113,3 +113,16 @@ def execute_full_text_query(text, list_metadata_format_id):
 
     """
     return OaiRecord.execute_full_text_query(text, list_metadata_format_id)
+
+
+def execute_query(query):
+    """Executes a query on the OaiRecord collection.
+
+    Args:
+        query: Query to execute.
+
+    Returns:
+        Results of the query.
+
+    """
+    return OaiRecord.execute_query(query)
