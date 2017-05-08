@@ -60,6 +60,7 @@ class OaiPmhFixtures(FixtureInterface):
         saved_sets = []
         for set_ in sets:
             set_.registry = self.registry
+            set_.harvest = True
             saved_sets.append(set_.save())
 
         return saved_sets
@@ -72,6 +73,7 @@ class OaiPmhFixtures(FixtureInterface):
         saved_metadata_formats = []
         for metadata_format in metadata_formats:
             metadata_format.registry = self.registry
+            metadata_format.harvest = True
             saved_metadata_formats.append(metadata_format.save())
 
         return saved_metadata_formats
@@ -140,3 +142,14 @@ class OaiPmhMock(object):
     def mock_oai_first_record(version=1):
         list_records = OaiPmhMock.mock_oai_record(version)
         return list_records[0]
+
+    @staticmethod
+    def mock_oai_response_list_records(with_resumption_token=True):
+        xml_file = 'response_list_records_oai_demo.xml'
+        if not with_resumption_token:
+            xml_file = 'response_list_records_oai_demo_no_token.xml'
+
+        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, xml_file)) as f:
+            data = f.read()
+
+        return data

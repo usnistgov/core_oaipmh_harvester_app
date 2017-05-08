@@ -1,7 +1,7 @@
 """ Int Test OaiRegistry
 """
 from core_main_app.utils.integration_tests.integration_base_test_case import MongoIntegrationBaseTestCase
-from mock.mock import patch
+from mock.mock import patch, ANY
 from rest_framework import status
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_main_app.commons import exceptions
@@ -18,6 +18,8 @@ import requests
 from core_oaipmh_harvester_app.components.oai_registry.tests.fixtures.fixtures import OaiPmhFixtures
 from core_oaipmh_harvester_app.components.oai_registry.tests.fixtures.fixtures import OaiPmhMock
 from bson.objectid import ObjectId
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set import api as \
+    oai_harvester_metadata_format_set_api
 
 fixture_data = OaiPmhFixtures()
 
@@ -360,6 +362,151 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
                                                                                   metadata_format)
 
         self.assertEquals(record_in_database, oai_record)
+
+
+class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
+    fixture = fixture_data
+
+    def setUp(self):
+        super(TestHarvestByMetadataFormats, self).setUp()
+        self.fixture.insert_registry(insert_records=False)
+
+    @patch.object(requests, 'get')
+    def test_harvest_by_metadata_formats_saves_record(self, mock_get):
+        # Arrange
+        mock_get.return_value.status_code = status.HTTP_200_OK
+        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records(with_resumption_token=False)
+        metadata_format = [self.fixture.oai_metadata_formats[0]]
+
+        # Act
+        result = oai_registry_api._harvest_by_metadata_formats(self.fixture.registry, metadata_format,
+                                                               self.fixture.oai_sets)
+
+        # Assert
+        record_in_database = oai_record_api.get_all_by_registry_id(self.fixture.registry.id)
+        self.assertEquals(result, [])
+        self.assertTrue(len(record_in_database) > 0)
+
+    @patch.object(requests, 'get')
+    def test_harvest_by_metadata_formats_updates_dates(self, mock_get):
+        # Arrange
+        mock_get.return_value.status_code = status.HTTP_200_OK
+        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records(with_resumption_token=False)
+        metadata_format = self.fixture.oai_metadata_formats[0]
+        set_ = self.fixture.oai_sets[0]
+
+        # Assert
+        # Metadata Format date
+        self.assertEquals(metadata_format.lastUpdate, None)
+        # Metadata Format + Set date
+        with self.assertRaises(exceptions.DoesNotExist):
+            oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(metadata_format, set_)
+
+        # Act
+        result = oai_registry_api._harvest_by_metadata_formats(self.fixture.registry, [metadata_format],
+                                                               self.fixture.oai_sets)
+
+        # Assert
+        self.assertEquals(result, [])
+        # Metadata Format date
+        metadata_format_in_database = oai_harvester_metadata_format_api.get_by_id(metadata_format.id)
+        self.assertNotEquals(metadata_format_in_database.lastUpdate, None)
+        # Metadata Format + Set date
+        oai_h_mf_set = oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(metadata_format, set_)
+        self.assertNotEquals(oai_h_mf_set.lastUpdate, None)
+
+
+class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
+    fixture = fixture_data
+
+    def setUp(self):
+        super(TestHarvestByMetadataFormatsAndSets, self).setUp()
+        self.fixture.insert_registry(insert_records=False)
+
+    @patch.object(requests, 'get')
+    def test_harvest_by_metadata_formats_and_sets_saves_record(self, mock_get):
+        # Arrange
+        mock_get.return_value.status_code = status.HTTP_200_OK
+        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records(with_resumption_token=False)
+        metadata_format = [self.fixture.oai_metadata_formats[0]]
+        set_ = [self.fixture.oai_sets[0]]
+
+        # Act
+        result = oai_registry_api._harvest_by_metadata_formats_and_sets(self.fixture.registry, metadata_format,
+                                                                        set_, self.fixture.oai_sets)
+
+        # Assert
+        record_in_database = oai_record_api.get_all_by_registry_id(self.fixture.registry.id)
+        self.assertEquals(result, [])
+        self.assertTrue(len(record_in_database) > 0)
+
+    @patch.object(requests, 'get')
+    def test_harvest_by_metadata_formats_and_sets_updates_dates(self, mock_get):
+        # Arrange
+        mock_get.return_value.status_code = status.HTTP_200_OK
+        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records(with_resumption_token=False)
+        metadata_format = self.fixture.oai_metadata_formats[0]
+        set_ = self.fixture.oai_sets[0]
+
+        # Assert
+        # Metadata Format date
+        self.assertEquals(metadata_format.lastUpdate, None)
+        # Metadata Format + Set date
+        with self.assertRaises(exceptions.DoesNotExist):
+            oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(metadata_format, set_)
+
+        # Act
+        result = oai_registry_api._harvest_by_metadata_formats_and_sets(self.fixture.registry, [metadata_format],
+                                                                        [set_], self.fixture.oai_sets)
+
+        # Assert
+        self.assertEquals(result, [])
+        # Metadata Format date
+        metadata_format_in_database = oai_harvester_metadata_format_api.get_by_id(metadata_format.id)
+        self.assertNotEquals(metadata_format_in_database.lastUpdate, None)
+        # Metadata Format + Set date
+        oai_h_mf_set = oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(metadata_format, set_)
+        self.assertNotEquals(oai_h_mf_set.lastUpdate, None)
+
+
+class TestHarvestRegistry(MongoIntegrationBaseTestCase):
+    fixture = fixture_data
+
+    def setUp(self):
+        super(TestHarvestRegistry, self).setUp()
+        self.fixture.insert_registry(insert_records=False)
+
+    @patch.object(requests, 'get')
+    def test_harvest_registry_saves_record(self, mock_get):
+        # Arrange
+        mock_get.return_value.status_code = status.HTTP_200_OK
+        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records(with_resumption_token=False)
+
+        # Act
+        result = oai_registry_api.harvest_registry(self.fixture.registry)
+
+        # Assert
+        record_in_database = oai_record_api.get_all_by_registry_id(self.fixture.registry.id)
+        self.assertEquals(result, [])
+        self.assertTrue(len(record_in_database) > 0)
+
+    @patch.object(requests, 'get')
+    def test_harvest_registry_updates_dates(self, mock_get):
+        # Arrange
+        mock_get.return_value.status_code = status.HTTP_200_OK
+        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records(with_resumption_token=False)
+
+        # Assert
+        # Registry date
+        self.assertEquals(self.fixture.registry.lastUpdate, None)
+
+        # Act
+        result = oai_registry_api.harvest_registry(self.fixture.registry)
+
+        # Assert
+        self.assertEquals(result, [])
+        # Registry date
+        self.assertNotEquals(self.fixture.registry.lastUpdate, None)
 
 
 def _assert_identify(self, mock, registry_id):

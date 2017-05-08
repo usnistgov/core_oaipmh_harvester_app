@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/          http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+	<responseDate>2017-04-28T13:26:58Z</responseDate>
+	<request verb="ListRecords" metadataPrefix="oai_demo">
+    http://127.0.0.1:8000/oai_pmh/server/
+  </request>
+	<ListRecords>
+		<record>
+			<header>
+				<identifier>oai:server-x:id/58fe3d644697f682ff5b7f24</identifier>
+				<datestamp>2017-04-24T18:01:08Z</datestamp>
+				<setSpec>demo</setSpec>
+			</header>
+			<metadata>
+				<experiment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<experimentType>
+						<tracerDiffusivity>
+							<material>
+								<materialName>Test 1</materialName>
+								<phase>
+									<name/>
+									<crystalStructure/>
+								</phase>
+								<Composition>
+									<quantityUnit>mass fraction</quantityUnit>
+									<constituents/>
+									<materialForm>
+										<singleCrystalline/>
+									</materialForm>
+								</Composition>
+							</material>
+							<diffusingSpecies>
+								<element>Ac</element>
+							</diffusingSpecies>
+							<experimentalConditions>
+								<measurementConditions/>
+								<environment>
+									<environment/>
+								</environment>
+							</experimentalConditions>
+							<samplePreparations>
+								<sampleGeometry>
+									<geometry>
+										<MaterialName/>
+										<geometry/>
+									</geometry>
+									<geometry>
+										<MaterialName/>
+										<geometry/>
+									</geometry>
+								</sampleGeometry>
+								<samplePreparationProcedure>
+									<procedureName/>
+									<procedureDescription/>
+								</samplePreparationProcedure>
+							</samplePreparations>
+							<measurement>
+								<type/>
+								<experimentalMethod>
+									<direct>
+										<EPMA>
+											<EPMAInstrumentBrand/>
+										</EPMA>
+									</direct>
+								</experimentalMethod>
+								<dataCollectionMethod/>
+							</measurement>
+							<dataAnalysis/>
+						</tracerDiffusivity>
+					</experimentType>
+					<id>1</id>
+					<citation>
+						<citation>
+							<citation/>
+						</citation>
+					</citation>
+				</experiment>
+			</metadata>
+		</record>
+	</ListRecords>
+</OAI-PMH>
