@@ -22,7 +22,7 @@ class OaiRecord(Document):
     datestamp = fields.DateTimeField()
     deleted = fields.BooleanField()
     harvester_sets = fields.ListField(fields.ReferenceField(OaiHarvesterSet, reverse_delete_rule=PULL), blank=True)
-    harvester_metadata_format = fields.ReferenceField(OaiHarvesterMetadataFormat, reverse_delete_rule=PULL)
+    harvester_metadata_format = fields.ReferenceField(OaiHarvesterMetadataFormat, reverse_delete_rule=CASCADE)
     metadata = fields.DictField(blank=True)
     raw = fields.DictField()
     registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE)
@@ -108,8 +108,8 @@ class OaiRecord(Document):
                 update_query = {}
 
                 if updates:
-                    #Always modified the metadata to have the lastest version. 'self._delta' not working with metadata field
-                    updates['metadata'] = metadata
+                    if 'metadata' not in removals:
+                        updates['metadata'] = metadata
                     update_query["$set"] = updates
                 if removals:
                     update_query["$unset"] = removals

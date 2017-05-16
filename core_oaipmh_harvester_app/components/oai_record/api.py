@@ -15,9 +15,6 @@ def upsert(oai_record):
             OaiRecord instance.
 
     """
-    if oai_record.deleted:
-        oai_record.metadata = {}
-
     return oai_record.save(metadata=oai_record.metadata)
 
 

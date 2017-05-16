@@ -34,19 +34,7 @@ class TestOaiRecordUpsert(TestCase):
         # Act + Assert
         with self.assertRaises(Exception):
             oai_record_api.upsert(self.oai_record)
-
-    @patch.object(OaiRecord, 'save')
-    def test_upsert_deleted_oai_record_return_object_with_empty_metadata(self, mock_save):
-        # Arrange
-        self.oai_record.deleted = True
-        mock_save.return_value = self.oai_record
-
-        # Act
-        result = oai_record_api.upsert(self.oai_record)
-
-        # Assert
-        self.assertEquals(result.metadata, {})
-
+            
 
 class TestOaiRecordGetById(TestCase):
     @patch.object(OaiRecord, 'get_by_id')

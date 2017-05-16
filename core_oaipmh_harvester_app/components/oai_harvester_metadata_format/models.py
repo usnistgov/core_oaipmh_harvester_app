@@ -3,7 +3,7 @@ OaiHarvesterMetadataFormat model
 """
 
 from django_mongoengine import fields
-from mongoengine.queryset.base import PULL, CASCADE
+from mongoengine.queryset.base import NULLIFY, CASCADE
 from core_oaipmh_common_app.components.oai_metadata_format.models import OaiMetadataFormat
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_main_app.components.template.models import Template
@@ -14,7 +14,7 @@ from core_main_app.commons import exceptions
 class OaiHarvesterMetadataFormat(OaiMetadataFormat):
     """Represents a metadata format for Oai-Pmh Harvester"""
     raw = fields.DictField()
-    template = fields.ReferenceField(Template, reverse_delete_rule=PULL, blank=True)
+    template = fields.ReferenceField(Template, reverse_delete_rule=NULLIFY, blank=True)
     registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE, unique_with='metadata_prefix')
     hash = fields.StringField(blank=True)
     harvest = fields.BooleanField(default=False)

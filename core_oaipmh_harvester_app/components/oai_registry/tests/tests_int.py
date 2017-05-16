@@ -509,6 +509,53 @@ class TestHarvestRegistry(MongoIntegrationBaseTestCase):
         self.assertNotEquals(self.fixture.registry.lastUpdate, None)
 
 
+class TestHandleDeleteSet(MongoIntegrationBaseTestCase):
+    fixture = fixture_data
+
+    def setUp(self):
+        super(TestHandleDeleteSet, self).setUp()
+        self.fixture.insert_registry(insert_records=False)
+
+    def test_handle_deleted_set_deletes_set(self):
+        # Arrange
+        index = 2
+        removed_sets = self.fixture.oai_sets[:index]
+        sets_response = self.fixture.oai_sets[index:]
+        sets_count = len(self.fixture.oai_sets)
+
+        # Act
+        oai_registry_api._handle_deleted_set(self.fixture.registry.id, sets_response)
+
+        # Assert
+        record_in_database = oai_harvester_set_api.get_all_by_registry_id(self.fixture.registry.id)
+        self.assertTrue(len(record_in_database) == (sets_count-index))
+        self.assertTrue(x.set_spec not in [y.set_spec for y in record_in_database] for x in removed_sets)
+
+
+class TestHandleDeleteMetadataFormat(MongoIntegrationBaseTestCase):
+    fixture = fixture_data
+
+    def setUp(self):
+        super(TestHandleDeleteMetadataFormat, self).setUp()
+        self.fixture.insert_registry(insert_records=False)
+
+    def test_handle_deleted_metadata_format_deletes_metadata_format(self):
+        # Arrange
+        index = 2
+        removed_metadata_formats = self.fixture.oai_metadata_formats[:index]
+        metadata_formats_response = self.fixture.oai_metadata_formats[index:]
+        metadata_formats_count = len(self.fixture.oai_metadata_formats)
+
+        # Act
+        oai_registry_api._handle_deleted_metadata_format(self.fixture.registry.id, metadata_formats_response)
+
+        # Assert
+        record_in_database = oai_harvester_metadata_format_api.get_all_by_registry_id(self.fixture.registry.id)
+        self.assertTrue(len(record_in_database) == (metadata_formats_count-index))
+        self.assertTrue(x.metadata_prefix not in [y.metadata_prefix for y in record_in_database]
+                        for x in removed_metadata_formats)
+
+
 def _assert_identify(self, mock, registry_id):
     obj_in_database = oai_identify_api.get_by_registry_id(registry_id)
     self.assertEquals(mock.admin_email, obj_in_database.admin_email)

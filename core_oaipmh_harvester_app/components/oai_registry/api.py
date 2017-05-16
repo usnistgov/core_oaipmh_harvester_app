@@ -171,6 +171,10 @@ def update_registry_info(registry):
             _upsert_set_for_registry(set_, registry)
         for metadata_format in metadata_formats_response:
             _upsert_metadata_format_for_registry(metadata_format, registry)
+        # Check if we have some deleted set
+        _handle_deleted_set(registry.id, sets_response)
+        # Check if we have some deleted metadata format
+        _handle_deleted_metadata_format(registry.id, metadata_formats_response)
         registry.isUpdating = False
         upsert(registry)
 
@@ -532,3 +536,34 @@ def _upsert_record_for_registry(record, metadata_format, registry):
     record.registry = registry
 
     oai_record_api.upsert(record)
+
+
+def _handle_deleted_set(registry_id, sets_response):
+    """ Delete previous sets not used anymore.
+    Args:
+        registry_id:
+        sets_response:
+
+    Returns:
+
+    """
+    sets_in_database = oai_harvester_set_api.get_all_by_registry_id(registry_id)
+    sets_to_delete = [x for x in sets_in_database if x.set_spec not in [y.set_spec for y in sets_response]]
+    for set_ in sets_to_delete:
+        oai_harvester_set_api.delete(set_)
+
+
+def _handle_deleted_metadata_format(registry_id, metadata_formats_response):
+    """ Delete previous metadata formats not used anymore.
+    Args:
+        registry_id:
+        metadata_formats_response:
+
+    Returns:
+
+    """
+    metadata_formats_in_database = oai_harvester_metadata_format_api.get_all_by_registry_id(registry_id)
+    metadata_formats_to_delete = [x for x in metadata_formats_in_database if x.metadata_prefix not in
+                                  [y.metadata_prefix for y in metadata_formats_response]]
+    for metadata_format in metadata_formats_to_delete:
+        oai_harvester_metadata_format_api.delete(metadata_format)
