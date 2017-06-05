@@ -10,7 +10,7 @@ clearAddError = function ()
     $("#add-registry-errors").html("");
 }
 
-validateRegistry = function()
+validateAddRegistry = function()
 {
     errors = ""
     if ($( "#id_url" ).val().trim() == ""){
@@ -35,7 +35,7 @@ validateRegistry = function()
 
 var saveRegistry = function(event) {
     clearAddError();
-    if(validateRegistry())
+    if(validateAddRegistry())
     {
        $("#banner_add_wait").show(200);
        var formData = new FormData($("#add-registry-form")[0]);

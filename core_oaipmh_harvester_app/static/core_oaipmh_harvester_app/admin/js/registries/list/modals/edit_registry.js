@@ -31,7 +31,7 @@ clearEditError = function ()
     $("#form_edit_errors").html("");
 }
 
-validateRegistry = function()
+validateEditRegistry = function()
 {
     errors = ""
     harvest = $( "#id_harvest_rate" ).val();
@@ -53,7 +53,7 @@ validateRegistry = function()
 
 var editRegistry = function(event) {
     clearEditError();
-    if(validateRegistry)
+    if(validateEditRegistry())
     {
        var formData = new FormData($("#edit-registry-form")[0]);
        $.ajax({
