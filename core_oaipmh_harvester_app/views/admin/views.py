@@ -25,6 +25,10 @@ def request_builder_view(request):
             {
                 "path": "core_oaipmh_harvester_app/libs/bootstrap-datetimepicker/1.0/js/bootstrap-datetimepicker.js",
                 "is_raw": False
+            },
+            {
+                "path": 'core_main_app/common/js/XMLTree.js',
+                "is_raw": True
             }
         ],
         "css": [
