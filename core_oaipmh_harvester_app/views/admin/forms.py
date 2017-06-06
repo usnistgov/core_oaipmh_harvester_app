@@ -24,7 +24,8 @@ class AddRegistryForm(forms.Form):
                          widget=forms.TextInput(attrs={'class': 'form-control',
                                                        'placeholder': 'https://remote-url.com:8080/oai/registry'}))
     harvest_rate = forms.IntegerField(label='Harvest Rate (seconds)', required=False, validators=[MinValueValidator(0)],
-                                      widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '60'}))
+                                      widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '60'}),
+                                      min_value=0)
     harvest = forms.BooleanField(label='Enable automatic harvesting', required=False, initial=True,
                                  widget=forms.CheckboxInput(attrs={'class': 'cmn-toggle cmn-toggle-round',
                                                                    'visibility': 'hidden'}))
