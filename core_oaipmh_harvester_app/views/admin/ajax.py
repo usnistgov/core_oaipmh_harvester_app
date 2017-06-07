@@ -33,9 +33,9 @@ def add_registry(request):
         if request.method == 'POST':
             form = AddRegistryForm(request.POST)
             if form.is_valid():
-                url = request.POST.get('url')
-                harvest_rate = request.POST.get('harvest_rate')
-                harvest = request.POST.get('harvest') == 'on'
+                url = form.cleaned_data.get('url')
+                harvest_rate = form.cleaned_data.get('harvest_rate')
+                harvest = form.cleaned_data.get('harvest') == 'on'
                 oai_registry_api.add_registry_by_url(url, harvest_rate, harvest)
                 messages.add_message(request, messages.SUCCESS, 'Data provider added with success.')
             else:
