@@ -1,2 +1,2 @@
-core-oaipmh-common-app==1.0.0-alpha1
+core-oaipmh-common-app==1.0.0-alpha2
 sickle==0.5
