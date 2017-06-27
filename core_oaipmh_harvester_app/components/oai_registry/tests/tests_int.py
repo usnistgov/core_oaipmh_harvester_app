@@ -1,30 +1,36 @@
 """ Int Test OaiRegistry
 """
-from core_main_app.utils.integration_tests.integration_base_test_case import MongoIntegrationBaseTestCase
-from mock.mock import patch, ANY
-from rest_framework import status
-from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
+import requests
+from bson.objectid import ObjectId
 from core_main_app.commons import exceptions
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
-from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
+from core_main_app.utils.integration_tests.integration_base_test_case\
+    import MongoIntegrationBaseTestCase
+from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
+from mock.mock import patch
+from rest_framework import status
+
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api \
+    as oai_harvester_metadata_format_api
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models \
+    import OaiHarvesterMetadataFormat
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set import api as \
+    oai_harvester_metadata_format_set_api
 from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_harvester_set_api
 from core_oaipmh_harvester_app.components.oai_identify import api as oai_identify_api
 from core_oaipmh_harvester_app.components.oai_record import api as oai_record_api
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api as oai_harvester_metadata_format_api
+from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
-from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
-from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
-import requests
 from core_oaipmh_harvester_app.components.oai_registry.tests.fixtures.fixtures import OaiPmhFixtures
 from core_oaipmh_harvester_app.components.oai_registry.tests.fixtures.fixtures import OaiPmhMock
-from bson.objectid import ObjectId
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set import api as \
-    oai_harvester_metadata_format_set_api
+from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
 
 fixture_data = OaiPmhFixtures()
 
 
 class TestAddRegistry(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     @patch.object(requests, 'get')
@@ -32,9 +38,20 @@ class TestAddRegistry(MongoIntegrationBaseTestCase):
     @patch.object(oai_verbs_api, 'list_metadata_formats_as_object')
     @patch.object(oai_verbs_api, 'identify_as_object')
     def test_add_registry(self, mock_identify, mock_metadata_formats, mock_sets, mock_get):
+        """ Test add registry
+        Args:
+            mock_identify:
+            mock_metadata_formats:
+            mock_sets:
+            mock_get:
+
+        Returns:
+
+        """
         # Arrange
         mock_identify.return_value = OaiPmhMock.mock_oai_identify(), status.HTTP_200_OK
-        mock_metadata_formats.return_value = OaiPmhMock.mock_oai_metadata_format(), status.HTTP_200_OK
+        mock_metadata_formats.return_value = OaiPmhMock.mock_oai_metadata_format(), \
+            status.HTTP_200_OK
         mock_sets.return_value = OaiPmhMock.mock_oai_set(), status.HTTP_200_OK
         text = '<test>Hello</test>'
         mock_get.return_value.status_code = status.HTTP_200_OK
@@ -49,12 +66,23 @@ class TestAddRegistry(MongoIntegrationBaseTestCase):
 
 
 class TestAddRegistryNotAvailable(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     @patch.object(oai_verbs_api, 'identify_as_object')
     def test_add_registry_not_available(self, mock_identify):
+        """ Test add registry not available
+        Args:
+            mock_identify:
+
+        Returns:
+
+        """
         # Arrange
-        mock_identify.return_value = {'message': 'An error occurred when attempting to identify resource: '
+        mock_identify.return_value = {'message': 'An error occurred when attempting to identify '
+                                                 'resource: '
                                                  '404 Client Error: NOT FOUND'}, \
                                      status.HTTP_500_INTERNAL_SERVER_ERROR
 
@@ -65,13 +93,27 @@ class TestAddRegistryNotAvailable(MongoIntegrationBaseTestCase):
 
 
 class TestAddRegistryNoSetsNoMetadataFormats(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     @patch.object(requests, 'get')
     @patch.object(oai_verbs_api, 'list_sets_as_object')
     @patch.object(oai_verbs_api, 'list_metadata_formats_as_object')
     @patch.object(oai_verbs_api, 'identify_as_object')
-    def test_add_registry_no_sets_no_metadata_formats(self, mock_identify, mock_metadata_formats, mock_sets, mock_get):
+    def test_add_registry_no_sets_no_metadata_formats(self, mock_identify, mock_metadata_formats,
+                                                      mock_sets, mock_get):
+        """ Test add registry with no sets and no metadata formats
+        Args:
+            mock_identify:
+            mock_metadata_formats:
+            mock_sets:
+            mock_get:
+
+        Returns:
+
+        """
         # Arrange
         mock_identify.return_value = OaiPmhMock.mock_oai_identify(), status.HTTP_200_OK
         mock_metadata_formats.return_value = [], status.HTTP_200_OK
@@ -89,6 +131,9 @@ class TestAddRegistryNoSetsNoMetadataFormats(MongoIntegrationBaseTestCase):
 
 
 class TestAddRegistryIdentify(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     @patch.object(requests, 'get')
@@ -96,6 +141,16 @@ class TestAddRegistryIdentify(MongoIntegrationBaseTestCase):
     @patch.object(oai_verbs_api, 'list_metadata_formats_as_object')
     @patch.object(oai_verbs_api, 'identify_as_object')
     def test_add_registry_identify(self, mock_identify, mock_metadata_formats, mock_sets, mock_get):
+        """ Test add registry identify
+        Args:
+            mock_identify:
+            mock_metadata_formats:
+            mock_sets:
+            mock_get:
+
+        Returns:
+
+        """
         # Arrange
         identify = OaiPmhMock.mock_oai_identify()
         mock_identify.return_value = identify, status.HTTP_200_OK
@@ -114,6 +169,9 @@ class TestAddRegistryIdentify(MongoIntegrationBaseTestCase):
 
 
 class TestAddRegistrySets(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     @patch.object(requests, 'get')
@@ -121,6 +179,16 @@ class TestAddRegistrySets(MongoIntegrationBaseTestCase):
     @patch.object(oai_verbs_api, 'list_metadata_formats_as_object')
     @patch.object(oai_verbs_api, 'identify_as_object')
     def test_add_registry_sets(self, mock_identify, mock_metadata_formats, mock_sets, mock_get):
+        """ Test add registry sets
+        Args:
+            mock_identify:
+            mock_metadata_formats:
+            mock_sets:
+            mock_get:
+
+        Returns:
+
+        """
         # Arrange
         mock_identify.return_value = OaiPmhMock.mock_oai_identify(), status.HTTP_200_OK
         mock_metadata_formats.return_value = [], status.HTTP_200_OK
@@ -139,13 +207,27 @@ class TestAddRegistrySets(MongoIntegrationBaseTestCase):
 
 
 class TestAddRegistryMetadataFormats(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     @patch.object(requests, 'get')
     @patch.object(oai_verbs_api, 'list_sets_as_object')
     @patch.object(oai_verbs_api, 'list_metadata_formats_as_object')
     @patch.object(oai_verbs_api, 'identify_as_object')
-    def test_add_registry_metadata_format(self, mock_identify, mock_metadata_formats, mock_sets, mock_get):
+    def test_add_registry_metadata_format(self, mock_identify, mock_metadata_formats, mock_sets,
+                                          mock_get):
+        """ Test add registry metadata formats
+        Args:
+            mock_identify:
+            mock_metadata_formats:
+            mock_sets:
+            mock_get:
+
+        Returns:
+
+        """
         # Arrange
         mock_identify.return_value = OaiPmhMock.mock_oai_identify(), status.HTTP_200_OK
         list_metadata_formats = OaiPmhMock.mock_oai_metadata_format()
@@ -164,13 +246,20 @@ class TestAddRegistryMetadataFormats(MongoIntegrationBaseTestCase):
 
 
 class TestAddRegistryConstraints(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     def setUp(self):
+        """ Set up test
+        """
         super(TestAddRegistryConstraints, self).setUp()
         self.fixture.insert_registry()
 
     def test_add_registry_raises_exception_if_url_already_exists(self):
+        """ Test add registry with existing URL
+        """
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPINotUniqueError):
             oai_registry_api.add_registry_by_url(self.fixture.url, self.fixture.harvest_rate,
@@ -178,6 +267,9 @@ class TestAddRegistryConstraints(MongoIntegrationBaseTestCase):
 
 
 class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     def setUp(self):
@@ -210,25 +302,35 @@ class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
 
 
 class TestUpsertIdentifyForRegistry(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     def setUp(self):
+        """ Set up test
+        """
         super(TestUpsertIdentifyForRegistry, self).setUp()
 
     def test_upsert_updates_if_does_exist(self):
+        """ Test upsert update
+        """
         self.fixture.insert_registry()
 
         # Arrange
         repository_name = "update_test"
         self.fixture.oai_identify.repository_name = repository_name
         # Act
-        oai_registry_api._upsert_identify_for_registry(self.fixture.oai_identify, self.fixture.registry)
+        oai_registry_api._upsert_identify_for_registry(self.fixture.oai_identify,
+                                                       self.fixture.registry)
 
         # Assert
         identify_in_database = oai_identify_api.get_by_registry_id(self.fixture.registry.id)
         self.assertEquals(identify_in_database.repository_name, repository_name)
 
     def test_upsert_creates_if_does_not_exist(self):
+        """ Test upsert create
+        """
         # Arrange
         oai_identify = OaiPmhMock.mock_oai_identify()
         self.fixture.insert_registry(insert_related_collections=False)
@@ -242,6 +344,9 @@ class TestUpsertIdentifyForRegistry(MongoIntegrationBaseTestCase):
 
 
 class TestUpsertMetadataFormatForRegistry(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     def setUp(self):
@@ -249,6 +354,13 @@ class TestUpsertMetadataFormatForRegistry(MongoIntegrationBaseTestCase):
 
     @patch.object(requests, 'get')
     def test_upsert_updates_if_does_exist(self, mock_get):
+        """ Test upsert update
+        Args:
+            mock_get:
+
+        Returns:
+
+        """
         self.fixture.insert_registry()
 
         # Arrange
@@ -260,15 +372,24 @@ class TestUpsertMetadataFormatForRegistry(MongoIntegrationBaseTestCase):
         metadata_format.schema = schema
 
         # Act
-        oai_registry_api._upsert_metadata_format_for_registry(metadata_format, self.fixture.registry)
+        oai_registry_api._upsert_metadata_format_for_registry(metadata_format,
+                                                              self.fixture.registry)
 
         # Assert
         metadata_format_in_database = oai_harvester_metadata_format_api.\
-            get_by_metadata_prefix_and_registry_id(metadata_format.metadata_prefix, self.fixture.registry.id)
+            get_by_metadata_prefix_and_registry_id(metadata_format.metadata_prefix,
+                                                   self.fixture.registry.id)
         self.assertEquals(metadata_format_in_database.schema, schema)
 
     @patch.object(requests, 'get')
     def test_upsert_creates_if_does_not_exist(self, mock_get):
+        """ Test upsert create
+        Args:
+            mock_get:
+
+        Returns:
+
+        """
         # Arrange
         text = '<test>Hello</test>'
         mock_get.return_value.status_code = status.HTTP_200_OK
@@ -277,7 +398,8 @@ class TestUpsertMetadataFormatForRegistry(MongoIntegrationBaseTestCase):
         self.fixture.insert_registry(insert_related_collections=False)
 
         # Act
-        oai_registry_api._upsert_metadata_format_for_registry(oai_harvester_metadata_format, self.fixture.registry)
+        oai_registry_api._upsert_metadata_format_for_registry(oai_harvester_metadata_format,
+                                                              self.fixture.registry)
 
         # Assert
         metadata_format_in_database = oai_harvester_metadata_format_api. \
@@ -288,12 +410,19 @@ class TestUpsertMetadataFormatForRegistry(MongoIntegrationBaseTestCase):
 
 
 class TestUpsertSetForRegistry(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     def setUp(self):
+        """ Set up test
+        """
         super(TestUpsertSetForRegistry, self).setUp()
 
     def test_upsert_updates_if_does_exist(self):
+        """ Test upsert update
+        """
         self.fixture.insert_registry()
 
         # Arrange
@@ -305,11 +434,13 @@ class TestUpsertSetForRegistry(MongoIntegrationBaseTestCase):
         oai_registry_api._upsert_set_for_registry(oai_harvester_set, self.fixture.registry)
 
         # Assert
-        set_in_database = oai_harvester_set_api.get_by_set_spec_and_registry_id(oai_harvester_set.set_spec,
-                                                                                self.fixture.registry.id)
+        set_in_database = oai_harvester_set_api.\
+            get_by_set_spec_and_registry_id(oai_harvester_set.set_spec, self.fixture.registry.id)
         self.assertEquals(set_in_database.set_name, set_name)
 
     def test_upsert_creates_if_does_not_exist(self):
+        """ Test upsert create
+        """
         # Arrange
         oai_harvester_set = OaiPmhMock.mock_oai_first_set()
         self.fixture.insert_registry(insert_related_collections=False)
@@ -318,19 +449,26 @@ class TestUpsertSetForRegistry(MongoIntegrationBaseTestCase):
         oai_registry_api._upsert_identify_for_registry(oai_harvester_set, self.fixture.registry)
 
         # Assert
-        set_in_database = oai_harvester_set_api.get_by_set_spec_and_registry_id(oai_harvester_set.set_spec,
-                                                                                self.fixture.registry.id)
+        set_in_database = oai_harvester_set_api.\
+            get_by_set_spec_and_registry_id(oai_harvester_set.set_spec, self.fixture.registry.id)
 
         self.assertEquals(oai_harvester_set, set_in_database)
 
 
 class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     def setUp(self):
+        """ Set up test
+        """
         super(TestUpsertRecordForRegistry, self).setUp()
 
     def test_upsert_updates_if_does_exist(self):
+        """ Test upsert update
+        """
         self.fixture.insert_registry()
 
         # Arrange
@@ -340,7 +478,8 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         oai_record.identifier = identifier
 
         # Act
-        oai_registry_api._upsert_record_for_registry(oai_record, metadata_format, self.fixture.registry)
+        oai_registry_api._upsert_record_for_registry(oai_record, metadata_format,
+                                                     self.fixture.registry)
 
         # Assert
         record_in_database = oai_record_api.get_by_id(oai_record.id)
@@ -348,6 +487,8 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         self.assertEquals(record_in_database.harvester_metadata_format, metadata_format)
 
     def test_upsert_creates_if_does_not_exist(self):
+        """ Test upsert create
+        """
         # Arrange
         oai_record = OaiPmhMock.mock_oai_first_record()
         metadata_format = OaiHarvesterMetadataFormat()
@@ -355,31 +496,46 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         self.fixture.insert_registry(insert_related_collections=False)
 
         # Act
-        oai_registry_api._upsert_record_for_registry(oai_record, metadata_format, self.fixture.registry)
+        oai_registry_api._upsert_record_for_registry(oai_record, metadata_format,
+                                                     self.fixture.registry)
 
         # Assert
-        record_in_database = oai_record_api.get_by_identifier_and_metadata_format(oai_record.identifier,
-                                                                                  metadata_format)
+        record_in_database = oai_record_api.\
+            get_by_identifier_and_metadata_format(oai_record.identifier, metadata_format)
 
         self.assertEquals(record_in_database, oai_record)
 
 
 class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     def setUp(self):
+        """ Set up test
+        """
         super(TestHarvestByMetadataFormats, self).setUp()
         self.fixture.insert_registry(insert_records=False)
 
     @patch.object(requests, 'get')
     def test_harvest_by_metadata_formats_saves_record(self, mock_get):
+        """ Test harvest by metadata formats save
+        Args:
+            mock_get:
+
+        Returns:
+
+        """
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
-        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records(with_resumption_token=False)
+        mock_get.return_value.text = OaiPmhMock.\
+            mock_oai_response_list_records(with_resumption_token=False)
         metadata_format = [self.fixture.oai_metadata_formats[0]]
 
         # Act
-        result = oai_registry_api._harvest_by_metadata_formats(self.fixture.registry, metadata_format,
+        result = oai_registry_api._harvest_by_metadata_formats(self.fixture.registry,
+                                                               metadata_format,
                                                                self.fixture.oai_sets)
 
         # Assert
@@ -389,9 +545,17 @@ class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
 
     @patch.object(requests, 'get')
     def test_harvest_by_metadata_formats_updates_dates(self, mock_get):
+        """ Test harvest by metadata formats update
+        Args:
+            mock_get:
+
+        Returns:
+
+        """
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
-        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records(with_resumption_token=False)
+        mock_get.return_value.text = OaiPmhMock.\
+            mock_oai_response_list_records(with_resumption_token=False)
         metadata_format = self.fixture.oai_metadata_formats[0]
         set_ = self.fixture.oai_sets[0]
 
@@ -400,39 +564,57 @@ class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
         self.assertEquals(metadata_format.lastUpdate, None)
         # Metadata Format + Set date
         with self.assertRaises(exceptions.DoesNotExist):
-            oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(metadata_format, set_)
+            oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(metadata_format,
+                                                                                 set_)
 
         # Act
-        result = oai_registry_api._harvest_by_metadata_formats(self.fixture.registry, [metadata_format],
+        result = oai_registry_api._harvest_by_metadata_formats(self.fixture.registry,
+                                                               [metadata_format],
                                                                self.fixture.oai_sets)
 
         # Assert
         self.assertEquals(result, [])
         # Metadata Format date
-        metadata_format_in_database = oai_harvester_metadata_format_api.get_by_id(metadata_format.id)
+        metadata_format_in_database = oai_harvester_metadata_format_api.\
+            get_by_id(metadata_format.id)
         self.assertNotEquals(metadata_format_in_database.lastUpdate, None)
         # Metadata Format + Set date
-        oai_h_mf_set = oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(metadata_format, set_)
+        oai_h_mf_set = oai_harvester_metadata_format_set_api.\
+            get_by_metadata_format_and_set(metadata_format, set_)
         self.assertNotEquals(oai_h_mf_set.lastUpdate, None)
 
 
 class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     def setUp(self):
+        """ Set up test
+        """
         super(TestHarvestByMetadataFormatsAndSets, self).setUp()
         self.fixture.insert_registry(insert_records=False)
 
     @patch.object(requests, 'get')
     def test_harvest_by_metadata_formats_and_sets_saves_record(self, mock_get):
+        """ Test harvest by metadata formats and sets save
+        Args:
+            mock_get:
+
+        Returns:
+
+        """
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
-        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records(with_resumption_token=False)
+        mock_get.return_value.text = OaiPmhMock.\
+            mock_oai_response_list_records(with_resumption_token=False)
         metadata_format = [self.fixture.oai_metadata_formats[0]]
         set_ = [self.fixture.oai_sets[0]]
 
         # Act
-        result = oai_registry_api._harvest_by_metadata_formats_and_sets(self.fixture.registry, metadata_format,
+        result = oai_registry_api._harvest_by_metadata_formats_and_sets(self.fixture.registry,
+                                                                        metadata_format,
                                                                         set_, self.fixture.oai_sets)
 
         # Assert
@@ -442,9 +624,17 @@ class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
 
     @patch.object(requests, 'get')
     def test_harvest_by_metadata_formats_and_sets_updates_dates(self, mock_get):
+        """ Test harvest by metadata formats and sets update
+        Args:
+            mock_get:
+
+        Returns:
+
+        """
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
-        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records(with_resumption_token=False)
+        mock_get.return_value.text = OaiPmhMock.\
+            mock_oai_response_list_records(with_resumption_token=False)
         metadata_format = self.fixture.oai_metadata_formats[0]
         set_ = self.fixture.oai_sets[0]
 
@@ -453,34 +643,52 @@ class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
         self.assertEquals(metadata_format.lastUpdate, None)
         # Metadata Format + Set date
         with self.assertRaises(exceptions.DoesNotExist):
-            oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(metadata_format, set_)
+            oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(metadata_format,
+                                                                                 set_)
 
         # Act
-        result = oai_registry_api._harvest_by_metadata_formats_and_sets(self.fixture.registry, [metadata_format],
-                                                                        [set_], self.fixture.oai_sets)
+        result = oai_registry_api._harvest_by_metadata_formats_and_sets(self.fixture.registry,
+                                                                        [metadata_format],
+                                                                        [set_],
+                                                                        self.fixture.oai_sets)
 
         # Assert
         self.assertEquals(result, [])
         # Metadata Format date
-        metadata_format_in_database = oai_harvester_metadata_format_api.get_by_id(metadata_format.id)
+        metadata_format_in_database = oai_harvester_metadata_format_api.\
+            get_by_id(metadata_format.id)
         self.assertNotEquals(metadata_format_in_database.lastUpdate, None)
         # Metadata Format + Set date
-        oai_h_mf_set = oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(metadata_format, set_)
+        oai_h_mf_set = oai_harvester_metadata_format_set_api.\
+            get_by_metadata_format_and_set(metadata_format, set_)
         self.assertNotEquals(oai_h_mf_set.lastUpdate, None)
 
 
 class TestHarvestRegistry(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     def setUp(self):
+        """ Set up test
+        """
         super(TestHarvestRegistry, self).setUp()
         self.fixture.insert_registry(insert_records=False)
 
     @patch.object(requests, 'get')
     def test_harvest_registry_saves_record(self, mock_get):
+        """ Test harvest save
+        Args:
+            mock_get:
+
+        Returns:
+
+        """
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
-        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records(with_resumption_token=False)
+        mock_get.return_value.text = OaiPmhMock.\
+            mock_oai_response_list_records(with_resumption_token=False)
 
         # Act
         result = oai_registry_api.harvest_registry(self.fixture.registry)
@@ -492,9 +700,17 @@ class TestHarvestRegistry(MongoIntegrationBaseTestCase):
 
     @patch.object(requests, 'get')
     def test_harvest_registry_updates_dates(self, mock_get):
+        """ Test harvest update
+        Args:
+            mock_get:
+
+        Returns:
+
+        """
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
-        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records(with_resumption_token=False)
+        mock_get.return_value.text = OaiPmhMock.\
+            mock_oai_response_list_records(with_resumption_token=False)
 
         # Assert
         # Registry date
@@ -510,13 +726,20 @@ class TestHarvestRegistry(MongoIntegrationBaseTestCase):
 
 
 class TestHandleDeleteSet(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     def setUp(self):
+        """ Set up test
+        """
         super(TestHandleDeleteSet, self).setUp()
         self.fixture.insert_registry(insert_records=False)
 
     def test_handle_deleted_set_deletes_set(self):
+        """ Test
+        """
         # Arrange
         index = 2
         removed_sets = self.fixture.oai_sets[:index]
@@ -529,17 +752,27 @@ class TestHandleDeleteSet(MongoIntegrationBaseTestCase):
         # Assert
         record_in_database = oai_harvester_set_api.get_all_by_registry_id(self.fixture.registry.id)
         self.assertTrue(len(record_in_database) == (sets_count-index))
-        self.assertTrue(x.set_spec not in [y.set_spec for y in record_in_database] for x in removed_sets)
+        self.assertTrue(x.set_spec not in [y.set_spec for y in record_in_database] for x in
+                        removed_sets)
 
 
 class TestHandleDeleteMetadataFormat(MongoIntegrationBaseTestCase):
+    """
+    Test class
+    """
     fixture = fixture_data
 
     def setUp(self):
+        """ Set up test
+        """
         super(TestHandleDeleteMetadataFormat, self).setUp()
         self.fixture.insert_registry(insert_records=False)
 
     def test_handle_deleted_metadata_format_deletes_metadata_format(self):
+        """ Test handle deleted metadata format
+        Returns:
+
+        """
         # Arrange
         index = 2
         removed_metadata_formats = self.fixture.oai_metadata_formats[:index]
@@ -547,16 +780,27 @@ class TestHandleDeleteMetadataFormat(MongoIntegrationBaseTestCase):
         metadata_formats_count = len(self.fixture.oai_metadata_formats)
 
         # Act
-        oai_registry_api._handle_deleted_metadata_format(self.fixture.registry.id, metadata_formats_response)
+        oai_registry_api._handle_deleted_metadata_format(self.fixture.registry.id,
+                                                         metadata_formats_response)
 
         # Assert
-        record_in_database = oai_harvester_metadata_format_api.get_all_by_registry_id(self.fixture.registry.id)
+        record_in_database = oai_harvester_metadata_format_api.\
+            get_all_by_registry_id(self.fixture.registry.id)
         self.assertTrue(len(record_in_database) == (metadata_formats_count-index))
         self.assertTrue(x.metadata_prefix not in [y.metadata_prefix for y in record_in_database]
                         for x in removed_metadata_formats)
 
 
 def _assert_identify(self, mock, registry_id):
+    """ Assert identify
+    Args:
+        self:
+        mock:
+        registry_id:
+
+    Returns:
+
+    """
     obj_in_database = oai_identify_api.get_by_registry_id(registry_id)
     self.assertEquals(mock.admin_email, obj_in_database.admin_email)
     self.assertEquals(mock.repository_name, obj_in_database.repository_name)
@@ -573,6 +817,15 @@ def _assert_identify(self, mock, registry_id):
 
 
 def _assert_set(self, mock, registry_id):
+    """ Assert set
+    Args:
+        self:
+        mock:
+        registry_id:
+
+    Returns:
+
+    """
     sets = oai_harvester_set_api.get_all_by_registry_id(registry_id)
     for set_ in sets:
         obj_in_database = next((x for x in mock if x.set_spec == set_.set_spec), [None])
@@ -583,11 +836,22 @@ def _assert_set(self, mock, registry_id):
 
 
 def _assert_metadata_format(self, mock, registry_id):
+    """ Assert metadata format
+    Args:
+        self:
+        mock:
+        registry_id:
+
+    Returns:
+
+    """
     metadata_formats = oai_harvester_metadata_format_api.get_all_by_registry_id(registry_id)
     for metadata_format in metadata_formats:
-        obj_in_database = next((x for x in mock if x.metadata_prefix == metadata_format.metadata_prefix), [None])
+        obj_in_database = next((x for x in mock if x.metadata_prefix ==
+                                metadata_format.metadata_prefix), [None])
         if obj_in_database != [None]:
             self.assertEquals(metadata_format.metadata_prefix, obj_in_database.metadata_prefix)
             self.assertEquals(metadata_format.schema, obj_in_database.schema)
-            self.assertEquals(metadata_format.metadata_namespace, obj_in_database.metadata_namespace)
+            self.assertEquals(metadata_format.metadata_namespace,
+                              obj_in_database.metadata_namespace)
             self.assertEquals(metadata_format.raw, obj_in_database.raw)

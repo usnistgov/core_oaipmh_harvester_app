@@ -2,25 +2,27 @@
 OaiRegistry API
 """
 
+import datetime
 
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
-from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
+from core_main_app.commons import exceptions
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
-from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
-from rest_framework import status
-from core_oaipmh_harvester_app.components.oai_identify import api as api_oai_identify
-from core_oaipmh_harvester_app.components.oai_identify import api as oai_identify_api
-from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_harvester_set_api
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api as oai_harvester_metadata_format_api
-from core_oaipmh_harvester_app.components.oai_record import api as oai_record_api
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set.models import OaiHarvesterMetadataFormatSet
-from core_main_app.commons import exceptions
 from core_oaipmh_common_app.utils import UTCdatetime
-from core_oaipmh_harvester_app.utils import transform_operations
+from rest_framework import status
+
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api \
+    as oai_harvester_metadata_format_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set import api as \
     oai_harvester_metadata_format_set_api
-import datetime
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set.models \
+    import OaiHarvesterMetadataFormatSet
+from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_harvester_set_api
+from core_oaipmh_harvester_app.components.oai_identify import api as api_oai_identify
+from core_oaipmh_harvester_app.components.oai_identify import api as oai_identify_api
+from core_oaipmh_harvester_app.components.oai_record import api as oai_record_api
+from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
+from core_oaipmh_harvester_app.utils import transform_operations
 
 
 def upsert(oai_registry):
@@ -207,12 +209,14 @@ def harvest_registry(registry):
         registry_all_sets = oai_harvester_set_api.get_all_by_registry_id(registry.id, "set_name")
         # Get all available  sets
         registry_sets_to_harvest = oai_harvester_set_api.get_all_to_harvest_by_registry_id(registry.id, "set_name")
-        # Check if we have to retrieve all sets or not. If all sets, no need to provide the set parameter in the
-        # harvest request. Avoid to retrieve same records for nothing (If records are in many sets).
+        # Check if we have to retrieve all sets or not. If all sets, no need to provide the
+        # set parameter in the harvest request.
+        # Avoid to retrieve same records for nothing (If records are in many sets).
         search_by_sets = len(registry_all_sets) != len(registry_sets_to_harvest)
         # Search by sets
         if search_by_sets and len(registry_all_sets) != 0:
-            all_errors = _harvest_by_metadata_formats_and_sets(registry, metadata_formats, registry_sets_to_harvest,
+            all_errors = _harvest_by_metadata_formats_and_sets(registry, metadata_formats,
+                                                               registry_sets_to_harvest,
                                                                registry_all_sets)
         # If we don't have to search by set or the OAI Registry doesn't support sets
         else:
@@ -303,14 +307,8 @@ def _init_registry(url, harvest, harvest_rate, repository_name, description):
         The OaiRegistry instance.
 
     """
-    registry = OaiRegistry()
-    registry.name = repository_name
-    registry.url = url
-    registry.harvest_rate = harvest_rate
-    registry.description = description
-    registry.harvest = harvest
-    registry.is_activated = True
-
+    registry = OaiRegistry(name=repository_name, url=url, harvest_rate=harvest_rate,
+                           description=description, harvest=harvest, is_activated=True)
     return registry
 
 
@@ -370,7 +368,8 @@ def _upsert_set_for_registry(set_, registry):
 
     """
     try:
-        set_to_save = oai_harvester_set_api.get_by_set_spec_and_registry_id(set_.set_spec, registry.id)
+        set_to_save = oai_harvester_set_api.get_by_set_spec_and_registry_id(set_.set_spec,
+                                                                            registry.id)
         # Update current OaiHarvesterSet
         set_to_save.set_name = set_.set_name
         set_to_save.raw = set_.raw
@@ -383,7 +382,8 @@ def _upsert_set_for_registry(set_, registry):
     oai_harvester_set_api.upsert(set_to_save)
 
 
-def _harvest_by_metadata_formats_and_sets(registry, metadata_formats, registry_sets_to_harvest, registry_all_sets):
+def _harvest_by_metadata_formats_and_sets(registry, metadata_formats, registry_sets_to_harvest,
+                                          registry_all_sets):
     """ Harvests data by metadata formats and sets.
     Args:
         registry: Registry.
@@ -407,7 +407,8 @@ def _harvest_by_metadata_formats_and_sets(registry, metadata_formats, registry_s
                     get_last_update_by_metadata_format_and_set(metadata_format, set_)
             except:
                 last_update = None
-            errors = _harvest_records(registry, metadata_format, last_update, registry_all_sets, set_)
+            errors = _harvest_records(registry, metadata_format, last_update, registry_all_sets,
+                                      set_)
             # If no exceptions was thrown and no errors occurred, we can update the lastUpdate date
             if len(errors) == 0:
                 try:
