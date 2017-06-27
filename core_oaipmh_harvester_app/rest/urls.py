@@ -23,4 +23,6 @@ urlpatterns = [
         name='core_oaipmh_harvester_app_rest_delete_registry'),
     url(r'^harvest/registry$', oai_registry_views.harvest_registry,
         name='core_oaipmh_harvester_app_rest_harvest_registry'),
+    url(r'^update/registry/harvest/conf$', oai_registry_views.update_registry_harvest_conf,
+        name='core_oaipmh_harvester_app_rest_update_registry_harvest_conf'),
 ]

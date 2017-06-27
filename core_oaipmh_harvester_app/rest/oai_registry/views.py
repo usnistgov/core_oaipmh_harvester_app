@@ -6,7 +6,9 @@ from core_main_app.utils.decorators import api_staff_member_required, api_permis
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
-import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
+from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api as oai_metadata_format_api
+from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_set_api
 from core_oaipmh_common_app.commons import exceptions as exceptions_oai
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.rest import serializers
@@ -340,6 +342,56 @@ def harvest_registry(request):
                 content = OaiPmhMessage.get_message_labelled('Registry {0} harvested with success.'.
                                                              format(registry.name))
                 return Response(content, status=status.HTTP_200_OK)
+        else:
+            raise exceptions_oai.OAIAPISerializeLabelledException(errors=serializer.errors,
+                                                                  status_code=status.HTTP_400_BAD_REQUEST)
+    except exceptions.DoesNotExist as e:
+        content = OaiPmhMessage.get_message_labelled(e.message)
+        return Response(content, status=status.HTTP_404_NOT_FOUND)
+    except exceptions_oai.OAIAPIException as e:
+        return e.response()
+    except Exception as e:
+        content = OaiPmhMessage.get_message_labelled(e.message)
+        return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['PUT'])
+@api_staff_member_required()
+def update_registry_harvest_conf(request):
+    """ Edit the harvesting configuration of a registry (Data Provider). Configure metadata_formats and sets to harvest.
+
+    PUT http://<server_ip>:<server_port>/<rest_oai_pmh_url>/update/registry/harvest/conf
+
+    Args:
+        request (HttpRequest): request.
+
+    Returns:
+        Response object.
+
+    Examples:
+        >>> {"registry_id": "value", "metadata_formats": ["id1", "id2"..], "sets": ["id1", "id2"..]}
+
+    """
+    try:
+        serializer = serializers.UpdateRegistryHarvestSerializer(data=request.data)
+        if serializer.is_valid():
+            registry_id = serializer.data.get('registry_id')
+            metadata_formats = serializer.data.get('metadata_formats')
+            sets = serializer.data.get('sets')
+            # Get metadata formats ids and sets ids related to the registry.
+            registry_metadata_formats = oai_metadata_format_api.get_all_by_registry_id(registry_id).values_list('id')
+            registry_sets = oai_set_api.get_all_by_registry_id(registry_id).values_list('id')
+            # Set all metadata_formats to false (Do not harvest)
+            oai_metadata_format_api.update_for_all_harvest_by_list_ids(registry_metadata_formats, False)
+            # Set given metadata_formats to True (Harvest)
+            oai_metadata_format_api.update_for_all_harvest_by_list_ids(metadata_formats, True)
+            # Set all sets to false (Do not harvest)
+            oai_set_api.update_for_all_harvest_by_list_ids(registry_sets, False)
+            # Set given sets to True (Harvest)
+            oai_set_api.update_for_all_harvest_by_list_ids(sets, True)
+            content = OaiPmhMessage.get_message_labelled('Registry harvesting configuration updated with success.')
+
+            return Response(content, status=status.HTTP_200_OK)
         else:
             raise exceptions_oai.OAIAPISerializeLabelledException(errors=serializer.errors,
                                                                   status_code=status.HTTP_400_BAD_REQUEST)

@@ -1,7 +1,7 @@
 """
     Serializers used throughout the Rest API
 """
-from rest_framework.serializers import Serializer, CharField, IntegerField, BooleanField
+from rest_framework.serializers import Serializer, CharField, IntegerField, BooleanField, ListField
 from rest_framework_mongoengine.serializers import DocumentSerializer
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
@@ -46,3 +46,9 @@ class UpdateRegistrySerializer(Serializer):
 
 class SelectRegistrySerializer(BasicSerializer):
     registry_name = CharField(required=True)
+
+
+class UpdateRegistryHarvestSerializer(BasicSerializer):
+    registry_id = CharField(required=True)
+    metadata_formats = ListField(child=CharField(), required=False)
+    sets = ListField(child=CharField(), required=False)
