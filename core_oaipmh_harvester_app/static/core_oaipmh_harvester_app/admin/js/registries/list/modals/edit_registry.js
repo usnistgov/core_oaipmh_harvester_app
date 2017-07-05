@@ -34,7 +34,7 @@ clearEditError = function ()
 validateEditRegistry = function()
 {
     errors = ""
-    harvest = $( "#id_harvest_rate" ).val();
+    harvest = $( "#edit-registry-form #id_harvest_rate" ).val();
     if (!(Math.floor(harvest) == harvest && $.isNumeric(harvest) && harvest > 0)){
         errors += "<li>Please enter a positive integer.</li>"
     }
