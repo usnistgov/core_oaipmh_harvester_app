@@ -2,12 +2,13 @@
     Transform operations utils provide tool operation to transform oai-pmh dict representation to object
 """
 
-from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
-from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
-from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
 from core_main_app.utils.xml import raw_xml_to_dict
 from core_oaipmh_common_app.utils import UTCdatetime
+
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
+from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
+from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
+from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 
 
 def transform_dict_identifier_to_oai_identifier(data):
@@ -82,4 +83,5 @@ def transform_dict_record_to_oai_record(data, registry_all_sets=[]):
                       deleted=obj['deleted'],
                       metadata=raw_xml_to_dict(obj['metadata']) if not obj['deleted'] else None,
                       harvester_sets=[x for x in registry_all_sets if x.set_spec in obj['sets']],
-                      raw=raw_xml_to_dict(obj['raw'])) for obj in data]
+                      raw=raw_xml_to_dict(obj['raw']),
+                      xml_content=str(obj['metadata'])) for obj in data]

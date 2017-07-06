@@ -2,16 +2,17 @@
 OaiRecord model
 """
 
-from django_mongoengine import fields, Document
-from mongoengine.queryset.base import PULL, CASCADE
-from mongoengine import errors as mongoengine_errors
-from pymongo import errors as pymongo_errors
-from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 import re
-from core_main_app.utils.databases.pymongo_database import get_full_text_query
 from core_main_app.commons import exceptions
+from core_main_app.utils.databases.pymongo_database import get_full_text_query
+from django_mongoengine import fields, Document
+from mongoengine import errors as mongoengine_errors
+from mongoengine.queryset.base import PULL, CASCADE
+from pymongo import errors as pymongo_errors
+
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
+from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
+from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 
 class OaiRecord(Document):
@@ -26,6 +27,7 @@ class OaiRecord(Document):
     metadata = fields.DictField(blank=True)
     raw = fields.DictField()
     registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE)
+    xml_content = fields.StringField()
 
     # TODO: Look for a better solution than a copy/paste of the save method.
     # Keep the XML order for the metadata field
