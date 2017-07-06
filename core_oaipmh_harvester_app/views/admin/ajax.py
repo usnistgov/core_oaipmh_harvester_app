@@ -39,7 +39,7 @@ def add_registry(request):
                 oai_registry_api.add_registry_by_url(url, harvest_rate, harvest)
                 messages.add_message(request, messages.SUCCESS, 'Data provider added with success.')
             else:
-                return HttpResponseBadRequest('Bad entries. Please enter a valid URL and a positive integer')
+                return HttpResponseBadRequest('Please enter a valid URL.')
     except Exception, e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
