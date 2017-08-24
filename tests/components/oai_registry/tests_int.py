@@ -20,8 +20,8 @@ from core_oaipmh_harvester_app.components.oai_identify import api as oai_identif
 from core_oaipmh_harvester_app.components.oai_record import api as oai_record_api
 from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
-from core_oaipmh_harvester_app.components.oai_registry.tests.fixtures.fixtures import OaiPmhFixtures
-from core_oaipmh_harvester_app.components.oai_registry.tests.fixtures.fixtures import OaiPmhMock
+from tests.components.oai_registry.fixtures.fixtures import OaiPmhFixtures
+from tests.components.oai_registry.fixtures.fixtures import OaiPmhMock
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
 
 fixture_data = OaiPmhFixtures()

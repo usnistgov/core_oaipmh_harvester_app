@@ -7,7 +7,7 @@ import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verbs_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
 from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
-from core_oaipmh_harvester_app.components.oai_registry.tests.fixtures.fixtures import OaiPmhMock
+from tests.components.oai_registry.fixtures.fixtures import OaiPmhMock
 from rest_framework import status
 import requests
 

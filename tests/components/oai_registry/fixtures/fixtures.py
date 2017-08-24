@@ -7,9 +7,9 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import a
 import json
 from core_oaipmh_harvester_app.utils import transform_operations
 import os
-from core_oaipmh_harvester_app.settings import OAI_HARVESTER_ROOT
+from tests.test_settings import OAI_HARVESTER_ROOT
 
-DUMP_OAI_PMH_TEST_PATH = os.path.join(OAI_HARVESTER_ROOT, 'utils', 'tests', 'data')
+DUMP_OAI_PMH_TEST_PATH = os.path.join(OAI_HARVESTER_ROOT, 'utils', 'data')
 
 
 class OaiPmhFixtures(FixtureInterface):

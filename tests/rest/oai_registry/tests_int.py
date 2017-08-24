@@ -2,7 +2,7 @@
 """
 from mock.mock import patch, Mock
 from core_main_app.utils.integration_tests.integration_base_test_case import MongoIntegrationBaseTestCase
-from core_oaipmh_harvester_app.components.oai_registry.tests.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
+from tests.components.oai_registry.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_harvester_app.rest.oai_registry import views as rest_oai_registry

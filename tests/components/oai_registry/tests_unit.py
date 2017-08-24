@@ -19,7 +19,7 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models i
 from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_harvester_set_api
 from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
-from core_oaipmh_harvester_app.components.oai_registry.tests.fixtures.fixtures import OaiPmhMock
+from tests.components.oai_registry.fixtures.fixtures import OaiPmhMock
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
 from core_oaipmh_harvester_app.utils import transform_operations
 
