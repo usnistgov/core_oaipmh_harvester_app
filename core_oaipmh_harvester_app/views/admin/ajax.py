@@ -16,7 +16,7 @@ from core_main_app.utils.xml import xsl_transform
 from os.path import join
 import datetime
 from StringIO import StringIO
-from django.core.servers.basehttp import FileWrapper
+from wsgiref.util import FileWrapper
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 import xml_utils.commons.exceptions as exceptions
 
