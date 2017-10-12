@@ -76,6 +76,24 @@ class TestOaiHarvestMetadataFormatSetUpsert(TestCase):
         self.assertIsInstance(result, OaiHarvesterMetadataFormatSet)
 
 
+class TestOaiHarvestMetadataFormatSetUpsertLastUpdate(TestCase):
+    def setUp(self):
+        self.oai_harvester_metadata_format_set = _create_oai_harvester_metadata_format_set()
+
+    @patch.object(OaiHarvesterMetadataFormatSet, 'upsert_last_update_by_metadata_format_and_set')
+    def test_upsert_last_update_raises_exception_if_save_failed(self, mock_upsert_last_update):
+        # Arrange
+        mock_upsert_last_update.side_effect = Exception()
+
+        # Act + Assert
+        with self.assertRaises(Exception):
+            harvester_metadata_format_set_api.upsert_last_update_by_metadata_format_and_set(
+                self.oai_harvester_metadata_format_set.harvester_metadata_format,
+                self.oai_harvester_metadata_format_set.harvester_set,
+                datetime.datetime.now()
+            )
+
+
 class TestOaiHarvestMetadataFormatSetGetLastUpdateByMetadataFormatAndSet(TestCase):
     @patch.object(OaiHarvesterMetadataFormatSet, 'get_by_metadata_format_and_set')
     def test_get_last_update_by_metadata_format_and_set(self, get_by_metadata_format_and_set):

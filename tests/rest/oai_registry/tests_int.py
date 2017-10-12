@@ -158,15 +158,12 @@ class TestDeactivateRegistry(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-@skip("TODO: Fix this test")
 class TestDeleteRegistry(MongoIntegrationBaseTestCase):
     fixture = OaiPmhFixtures()
 
     def setUp(self):
         super(TestDeleteRegistry, self).setUp()
         self.data = {}
-        self.bad_data = {}
-        self.bad_registry = {"registry_id": str(ObjectId())}
 
     def test_delete_registry(self):
         # Arrange

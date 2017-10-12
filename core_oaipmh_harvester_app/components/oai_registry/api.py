@@ -411,14 +411,9 @@ def _harvest_by_metadata_formats_and_sets(registry, metadata_formats, registry_s
                                       set_)
             # If no exceptions was thrown and no errors occurred, we can update the lastUpdate date
             if len(errors) == 0:
-                try:
-                    oai_h_mf_set = oai_harvester_metadata_format_set_api.\
-                        get_by_metadata_format_and_set(metadata_format, set_)
-                except exceptions.DoesNotExist:
-                    oai_h_mf_set = OaiHarvesterMetadataFormatSet(harvester_metadata_format=metadata_format,
-                                                                 harvester_set=set_)
-                oai_h_mf_set.lastUpdate = current_update_mf_set
-                oai_harvester_metadata_format_set_api.upsert(oai_h_mf_set)
+                oai_harvester_metadata_format_set_api \
+                    .upsert_last_update_by_metadata_format_and_set(metadata_format, set_,
+                                                                   current_update_mf_set)
             else:
                 errors_during_harvest = True
                 all_errors.append(errors)
@@ -457,14 +452,9 @@ def _harvest_by_metadata_formats(registry, metadata_formats, registry_all_sets):
             # Would be useful if we do a _harvest_by_metadata_formats_and_sets in the future: won't retrieve everything
             if len(registry_all_sets) != 0:
                 for set_ in registry_all_sets:
-                    try:
-                        oai_h_mf_set = oai_harvester_metadata_format_set_api.\
-                            get_by_metadata_format_and_set(metadata_format, set_)
-                    except exceptions.DoesNotExist:
-                        oai_h_mf_set = OaiHarvesterMetadataFormatSet(harvester_metadata_format=metadata_format,
-                                                                     harvester_set=set_)
-                    oai_h_mf_set.lastUpdate = current_update_mf
-                    oai_harvester_metadata_format_set_api.upsert(oai_h_mf_set)
+                    oai_harvester_metadata_format_set_api\
+                        .upsert_last_update_by_metadata_format_and_set(metadata_format, set_,
+                                                                       current_update_mf)
             # Update the update date
             metadata_format.lastUpdate = current_update_mf
             oai_harvester_metadata_format_api.upsert(metadata_format)

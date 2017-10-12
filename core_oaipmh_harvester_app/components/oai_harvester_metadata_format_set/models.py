@@ -36,3 +36,22 @@ class OaiHarvesterMetadataFormatSet(Document):
             raise exceptions.DoesNotExist(e.message)
         except Exception as e:
             raise exceptions.ModelError(e.message)
+
+    @staticmethod
+    def upsert_last_update_by_metadata_format_and_set(harvester_metadata_format, harvester_set,
+                                                      last_update):
+        """ Update the last_update date for a given metadata_format and set. Create an
+        OaiHarvesterMetadataFormatSet if doesn't exist.
+
+            Args:
+                harvester_metadata_format: Metadata format.
+                harvester_set: Set.
+                last_update: Last update date.
+
+        """
+        try:
+            OaiHarvesterMetadataFormatSet.objects(
+                harvester_metadata_format=harvester_metadata_format,
+                harvester_set=harvester_set).update_one(lastUpdate=last_update, upsert=True)
+        except Exception as e:
+            raise exceptions.ModelError(e.message)
