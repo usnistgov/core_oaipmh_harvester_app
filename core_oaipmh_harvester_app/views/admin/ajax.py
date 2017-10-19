@@ -1,24 +1,28 @@
-from django.http.response import HttpResponseBadRequest, HttpResponse
-from core_oaipmh_harvester_app.views.admin.forms import AddRegistryForm, EditRegistryForm, EditHarvestRegistryForm
-import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
-import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as oai_metadata_format_api
-import core_oaipmh_harvester_app.components.oai_identify.api as oai_identify_api
-import core_oaipmh_harvester_app.components.oai_harvester_set.api as oai_set_api
-import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
-import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verb_api
-from django.contrib import messages
+import datetime
 import json
 import urllib
-from rest_framework import status
-from django.template import loader
-from django.contrib.staticfiles import finders
-from core_main_app.utils.xml import xsl_transform
-from os.path import join
-import datetime
 from StringIO import StringIO
 from wsgiref.util import FileWrapper
+
+from django.contrib import messages
+from django.contrib.staticfiles import finders
+from django.http.response import HttpResponseBadRequest, HttpResponse
+from django.template import loader
+from django.utils import formats
+from os.path import join
+from rest_framework import status
 from xml_utils.xsd_tree.xsd_tree import XSDTree
-import xml_utils.commons.exceptions as exceptions
+
+import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as \
+    oai_metadata_format_api
+import core_oaipmh_harvester_app.components.oai_harvester_set.api as oai_set_api
+import core_oaipmh_harvester_app.components.oai_identify.api as oai_identify_api
+import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
+import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
+import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verb_api
+from core_main_app.utils.xml import xsl_transform
+from core_oaipmh_harvester_app.views.admin.forms import AddRegistryForm, EditRegistryForm, \
+    EditHarvestRegistryForm
 
 
 def add_registry(request):
@@ -245,7 +249,9 @@ def check_update_registry(request):
             registries = oai_registry_api.get_all()
             for registry in registries:
                 result_json = {'registry_id': str(registry.id), 'is_updating': registry.is_updating,
-                               "name": registry.name}
+                               "name": registry.name,
+                               "lastUpdate": formats.date_format(registry.lastUpdate,
+                                                                 "DATETIME_FORMAT")}
                 update_info.append(result_json)
 
             return HttpResponse(json.dumps(update_info), content_type='application/javascript')

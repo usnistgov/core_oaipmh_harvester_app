@@ -48,7 +48,7 @@
             </td>
         </tr>
         <tr objectid="{{ registry.id }}" url="{{ registry.url }}">
-            <td>{{ registry.name }}</td>
+            <td id="name{{registry.id}}">{{ registry.name }}</td>
             <td>{{ registry.url }}</td>
             <td>
             {% if not registry.is_activated %}
@@ -59,7 +59,7 @@
             </td>
             <td>{{ registry.harvest }}</td>
             <td>{{ registry.harvest_rate }}</td>
-            <td>{{ registry.lastUpdate }}</td>
+            <td id="lastUpdate{{registry.id}}">{{ registry.lastUpdate }}</td>
             <td>
                 <a class="btn btn-default view-registry-btn" href="#">
                     <i class="fa fa-eye"></i> View
