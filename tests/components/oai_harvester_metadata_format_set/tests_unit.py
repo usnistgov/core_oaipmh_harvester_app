@@ -99,8 +99,8 @@ class TestOaiHarvestMetadataFormatSetGetLastUpdateByMetadataFormatAndSet(TestCas
     def test_get_last_update_by_metadata_format_and_set(self, get_by_metadata_format_and_set):
         # Arrange
         oai_harvester_metadata_format_set = _create_oai_harvester_metadata_format_set()
-        oai_harvester_metadata_format_set.lastUpdate = datetime.datetime(year=2016, month=11, day=21, hour=8,
-                                                                         minute=40, second=33)
+        oai_harvester_metadata_format_set.last_update = datetime.datetime(year=2016, month=11, day=21, hour=8,
+                                                                          minute=40, second=33)
 
         get_by_metadata_format_and_set.return_value = oai_harvester_metadata_format_set
 
@@ -151,6 +151,6 @@ def _set_oai_harvester_metadata_format_set_fields(oai_harvester_metadata_format_
     """
     oai_harvester_metadata_format_set.harvester_metadata_format = "test"
     oai_harvester_metadata_format_set.harvester_set = "http://test.com/test.xsd"
-    oai_harvester_metadata_format_set.lastUpdate = datetime.datetime.now()
+    oai_harvester_metadata_format_set.last_update = datetime.datetime.now()
 
     return oai_harvester_metadata_format_set

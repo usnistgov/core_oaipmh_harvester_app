@@ -18,7 +18,7 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
     registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE, unique_with='metadata_prefix')
     hash = fields.StringField(blank=True)
     harvest = fields.BooleanField(default=False)
-    lastUpdate = fields.DateTimeField(blank=True)
+    last_update = fields.DateTimeField(blank=True)
 
     @staticmethod
     def get_all_by_registry_id(registry_id, order_by_field=None):

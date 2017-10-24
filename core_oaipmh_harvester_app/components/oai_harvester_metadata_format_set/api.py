@@ -64,4 +64,4 @@ def get_last_update_by_metadata_format_and_set(oai_harvester_metadata_format, oa
 
     """
     return UTCdatetime.datetime_to_utc_datetime_iso8601(get_by_metadata_format_and_set(oai_harvester_metadata_format,
-                                                                                       oai_harvester_set).lastUpdate)
+                                                                                       oai_harvester_set).last_update)

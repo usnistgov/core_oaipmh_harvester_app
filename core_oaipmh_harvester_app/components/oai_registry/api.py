@@ -224,7 +224,7 @@ def harvest_registry(registry):
         # Stop harvesting
         registry.is_harvesting = False
         # Set the last update date
-        registry.lastUpdate = harvest_date
+        registry.last_update = harvest_date
         upsert(registry)
 
         return all_errors
@@ -409,7 +409,7 @@ def _harvest_by_metadata_formats_and_sets(registry, metadata_formats, registry_s
                 last_update = None
             errors = _harvest_records(registry, metadata_format, last_update, registry_all_sets,
                                       set_)
-            # If no exceptions was thrown and no errors occurred, we can update the lastUpdate date
+            # If no exceptions was thrown and no errors occurred, we can update the last_update date
             if len(errors) == 0:
                 oai_harvester_metadata_format_set_api \
                     .upsert_last_update_by_metadata_format_and_set(metadata_format, set_,
@@ -420,7 +420,7 @@ def _harvest_by_metadata_formats_and_sets(registry, metadata_formats, registry_s
         # Set the last update date if no exceptions was thrown
         # Would be useful if we do a _harvest_by_metadata_formats in the future: won't retrieve everything
         if not errors_during_harvest:
-            metadata_format.lastUpdate = current_update_mf
+            metadata_format.last_update = current_update_mf
             oai_harvester_metadata_format_api.upsert(metadata_format)
     return all_errors
 
@@ -440,13 +440,13 @@ def _harvest_by_metadata_formats(registry, metadata_formats, registry_all_sets):
     for metadata_format in metadata_formats:
         try:
             # Retrieve the last update for this metadata format
-            last_update = UTCdatetime.datetime_to_utc_datetime_iso8601(metadata_format.lastUpdate)
+            last_update = UTCdatetime.datetime_to_utc_datetime_iso8601(metadata_format.last_update)
         except:
             last_update = None
         # Update the new date for the metadataFormat
         current_update_mf = datetime.datetime.now()
         errors = _harvest_records(registry, metadata_format, last_update, registry_all_sets)
-        # If no exceptions was thrown and no errors occurred, we can update the lastUpdate date
+        # If no exceptions was thrown and no errors occurred, we can update the last_update date
         if len(errors) == 0:
             # Update the update date for all sets
             # Would be useful if we do a _harvest_by_metadata_formats_and_sets in the future: won't retrieve everything
@@ -456,7 +456,7 @@ def _harvest_by_metadata_formats(registry, metadata_formats, registry_all_sets):
                         .upsert_last_update_by_metadata_format_and_set(metadata_format, set_,
                                                                        current_update_mf)
             # Update the update date
-            metadata_format.lastUpdate = current_update_mf
+            metadata_format.last_update = current_update_mf
             oai_harvester_metadata_format_api.upsert(metadata_format)
         else:
             all_errors.append(errors)

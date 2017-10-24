@@ -15,7 +15,7 @@ class OaiHarvesterMetadataFormatSet(Document):
     harvester_set = fields.ReferenceField(OaiHarvesterSet, reverse_delete_rule=CASCADE)
     harvester_metadata_format = fields.ReferenceField(OaiHarvesterMetadataFormat, reverse_delete_rule=CASCADE,
                                                       unique_with='harvester_set')
-    lastUpdate = fields.DateTimeField(blank=True)
+    last_update = fields.DateTimeField(blank=True)
 
     @staticmethod
     def get_by_metadata_format_and_set(oai_harvester_metadata_format, oai_harvester_set):
@@ -52,6 +52,6 @@ class OaiHarvesterMetadataFormatSet(Document):
         try:
             OaiHarvesterMetadataFormatSet.objects(
                 harvester_metadata_format=harvester_metadata_format,
-                harvester_set=harvester_set).update_one(lastUpdate=last_update, upsert=True)
+                harvester_set=harvester_set).update_one(last_update=last_update, upsert=True)
         except Exception as e:
             raise exceptions.ModelError(e.message)

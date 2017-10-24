@@ -250,8 +250,8 @@ def check_update_registry(request):
             for registry in registries:
                 result_json = {'registry_id': str(registry.id), 'is_updating': registry.is_updating,
                                "name": registry.name,
-                               "lastUpdate": formats.date_format(registry.lastUpdate,
-                                                                 "DATETIME_FORMAT")}
+                               "last_update": formats.date_format(registry.last_update,
+                                                                  "DATETIME_FORMAT")}
                 update_info.append(result_json)
 
             return HttpResponse(json.dumps(update_info), content_type='application/javascript')

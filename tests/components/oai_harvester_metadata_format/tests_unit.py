@@ -349,6 +349,6 @@ def _set_oai_harvester_metadata_format_fields(oai_harvester_metadata_format):
     oai_harvester_metadata_format.raw = dict()
     oai_harvester_metadata_format.registry = OaiRegistry()
     oai_harvester_metadata_format.harvest = True
-    oai_harvester_metadata_format.lastUpdate = datetime.datetime.now()
+    oai_harvester_metadata_format.last_update = datetime.datetime.now()
 
     return oai_harvester_metadata_format

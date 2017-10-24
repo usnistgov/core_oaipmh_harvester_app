@@ -415,7 +415,7 @@ def _set_oai_registry_fields(oai_registry):
     oai_registry.harvest_rate = 3000
     oai_registry.description = "This is the registry"
     oai_registry.harvest = True
-    oai_registry.lastUpdate = datetime.datetime.now()
+    oai_registry.last_update = datetime.datetime.now()
     oai_registry.is_harvesting = False
     oai_registry.is_updating = False
     oai_registry.is_activated = True

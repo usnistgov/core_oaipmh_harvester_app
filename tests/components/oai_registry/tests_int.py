@@ -561,7 +561,7 @@ class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
 
         # Assert
         # Metadata Format date
-        self.assertEquals(metadata_format.lastUpdate, None)
+        self.assertEquals(metadata_format.last_update, None)
         # Metadata Format + Set date
         with self.assertRaises(exceptions.DoesNotExist):
             oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(metadata_format,
@@ -577,11 +577,11 @@ class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
         # Metadata Format date
         metadata_format_in_database = oai_harvester_metadata_format_api.\
             get_by_id(metadata_format.id)
-        self.assertNotEquals(metadata_format_in_database.lastUpdate, None)
+        self.assertNotEquals(metadata_format_in_database.last_update, None)
         # Metadata Format + Set date
         oai_h_mf_set = oai_harvester_metadata_format_set_api.\
             get_by_metadata_format_and_set(metadata_format, set_)
-        self.assertNotEquals(oai_h_mf_set.lastUpdate, None)
+        self.assertNotEquals(oai_h_mf_set.last_update, None)
 
 
 class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
@@ -640,7 +640,7 @@ class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
 
         # Assert
         # Metadata Format date
-        self.assertEquals(metadata_format.lastUpdate, None)
+        self.assertEquals(metadata_format.last_update, None)
         # Metadata Format + Set date
         with self.assertRaises(exceptions.DoesNotExist):
             oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(metadata_format,
@@ -657,11 +657,11 @@ class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
         # Metadata Format date
         metadata_format_in_database = oai_harvester_metadata_format_api.\
             get_by_id(metadata_format.id)
-        self.assertNotEquals(metadata_format_in_database.lastUpdate, None)
+        self.assertNotEquals(metadata_format_in_database.last_update, None)
         # Metadata Format + Set date
         oai_h_mf_set = oai_harvester_metadata_format_set_api.\
             get_by_metadata_format_and_set(metadata_format, set_)
-        self.assertNotEquals(oai_h_mf_set.lastUpdate, None)
+        self.assertNotEquals(oai_h_mf_set.last_update, None)
 
 
 class TestHarvestRegistry(MongoIntegrationBaseTestCase):
@@ -714,7 +714,7 @@ class TestHarvestRegistry(MongoIntegrationBaseTestCase):
 
         # Assert
         # Registry date
-        self.assertEquals(self.fixture.registry.lastUpdate, None)
+        self.assertEquals(self.fixture.registry.last_update, None)
 
         # Act
         result = oai_registry_api.harvest_registry(self.fixture.registry)
@@ -722,7 +722,7 @@ class TestHarvestRegistry(MongoIntegrationBaseTestCase):
         # Assert
         self.assertEquals(result, [])
         # Registry date
-        self.assertNotEquals(self.fixture.registry.lastUpdate, None)
+        self.assertNotEquals(self.fixture.registry.last_update, None)
 
 
 class TestHandleDeleteSet(MongoIntegrationBaseTestCase):
