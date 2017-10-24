@@ -15,7 +15,7 @@ def upsert(oai_record):
             OaiRecord instance.
 
     """
-    return oai_record.save(metadata=oai_record.metadata)
+    return oai_record.save()
 
 
 def get_by_id(oai_record_id):
