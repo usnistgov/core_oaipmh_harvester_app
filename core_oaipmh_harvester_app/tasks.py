@@ -117,11 +117,16 @@ def _revoke_all_scheduled_tasks():
     """ Revoke all OAI-PMH scheduled tasks. Avoid having duplicate tasks when the server reboot.
     """
     try:
-        list_tasks = _get_all_oai_tasks_full_name()
-        current_app.control.revoke(
-            [scheduled["request"]["id"] for scheduled in
-             chain.from_iterable(current_app.control.inspect().scheduled().itervalues())
-             if scheduled["request"]["name"] in list_tasks])
+        logger.info('START revoking OAI-PMH scheduled tasks.')
+        if current_app.control.inspect().scheduled() is not None:
+            list_tasks = _get_all_oai_tasks_full_name()
+            current_app.control.revoke(
+                [scheduled["request"]["id"] for scheduled in
+                 chain.from_iterable(current_app.control.inspect().scheduled().itervalues())
+                 if scheduled["request"]["name"] in list_tasks])
+        else:
+            logger.info('Impossible to retrieve scheduled tasks. Is Celery started?')
+        logger.info('FINISH revoking OAI-PMH scheduled tasks.')
     except Exception as e:
         logger.error('ERROR : Error while revoking the scheduled tasks: {0}'
                      .format(e.message))
