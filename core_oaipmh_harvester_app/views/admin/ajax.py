@@ -248,15 +248,23 @@ def check_update_registry(request):
             update_info = []
             registries = oai_registry_api.get_all()
             for registry in registries:
+                last_update = None
+                # Check if the registry has a last_update and try to format it.
+                if registry.last_update is not None:
+                    try:
+                        last_update = formats.date_format(registry.last_update, "DATETIME_FORMAT")
+                    except (TypeError, Exception):
+                        pass
+
                 result_json = {'registry_id': str(registry.id), 'is_updating': registry.is_updating,
                                "name": registry.name,
-                               "last_update": formats.date_format(registry.last_update,
-                                                                  "DATETIME_FORMAT")}
+                               "last_update": last_update}
+
                 update_info.append(result_json)
 
             return HttpResponse(json.dumps(update_info), content_type='application/javascript')
-        except Exception:
-            return HttpResponseBadRequest('An error occurred. Please contact your administrator.')
+        except Exception, e:
+            return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
 
 def harvest_registry(request):
