@@ -60,11 +60,13 @@ class EditHarvestRegistryForm(forms.Form):
         A EditHarvestRegistryForm form
     """
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
-    metadata_formats = FormDataModelChoiceFieldMF(label='Metadata Formats', queryset=[], empty_label=None,
+    metadata_formats = FormDataModelChoiceFieldMF(label='Metadata Formats', queryset=None,
+                                                  empty_label=None,
                                                   required=False,
                                                   widget=forms.CheckboxSelectMultiple(
                                                      attrs={'class': 'cmn-toggle cmn-toggle-round'}))
-    sets = FormDataModelChoiceFieldSet(label='Sets', queryset=[], required=False, empty_label=None,
+    sets = FormDataModelChoiceFieldSet(label='Sets', queryset=None, required=False,
+                                       empty_label=None,
                                        widget=forms.CheckboxSelectMultiple(
                                            attrs={'class': 'cmn-toggle cmn-toggle-round'}))
 

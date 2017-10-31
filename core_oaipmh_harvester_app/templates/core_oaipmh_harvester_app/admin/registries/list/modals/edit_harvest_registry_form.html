@@ -14,7 +14,7 @@
             </tr>
         </thead>
     {% with initial=edit_harvest_registry_form.metadata_formats.field.widget.choices.field.initial %}
-    {% for pk, choice, initial_extra in  edit_harvest_registry_form.metadata_formats.field.widget.choices %}
+    {% for pk, choice in  edit_harvest_registry_form.metadata_formats.field.widget.choices %}
         <tr>
             <td>{{ choice }}</td>
             <td id="ButtonSetid_metadataFormats_{{ forloop.counter0 }}" class="ui-buttonset" align="right">
@@ -39,7 +39,7 @@
             </tr>
         </thead>
     {% with initial=edit_harvest_registry_form.sets.field.widget.choices.field.initial %}
-    {% for pk, choice, initial_extra in  edit_harvest_registry_form.sets.field.widget.choices %}
+    {% for pk, choice in  edit_harvest_registry_form.sets.field.widget.choices %}
         <tr>
             <td>{{ choice }}</td>
             <td id="ButtonSetid_sets_{{ forloop.counter0 }}" class="ui-buttonset" align="right">
