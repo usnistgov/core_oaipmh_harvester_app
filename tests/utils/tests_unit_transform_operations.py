@@ -1,15 +1,16 @@
 """
     Transform operation test class
 """
+import json
+from unittest import TestCase
+
+import os
+
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
+from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
+from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.utils import transform_operations
-from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
-from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
-import core_main_app.commons.exceptions as exceptions
-from unittest import TestCase
-import os
-import json
 
 DUMP_OAI_PMH_TEST_PATH = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -35,14 +36,6 @@ class TestTransformOaiIdentify(TestCase):
         with self.assertRaises(Exception):
             transform_operations.transform_dict_identifier_to_oai_identifier(self.data)
 
-    def test_transform_oai_identify_raises_error_bad_raw(self):
-        # Arrange
-        self.data['raw'] = "<test?Hello</test>"
-
-        # Act + Assert
-        with self.assertRaises(exceptions.XMLError):
-            transform_operations.transform_dict_identifier_to_oai_identifier(self.data)
-
 
 class TestTransformOaiHarvesterMetadataFormat(TestCase):
     def setUp(self):
@@ -63,14 +56,6 @@ class TestTransformOaiHarvesterMetadataFormat(TestCase):
 
         # Act + Assert
         with self.assertRaises(Exception):
-            transform_operations.transform_dict_metadata_format_to_oai_harvester_metadata_format(self.data)
-
-    def test_transform_oai_harvester_metadata_format_raises_error_bad_raw(self):
-        # Arrange
-        self.data[0]['raw'] = "<test?Hello</test>"
-
-        # Act + Assert
-        with self.assertRaises(exceptions.XMLError):
             transform_operations.transform_dict_metadata_format_to_oai_harvester_metadata_format(self.data)
 
 
@@ -95,14 +80,6 @@ class TestTransformOaiHarvesterSet(TestCase):
         with self.assertRaises(Exception):
             transform_operations.transform_dict_set_to_oai_harvester_set(self.data)
 
-    def test_transform_oai_harvester_set_raises_xml_error(self):
-        # Arrange
-        self.data[0]['raw'] = "<test?Hello</test>"
-
-        # Act + Assert
-        with self.assertRaises(exceptions.XMLError):
-            transform_operations.transform_dict_set_to_oai_harvester_set(self.data)
-
 
 class TestTransformOaiRecord(TestCase):
     def setUp(self):
@@ -123,12 +100,4 @@ class TestTransformOaiRecord(TestCase):
 
         # Act + Assert
         with self.assertRaises(Exception):
-            transform_operations.transform_dict_record_to_oai_record(self.data)
-
-    def test_transform_oai_record_raises_xml_error(self):
-        # Arrange
-        self.data[0]['raw'] = "<test?Hello</test>"
-
-        # Act + Assert
-        with self.assertRaises(exceptions.XMLError):
             transform_operations.transform_dict_record_to_oai_record(self.data)

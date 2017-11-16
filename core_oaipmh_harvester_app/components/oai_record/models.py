@@ -1,33 +1,28 @@
 """
 OaiRecord model
 """
-
-import re
-from core_main_app.commons import exceptions
-from core_main_app.utils.databases.pymongo_database import get_full_text_query
-from django_mongoengine import fields, Document
+from django_mongoengine import fields
 from mongoengine import errors as mongoengine_errors
 from mongoengine.queryset.base import PULL, CASCADE
-from pymongo import errors as pymongo_errors
 
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
+from core_main_app.commons import exceptions
+from core_main_app.components.abstract_data.models import AbstractData
+from core_main_app.utils.databases.pymongo_database import get_full_text_query
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import \
+    OaiHarvesterMetadataFormat
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 
-class OaiRecord(Document):
+class OaiRecord(AbstractData):
     """
         A record object
     """
     identifier = fields.StringField()
-    datestamp = fields.DateTimeField()
     deleted = fields.BooleanField()
     harvester_sets = fields.ListField(fields.ReferenceField(OaiHarvesterSet, reverse_delete_rule=PULL), blank=True)
     harvester_metadata_format = fields.ReferenceField(OaiHarvesterMetadataFormat, reverse_delete_rule=CASCADE)
-    metadata = fields.DictField(blank=True)
-    raw = fields.DictField()
     registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE)
-    xml_content = fields.StringField()
 
     @staticmethod
     def get_by_id(oai_record_id):

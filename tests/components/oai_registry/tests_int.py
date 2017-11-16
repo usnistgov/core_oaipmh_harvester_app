@@ -2,13 +2,13 @@
 """
 import requests
 from bson.objectid import ObjectId
-from core_main_app.commons import exceptions
-from core_main_app.utils.integration_tests.integration_base_test_case\
-    import MongoIntegrationBaseTestCase
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from mock.mock import patch
 from rest_framework import status
 
+from core_main_app.commons import exceptions
+from core_main_app.utils.integration_tests.integration_base_test_case\
+    import MongoIntegrationBaseTestCase
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api \
     as oai_harvester_metadata_format_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models \
@@ -18,11 +18,12 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set impo
 from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_harvester_set_api
 from core_oaipmh_harvester_app.components.oai_identify import api as oai_identify_api
 from core_oaipmh_harvester_app.components.oai_record import api as oai_record_api
+from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
 from tests.components.oai_registry.fixtures.fixtures import OaiPmhFixtures
 from tests.components.oai_registry.fixtures.fixtures import OaiPmhMock
-from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
 
 fixture_data = OaiPmhFixtures()
 
@@ -466,7 +467,8 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         """
         super(TestUpsertRecordForRegistry, self).setUp()
 
-    def test_upsert_updates_if_does_exist(self):
+    @patch.object(OaiRecord, 'convert_to_file')
+    def test_upsert_updates_if_does_exist(self, mock_convert_file):
         """ Test upsert update
         """
         self.fixture.insert_registry()
@@ -476,6 +478,7 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         metadata_format = self.fixture.oai_metadata_formats[0]
         identifier = "fake_identifier"
         oai_record.identifier = identifier
+        mock_convert_file.return_value = None
 
         # Act
         oai_registry_api._upsert_record_for_registry(oai_record, metadata_format,
@@ -486,7 +489,8 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         self.assertEquals(record_in_database.identifier, identifier)
         self.assertEquals(record_in_database.harvester_metadata_format, metadata_format)
 
-    def test_upsert_creates_if_does_not_exist(self):
+    @patch.object(OaiRecord, 'convert_to_file')
+    def test_upsert_creates_if_does_not_exist(self, mock_convert_file):
         """ Test upsert create
         """
         # Arrange
@@ -494,6 +498,7 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         metadata_format = OaiHarvesterMetadataFormat()
         metadata_format.id = ObjectId()
         self.fixture.insert_registry(insert_related_collections=False)
+        mock_convert_file.return_value = None
 
         # Act
         oai_registry_api._upsert_record_for_registry(oai_record, metadata_format,
@@ -519,7 +524,8 @@ class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
         self.fixture.insert_registry(insert_records=False)
 
     @patch.object(requests, 'get')
-    def test_harvest_by_metadata_formats_saves_record(self, mock_get):
+    @patch.object(OaiRecord, 'convert_to_file')
+    def test_harvest_by_metadata_formats_saves_record(self, mock_convert_file, mock_get):
         """ Test harvest by metadata formats save
         Args:
             mock_get:
@@ -532,6 +538,7 @@ class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
         mock_get.return_value.text = OaiPmhMock.\
             mock_oai_response_list_records(with_resumption_token=False)
         metadata_format = [self.fixture.oai_metadata_formats[0]]
+        mock_convert_file.return_value = None
 
         # Act
         result = oai_registry_api._harvest_by_metadata_formats(self.fixture.registry,
@@ -544,7 +551,8 @@ class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
         self.assertTrue(len(record_in_database) > 0)
 
     @patch.object(requests, 'get')
-    def test_harvest_by_metadata_formats_updates_dates(self, mock_get):
+    @patch.object(OaiRecord, 'convert_to_file')
+    def test_harvest_by_metadata_formats_updates_dates(self, mock_convert_file, mock_get):
         """ Test harvest by metadata formats update
         Args:
             mock_get:
@@ -558,6 +566,7 @@ class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
             mock_oai_response_list_records(with_resumption_token=False)
         metadata_format = self.fixture.oai_metadata_formats[0]
         set_ = self.fixture.oai_sets[0]
+        mock_convert_file.return_value = None
 
         # Assert
         # Metadata Format date
@@ -597,7 +606,8 @@ class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
         self.fixture.insert_registry(insert_records=False)
 
     @patch.object(requests, 'get')
-    def test_harvest_by_metadata_formats_and_sets_saves_record(self, mock_get):
+    @patch.object(OaiRecord, 'convert_to_file')
+    def test_harvest_by_metadata_formats_and_sets_saves_record(self, mock_convert_file, mock_get):
         """ Test harvest by metadata formats and sets save
         Args:
             mock_get:
@@ -611,6 +621,7 @@ class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
             mock_oai_response_list_records(with_resumption_token=False)
         metadata_format = [self.fixture.oai_metadata_formats[0]]
         set_ = [self.fixture.oai_sets[0]]
+        mock_convert_file.return_value = None
 
         # Act
         result = oai_registry_api._harvest_by_metadata_formats_and_sets(self.fixture.registry,
@@ -623,7 +634,8 @@ class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
         self.assertTrue(len(record_in_database) > 0)
 
     @patch.object(requests, 'get')
-    def test_harvest_by_metadata_formats_and_sets_updates_dates(self, mock_get):
+    @patch.object(OaiRecord, 'convert_to_file')
+    def test_harvest_by_metadata_formats_and_sets_updates_dates(self, mock_convert_file, mock_get):
         """ Test harvest by metadata formats and sets update
         Args:
             mock_get:
@@ -637,6 +649,7 @@ class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
             mock_oai_response_list_records(with_resumption_token=False)
         metadata_format = self.fixture.oai_metadata_formats[0]
         set_ = self.fixture.oai_sets[0]
+        mock_convert_file.return_value = None
 
         # Assert
         # Metadata Format date
@@ -677,10 +690,12 @@ class TestHarvestRegistry(MongoIntegrationBaseTestCase):
         self.fixture.insert_registry(insert_records=False)
 
     @patch.object(requests, 'get')
-    def test_harvest_registry_saves_record(self, mock_get):
+    @patch.object(OaiRecord, 'convert_to_file')
+    def test_harvest_registry_saves_record(self, mock_convert_file, mock_get):
         """ Test harvest save
         Args:
             mock_get:
+            mock_convert_file:
 
         Returns:
 
@@ -689,6 +704,7 @@ class TestHarvestRegistry(MongoIntegrationBaseTestCase):
         mock_get.return_value.status_code = status.HTTP_200_OK
         mock_get.return_value.text = OaiPmhMock.\
             mock_oai_response_list_records(with_resumption_token=False)
+        mock_convert_file.return_value = None
 
         # Act
         result = oai_registry_api.harvest_registry(self.fixture.registry)
@@ -699,10 +715,12 @@ class TestHarvestRegistry(MongoIntegrationBaseTestCase):
         self.assertTrue(len(record_in_database) > 0)
 
     @patch.object(requests, 'get')
-    def test_harvest_registry_updates_dates(self, mock_get):
+    @patch.object(OaiRecord, 'convert_to_file')
+    def test_harvest_registry_updates_dates(self, mock_convert_file, mock_get):
         """ Test harvest update
         Args:
             mock_get:
+            mock_convert_file:
 
         Returns:
 
@@ -711,6 +729,7 @@ class TestHarvestRegistry(MongoIntegrationBaseTestCase):
         mock_get.return_value.status_code = status.HTTP_200_OK
         mock_get.return_value.text = OaiPmhMock.\
             mock_oai_response_list_records(with_resumption_token=False)
+        mock_convert_file.return_value = None
 
         # Assert
         # Registry date
