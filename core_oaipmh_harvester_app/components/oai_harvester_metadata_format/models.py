@@ -118,3 +118,17 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
 
         """
         OaiHarvesterMetadataFormat.get_all_by_list_ids(list_oai_metadata_format_ids).update(set__harvest=harvest)
+
+    def get_display_name(self):
+        """Return harvester metadata format name to display.
+
+        Returns:
+
+        """
+        # Use the metadata prefix name
+        display_name = self.metadata_prefix
+        # If a template corresponds to this metadata prefix, we add the template name
+        if self.template:
+            display_name += " - {0}".format(self.template.display_name)
+
+        return display_name
