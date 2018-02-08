@@ -39,7 +39,7 @@ def add_registry(request):
             if form.is_valid():
                 url = form.cleaned_data.get('url')
                 harvest_rate = form.cleaned_data.get('harvest_rate')
-                harvest = form.cleaned_data.get('harvest') == 'on'
+                harvest = form.cleaned_data.get('harvest')
                 oai_registry_api.add_registry_by_url(url, harvest_rate, harvest)
                 messages.add_message(request, messages.SUCCESS, 'Data provider added with success.')
             else:
