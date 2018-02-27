@@ -15,6 +15,8 @@ def upsert(oai_record):
             OaiRecord instance.
 
     """
+    # Set the title with the OAI identifier.
+    oai_record.title = oai_record.identifier
     return oai_record.convert_and_save()
 
 
