@@ -1,16 +1,16 @@
 """ Int Test Rest OaiRegistry
 """
-from mock.mock import patch, Mock
-from core_main_app.utils.integration_tests.integration_base_test_case import MongoIntegrationBaseTestCase
-from tests.components.oai_registry.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
-from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
-from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from core_oaipmh_harvester_app.rest.oai_registry import views as rest_oai_registry
-from rest_framework import status
-from bson import ObjectId
-from django.contrib.auth.models import User
-from unittest import skip
 import requests
+from django.contrib.auth.models import User
+from mock.mock import patch, Mock
+from rest_framework import status
+
+from core_main_app.utils.integration_tests.integration_base_test_case import \
+    MongoIntegrationBaseTestCase
+from core_main_app.utils.tests_tools.RequestMock import RequestMock
+from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
+from core_oaipmh_harvester_app.rest.oai_registry import views as rest_oai_registry
+from tests.components.oai_registry.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
 
 
 class TestSelectRegistry(MongoIntegrationBaseTestCase):
@@ -18,16 +18,16 @@ class TestSelectRegistry(MongoIntegrationBaseTestCase):
 
     def setUp(self):
         super(TestSelectRegistry, self).setUp()
-        self.data = {"registry_name": self.fixture.name}
-        self.bad_data = {}
+        self.fixture.insert_registry()
+        self.param = {"registry_id": self.fixture.registry.id}
 
     def test_select_registry_returns(self):
         # Arrange
-        self.fixture.insert_registry()
         user = _create_mock_user(has_perm=True)
 
         # Act
-        response = RequestMock.do_request_get(rest_oai_registry.select_registry, user=user, data=self.data)
+        response = RequestMock.do_request_get(rest_oai_registry.RegistryDetail.as_view(), user=user,
+                                              param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -46,7 +46,8 @@ class TestSelectAllRegistries(MongoIntegrationBaseTestCase):
         user = _create_mock_user(has_perm=True)
 
         # Act
-        response = RequestMock.do_request_get(rest_oai_registry.select_all_registries, user, self.data)
+        response = RequestMock.do_request_get(rest_oai_registry.RegistryList.as_view(), user,
+                                              self.data)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -57,9 +58,8 @@ class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
 
     def setUp(self):
         super(TestUpdateRegistryInfo, self).setUp()
-        self.data = {}
-        self.bad_data = {}
-        self.bad_registry = {"registry_id": ObjectId()}
+        self.fixture.insert_registry()
+        self.param = {"registry_id": self.fixture.registry.id}
 
     @patch.object(requests, 'get')
     @patch.object(oai_verbs_api, 'list_sets_as_object')
@@ -67,8 +67,6 @@ class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
     @patch.object(oai_verbs_api, 'identify_as_object')
     def test_update_registry_info(self, mock_identify, mock_metadata_formats, mock_sets, mock_get):
         # Arrange
-        self.fixture.insert_registry()
-        self.data = {"registry_id": self.fixture.registry.id}
         identify = OaiPmhMock.mock_oai_identify(version=2)
         mock_identify.return_value = identify, status.HTTP_200_OK
         first_metadata_format = OaiPmhMock.mock_oai_metadata_format(version=2)
@@ -80,9 +78,9 @@ class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
         mock_get.return_value.text = text
 
         # Act
-        response = RequestMock.do_request_post(rest_oai_registry.update_registry_info,
-                                               user=_create_mock_user(is_staff=True),
-                                               data=self.data)
+        response = RequestMock.do_request_patch(rest_oai_registry.InfoRegistry.as_view(),
+                                                user=_create_mock_user(is_staff=True),
+                                                param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -93,20 +91,16 @@ class TestUpdateRegistryConf(MongoIntegrationBaseTestCase):
 
     def setUp(self):
         super(TestUpdateRegistryConf, self).setUp()
+        self.fixture.insert_registry()
+        self.param = {"registry_id": str(self.fixture.registry.id)}
         self.data = {"harvest_rate": self.fixture.harvest_rate, "harvest": self.fixture.harvest}
-        self.bad_registry = {"registry_id": str(ObjectId()), "harvest_rate": self.fixture.harvest_rate,
-                             "harvest": self.fixture.harvest}
-        self.bad_data = {}
 
     def test_update_registry_info(self):
-        # Arrange
-        self.fixture.insert_registry()
-        self.data.update({"registry_id": str(self.fixture.registry.id)})
-
         # Act
-        response = RequestMock.do_request_put(rest_oai_registry.update_registry_conf,
-                                              user=_create_mock_user(is_staff=True),
-                                              data=self.data)
+        response = RequestMock.do_request_patch(rest_oai_registry.RegistryDetail.as_view(),
+                                                user=_create_mock_user(is_staff=True),
+                                                data=self.data,
+                                                param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -117,19 +111,14 @@ class TestActivateRegistry(MongoIntegrationBaseTestCase):
 
     def setUp(self):
         super(TestActivateRegistry, self).setUp()
-        self.data = {}
-        self.bad_data = {}
-        self.bad_registry = {"registry_id": str(ObjectId())}
+        self.fixture.insert_registry()
+        self.param = {"registry_id": self.fixture.registry.id}
 
     def test_activate_registry(self):
-        # Arrange
-        self.fixture.insert_registry()
-        self.data = {"registry_id": str(self.fixture.registry.id)}
-
         # Act
-        response = RequestMock.do_request_post(rest_oai_registry.activate_registry,
-                                               user=_create_mock_user(is_staff=True),
-                                               data=self.data)
+        response = RequestMock.do_request_patch(rest_oai_registry.ActivateRegistry.as_view(),
+                                                user=_create_mock_user(is_staff=True),
+                                                param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -140,19 +129,14 @@ class TestDeactivateRegistry(MongoIntegrationBaseTestCase):
 
     def setUp(self):
         super(TestDeactivateRegistry, self).setUp()
-        self.data = {}
-        self.bad_data = {}
-        self.bad_registry = {"registry_id": str(ObjectId())}
+        self.fixture.insert_registry()
+        self.param = {"registry_id": str(self.fixture.registry.id)}
 
     def test_deactivate_registry(self):
-        # Arrange
-        self.fixture.insert_registry()
-        self.data = {"registry_id": str(self.fixture.registry.id)}
-
         # Act
-        response = RequestMock.do_request_post(rest_oai_registry.deactivate_registry,
-                                               user=_create_mock_user(is_staff=True),
-                                               data=self.data)
+        response = RequestMock.do_request_patch(rest_oai_registry.DeactivateRegistry.as_view(),
+                                                user=_create_mock_user(is_staff=True),
+                                                param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -163,20 +147,17 @@ class TestDeleteRegistry(MongoIntegrationBaseTestCase):
 
     def setUp(self):
         super(TestDeleteRegistry, self).setUp()
-        self.data = {}
+        self.fixture.insert_registry()
+        self.param = {"registry_id": str(self.fixture.registry.id)}
 
     def test_delete_registry(self):
-        # Arrange
-        self.fixture.insert_registry()
-        self.data = {"registry_id": str(self.fixture.registry.id)}
-
         # Act
-        response = RequestMock.do_request_post(rest_oai_registry.delete_registry,
-                                               user=_create_mock_user(is_staff=True),
-                                               data=self.data)
+        response = RequestMock.do_request_delete(rest_oai_registry.RegistryDetail.as_view(),
+                                                 user=_create_mock_user(is_staff=True),
+                                                 param=self.param)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
 def _create_mock_user(is_staff=False, has_perm=False, is_anonymous=False):

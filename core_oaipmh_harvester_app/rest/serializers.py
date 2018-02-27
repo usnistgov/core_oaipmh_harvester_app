@@ -1,54 +1,36 @@
 """
     Serializers used throughout the Rest API
 """
-from rest_framework.serializers import Serializer, CharField, IntegerField, BooleanField, ListField
+from rest_framework.serializers import CharField, IntegerField, BooleanField, ListField
 from rest_framework_mongoengine.serializers import DocumentSerializer
+
+from core_main_app.commons.serializers import BasicSerializer
+from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
-
-
-class BasicSerializer(Serializer):
-    def create(self, validated_data):
-        pass
-
-    def update(self, instance, validated_data):
-        pass
-
-
-class AddRegistrySerializer(BasicSerializer):
-    url = CharField(required=True)
-    harvest_rate = IntegerField(required=True)
-    harvest = BooleanField(required=True)
-
-
-class RegistryIdSerializer(BasicSerializer):
-    registry_id = CharField(required=True)
 
 
 class RegistrySerializer(DocumentSerializer):
     class Meta:
         model = OaiRegistry
         fields = "__all__"
-        
 
-class UpdateRegistrySerializer(Serializer):
+        read_only_fields = ('id', 'name', 'description', 'last_update', 'is_harvesting',
+                            'is_updating', 'is_activated', 'is_queued')
+
     def create(self, validated_data):
-        pass
+        return oai_registry_api.add_registry_by_url(**validated_data)
 
+
+class UpdateRegistrySerializer(BasicSerializer):
     def update(self, instance, validated_data):
         instance.harvest_rate = validated_data.get('harvest_rate', instance.harvest_rate)
         instance.harvest = validated_data.get('harvest', instance.harvest)
-        return instance
+        return oai_registry_api.upsert(instance)
 
-    registry_id = CharField(required=True)
     harvest_rate = IntegerField(required=True)
     harvest = BooleanField(required=True)
 
 
-class SelectRegistrySerializer(BasicSerializer):
-    registry_name = CharField(required=True)
-
-
-class UpdateRegistryHarvestSerializer(BasicSerializer):
-    registry_id = CharField(required=True)
+class HarvestSerializer(BasicSerializer):
     metadata_formats = ListField(child=CharField(), required=False)
     sets = ListField(child=CharField(), required=False)
