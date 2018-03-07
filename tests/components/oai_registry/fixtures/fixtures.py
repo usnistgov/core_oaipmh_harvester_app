@@ -86,6 +86,7 @@ class OaiPmhFixtures(FixtureInterface):
         oai_records = OaiPmhMock.mock_oai_record(version=1)
         saved_oai_records = []
         for oai_record in oai_records:
+            oai_record.title = oai_record.identifier
             oai_record.registry = self.registry
             oai_record.harvester_metadata_format = self.oai_metadata_formats[0]
             saved_oai_records.append(oai_record.save())

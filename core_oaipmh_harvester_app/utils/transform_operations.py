@@ -86,8 +86,7 @@ def transform_dict_record_to_oai_record(data, registry_all_sets=[]):
             utc_datetime_iso8601_to_datetime(obj['datestamp'])
         oai_record.deleted = obj['deleted']
         oai_record.harvester_sets = [x for x in registry_all_sets if x.set_spec in obj['sets']]
-        # TODO: Test if need to set it to None if data is deleted.
-        oai_record.xml_content = str(obj['metadata'])
+        oai_record.xml_content = str(obj['metadata']) if obj['metadata'] is not None else None
 
         list_records.append(oai_record)
 

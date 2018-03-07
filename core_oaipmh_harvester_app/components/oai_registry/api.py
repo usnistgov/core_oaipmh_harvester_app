@@ -518,7 +518,13 @@ def _upsert_record_for_registry(record, metadata_format, registry):
 
     """
     try:
-        record_db = oai_record_api.get_by_identifier_and_metadata_format(record.identifier, metadata_format)
+        record_db = oai_record_api.get_by_identifier_and_metadata_format(record.identifier,
+                                                                         metadata_format)
+        # No xml_content means that the record has no metadata (Deleted). Do no change the
+        # xml_content already in database
+        if record.xml_content is None:
+            record.xml_content = record_db.xml_content
+
         record.id = record_db.id
     except exceptions.DoesNotExist:
         pass
