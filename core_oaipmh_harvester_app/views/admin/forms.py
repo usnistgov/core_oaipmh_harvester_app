@@ -1,9 +1,11 @@
 from django import forms
 from django.core.validators import MinValueValidator
-import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
+from mongodbforms import DocumentForm
+
 import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as oai_metadata_format_api
 import core_oaipmh_harvester_app.components.oai_harvester_set.api as oai_set_api
-
+import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
+from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 VERBS = (('0', 'Pick one'),
          ('1', 'Identify'),
@@ -31,16 +33,16 @@ class AddRegistryForm(forms.Form):
                                                                    'visibility': 'hidden'}))
 
 
-class EditRegistryForm(forms.Form):
-    """
-        A registry update form
-    """
-    id = forms.CharField(widget=forms.HiddenInput(), required=False)
-    harvest_rate = forms.IntegerField(label='Harvest Rate (seconds)', required=False, validators=[MinValueValidator(0)],
+class EditRegistryForm(DocumentForm):
+    harvest_rate = forms.IntegerField(label='Harvest Rate (seconds)',
+                                      validators=[MinValueValidator(0)],
                                       widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    harvest = forms.BooleanField(label='Enable automatic harvesting', required=False, initial=True,
-                                 widget=forms.CheckboxInput(attrs={'class': 'cmn-toggle cmn-toggle-round',
-                                                                   'visibility': 'hidden'}))
+    harvest = forms.BooleanField(label='Enable automatic harvesting', initial=True, required=False,
+                                 widget=forms.CheckboxInput())
+
+    class Meta:
+        document = OaiRegistry
+        fields = ['harvest_rate', 'harvest']
 
 
 class FormDataModelChoiceFieldMF(forms.ModelChoiceField):

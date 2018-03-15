@@ -6,12 +6,12 @@ from wsgiref.util import FileWrapper
 
 from django.contrib import messages
 from django.contrib.staticfiles import finders
-from django.http.response import HttpResponseBadRequest, HttpResponse
+from django.core.urlresolvers import reverse_lazy
+from django.http.response import HttpResponseBadRequest, HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.utils import formats
 from os.path import join
 from rest_framework import status
-from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as \
     oai_metadata_format_api
@@ -21,8 +21,11 @@ import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
 import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
 import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verb_api
 from core_main_app.utils.xml import xsl_transform
+from core_main_app.views.common.ajax import EditObjectModalView
+from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.views.admin.forms import AddRegistryForm, EditRegistryForm, \
     EditHarvestRegistryForm
+from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
 def add_registry(request):
@@ -120,40 +123,23 @@ def check_registry(request):
     return HttpResponse(json.dumps({'is_available': is_available}), content_type='application/javascript')
 
 
-def edit_registry(request):
-    """ Edit a registry.
-    Args:
-        request:
+class EditRegistryView(EditObjectModalView):
+    form_class = EditRegistryForm
+    model = OaiRegistry
+    success_url = reverse_lazy("admin:core_oaipmh_harvester_app_registries")
 
-    Returns:
+    def _save(self, form):
+        # Save treatment.
+        # It should return an HttpResponse.
+        try:
+            oai_registry_api.upsert(self.object)
+            messages.add_message(self.request, messages.SUCCESS, 'Data provider edited with '
+                                                                 'success.')
+        except Exception, e:
+            form.add_error(None, e.message)
+            return super(EditRegistryView, self).form_invalid(form)
 
-    """
-    try:
-        if request.method == 'POST':
-            form = EditRegistryForm(request.POST)
-            if form.is_valid():
-                registry = oai_registry_api.get_by_id(request.POST['id'])
-                registry.harvest_rate = request.POST.get('harvest_rate')
-                registry.harvest = request.POST.get('harvest') == 'on'
-                oai_registry_api.upsert(registry)
-                messages.add_message(request, messages.SUCCESS, 'Data provider edited with success.')
-
-                return HttpResponse(json.dumps({}), content_type='application/javascript')
-            else:
-                return HttpResponseBadRequest('Bad entries. Please enter a positive integer')
-        elif request.method == 'GET':
-            registry = oai_registry_api.get_by_id(request.GET['id'])
-            data = {'id': registry.id, 'harvest_rate': registry.harvest_rate, 'harvest': registry.harvest}
-            edit_registry_form = EditRegistryForm(data)
-            template_name = 'core_oaipmh_harvester_app/admin/registries/list/modals/edit_registry_form.html'
-            context = {
-                "edit_registry_form": edit_registry_form
-            }
-
-            return HttpResponse(json.dumps({'template': loader.render_to_string(template_name, context)}),
-                                'application/javascript')
-    except Exception, e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseRedirect(self.get_success_url())
 
 
 def view_registry(request):

@@ -1,9 +1,9 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from core_main_app.utils.rendering import admin_render
-from core_oaipmh_harvester_app.views.admin.forms import AddRegistryForm, RequestForm
+
 import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
-from django.contrib.staticfiles import finders
-from os.path import join
+from core_main_app.utils.rendering import admin_render
+from core_oaipmh_harvester_app.views.admin.ajax import EditRegistryView
+from core_oaipmh_harvester_app.views.admin.forms import AddRegistryForm, RequestForm
 
 
 @staff_member_required
@@ -53,8 +53,8 @@ def registries_view(request):
         "core_oaipmh_harvester_app/admin/registries/list/modals/add_registry.html",
         "core_oaipmh_harvester_app/admin/registries/list/modals/deactivate_registry.html",
         "core_oaipmh_harvester_app/admin/registries/list/modals/delete_registry.html",
-        "core_oaipmh_harvester_app/admin/registries/list/modals/edit_registry.html",
-        "core_oaipmh_harvester_app/admin/registries/list/modals/edit_harvest_registry.html"
+        "core_oaipmh_harvester_app/admin/registries/list/modals/edit_harvest_registry.html",
+        EditRegistryView.get_modal_html_path()
     ]
 
     assets = {
@@ -84,10 +84,6 @@ def registries_view(request):
                 "is_raw": False
             },
             {
-                "path": "core_oaipmh_harvester_app/admin/js/registries/list/modals/edit_registry.js",
-                "is_raw": False
-            },
-            {
                 "path": "core_oaipmh_harvester_app/admin/js/registries/list/modals/edit_harvest_registry.js",
                 "is_raw": False
             },
@@ -103,6 +99,7 @@ def registries_view(request):
                 "path": "core_oaipmh_harvester_app/admin/js/registries/list/modals/refresh.js",
                 "is_raw": False
             },
+            EditRegistryView.get_modal_js_path(),
         ],
         "css": [
             "core_oaipmh_harvester_app/admin/css/registries/list/modals/view_registry.css",

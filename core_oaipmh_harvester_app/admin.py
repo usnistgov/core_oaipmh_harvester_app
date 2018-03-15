@@ -1,8 +1,8 @@
 """
 Url router for the administration site
 """
-from django.contrib import admin
 from django.conf.urls import url
+from django.contrib import admin
 
 from core_oaipmh_harvester_app.views.admin import views as admin_views, ajax as admin_ajax
 
@@ -27,7 +27,7 @@ admin_urls = [
         name='core_oaipmh_harvester_app_check_registry'),
     url(r'^harvesters/registry/edit/harvest', admin_ajax.edit_harvest_registry,
         name='core_oaipmh_harvester_app_edit_harvest_registry'),
-    url(r'^harvesters/registry/edit', admin_ajax.edit_registry,
+    url(r'^harvesters/registry/(?P<pk>[\w-]+)/edit/$', admin_ajax.EditRegistryView.as_view(),
         name='core_oaipmh_harvester_app_edit_registry'),
     url(r'^harvesters/registry/view', admin_ajax.view_registry,
         name='core_oaipmh_harvester_app_view_registry'),

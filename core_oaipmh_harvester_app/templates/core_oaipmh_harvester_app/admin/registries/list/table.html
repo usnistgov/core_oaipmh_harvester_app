@@ -65,9 +65,8 @@
                     <i class="fa fa-eye"></i> View
                 </a>
                 {% if registry.is_activated %}
-                    <a class="btn btn-default edit-registry-btn" href="#">
-                        <i class="fa fa-edit"></i> Edit
-                    </a>
+                    {% url 'admin:core_oaipmh_harvester_app_edit_registry' registry.id as edit_url %}
+                    {% include 'core_main_app/common/buttons/edit.html' %}
                     <a class="btn btn-default edit-harvest-registry-btn" href="#">
                         <i class="fa fa-clock-o"></i> Edit harvest
                     </a>
