@@ -1,4 +1,5 @@
-core_oaipmh_harvester_app
+=========================
+Core Oaipmh Harvester App
 =========================
 
 OAI-PMH harvesting capabilities for the curator core project.
