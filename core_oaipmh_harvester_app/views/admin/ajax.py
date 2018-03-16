@@ -167,41 +167,57 @@ def view_registry(request):
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
 
-def edit_harvest_registry(request):
-    """ Edit the harvesting of a registry.
-    Args:
-        request:
+class EditHarvestRegistryView(EditObjectModalView):
+    template_name = 'core_oaipmh_harvester_app/admin/registries/list/modals/edit_harvest_registry_form.html'
+    form_class = EditHarvestRegistryForm
+    model = OaiRegistry
+    success_url = reverse_lazy("admin:core_oaipmh_harvester_app_registries")
+    metadata_formats = None
+    sets = None
 
-    Returns:
+    def _save(self, form):
+        # Save treatment.
+        # It should return an HttpResponse.
+        try:
+            registry_id = self.object.id
+            metadata_formats = form.cleaned_data.get('metadata_formats', [])
+            sets = form.cleaned_data.get('sets', [])
+            oai_metadata_format_api. \
+                update_for_all_harvest_by_list_ids(
+                oai_metadata_format_api.get_all_by_registry_id(registry_id).
+                values_list('id'), False)
+            oai_metadata_format_api.update_for_all_harvest_by_list_ids(metadata_formats.values_list('id'), True)
+            oai_set_api.update_for_all_harvest_by_list_ids(
+                oai_set_api.get_all_by_registry_id(registry_id).
+                values_list('id'), False)
+            oai_set_api.update_for_all_harvest_by_list_ids(sets.values_list('id'), True)
+            messages.add_message(self.request, messages.SUCCESS, 'Data provider edited with '
+                                                                 'success.')
+        except Exception, e:
+            form.add_error(None, e.message)
+            return super(EditHarvestRegistryView, self).form_invalid(form)
 
-    """
-    try:
-        if request.method == 'POST':
-            registry_id = request.POST.get('id')
-            metadata_formats = request.POST.getlist('metadata_formats', [])
-            sets = request.POST.getlist('sets', [])
-            oai_metadata_format_api.\
-                update_for_all_harvest_by_list_ids(oai_metadata_format_api.get_all_by_registry_id(registry_id).
-                                                   values_list('id'), False)
-            oai_metadata_format_api.update_for_all_harvest_by_list_ids(metadata_formats, True)
-            oai_set_api.update_for_all_harvest_by_list_ids(oai_set_api.get_all_by_registry_id(registry_id).
-                                                           values_list('id'), False)
-            oai_set_api.update_for_all_harvest_by_list_ids(sets, True)
-            messages.add_message(request, messages.SUCCESS, 'Data provider edited with success.')
+        return HttpResponseRedirect(self.get_success_url())
 
-            return HttpResponse(json.dumps({}), content_type='application/javascript')
-        elif request.method == 'GET':
-            registry_id = request.GET['id']
-            edit_harvest_registry_form = EditHarvestRegistryForm(id=registry_id)
-            template_name = 'core_oaipmh_harvester_app/admin/registries/list/modals/edit_harvest_registry_form.html'
-            context = {
-                'edit_harvest_registry_form': edit_harvest_registry_form,
-            }
+    def get_form_kwargs(self):
+        """This method is what injects forms with their keyword
+            arguments."""
+        # grab the current set of form #kwargs
+        kwargs = super(EditHarvestRegistryView, self).get_form_kwargs()
+        # Update the kwargs
+        kwargs['metadata_formats'] = self.metadata_formats
+        kwargs['sets'] = self.sets
 
-            return HttpResponse(json.dumps({'template': loader.render_to_string(template_name, context)}),
-                                'application/javascript')
-    except Exception, e:
-            return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return kwargs
+
+    def get_initial(self):
+        initial = super(EditHarvestRegistryView, self).get_initial()
+        self.metadata_formats = oai_metadata_format_api.get_all_by_registry_id(self.object.id)
+        self.sets = oai_set_api.get_all_by_registry_id(self.object.id)
+        initial['metadata_formats'] = [mf.id for mf in self.metadata_formats if mf.harvest]
+        initial['sets'] = [set_.id for set_ in self.sets if set_.harvest]
+
+        return initial
 
 
 def update_registry(request):

@@ -2,8 +2,6 @@ from django import forms
 from django.core.validators import MinValueValidator
 from mongodbforms import DocumentForm
 
-import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as oai_metadata_format_api
-import core_oaipmh_harvester_app.components.oai_harvester_set.api as oai_set_api
 import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
@@ -45,43 +43,38 @@ class EditRegistryForm(DocumentForm):
         fields = ['harvest_rate', 'harvest']
 
 
-class FormDataModelChoiceFieldMF(forms.ModelChoiceField):
+class FormDataModelChoiceFieldMF(forms.ModelMultipleChoiceField):
     # Used to return the prefix of the metadata format
     def label_from_instance(self, obj):
         return obj.metadata_prefix
 
 
-class FormDataModelChoiceFieldSet(forms.ModelChoiceField):
+class FormDataModelChoiceFieldSet(forms.ModelMultipleChoiceField):
     # Used to return the name of the set
     def label_from_instance(self, obj):
         return obj.set_name
 
 
-class EditHarvestRegistryForm(forms.Form):
+class EditHarvestRegistryForm(DocumentForm):
     """
         A EditHarvestRegistryForm form
     """
-    id = forms.CharField(widget=forms.HiddenInput(), required=False)
     metadata_formats = FormDataModelChoiceFieldMF(label='Metadata Formats', queryset=None,
-                                                  empty_label=None,
                                                   required=False,
-                                                  widget=forms.CheckboxSelectMultiple(
-                                                     attrs={'class': 'cmn-toggle cmn-toggle-round'}))
+                                                  widget=forms.CheckboxSelectMultiple())
     sets = FormDataModelChoiceFieldSet(label='Sets', queryset=None, required=False,
-                                       empty_label=None,
-                                       widget=forms.CheckboxSelectMultiple(
-                                           attrs={'class': 'cmn-toggle cmn-toggle-round'}))
+                                       widget=forms.CheckboxSelectMultiple())
+
+    class Meta:
+        document = OaiRegistry
+        fields = ['metadata_formats', 'sets']
 
     def __init__(self, *args, **kwargs):
-        if 'id' in kwargs:
-            registry_id = kwargs.pop('id')
-            metadata_formats = oai_metadata_format_api.get_all_by_registry_id(registry_id)
-            sets = oai_set_api.get_all_by_registry_id(registry_id)
+        if all(x in kwargs for x in ['metadata_formats', 'sets']):
+            metadata_formats = kwargs.pop('metadata_formats')
+            sets = kwargs.pop('sets')
             super(EditHarvestRegistryForm, self).__init__(*args, **kwargs)
-            self.fields['id'].initial = registry_id
-            self.fields['metadata_formats'].initial = [mf.id for mf in metadata_formats if mf.harvest]
             self.fields['metadata_formats'].queryset = metadata_formats
-            self.fields['sets'].initial = [set_.id for set_ in sets if set_.harvest]
             self.fields['sets'].queryset = sets
 
 

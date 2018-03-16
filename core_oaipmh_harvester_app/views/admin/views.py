@@ -53,7 +53,6 @@ def registries_view(request):
         "core_oaipmh_harvester_app/admin/registries/list/modals/add_registry.html",
         "core_oaipmh_harvester_app/admin/registries/list/modals/deactivate_registry.html",
         "core_oaipmh_harvester_app/admin/registries/list/modals/delete_registry.html",
-        "core_oaipmh_harvester_app/admin/registries/list/modals/edit_harvest_registry.html",
         EditRegistryView.get_modal_html_path()
     ]
 
@@ -81,10 +80,6 @@ def registries_view(request):
             },
             {
                 "path": "core_oaipmh_harvester_app/admin/js/registries/list/modals/check_registry.js",
-                "is_raw": False
-            },
-            {
-                "path": "core_oaipmh_harvester_app/admin/js/registries/list/modals/edit_harvest_registry.js",
                 "is_raw": False
             },
             {

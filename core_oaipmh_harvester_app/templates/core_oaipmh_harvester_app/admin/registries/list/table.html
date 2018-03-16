@@ -67,9 +67,8 @@
                 {% if registry.is_activated %}
                     {% url 'admin:core_oaipmh_harvester_app_edit_registry' registry.id as edit_url %}
                     {% include 'core_main_app/common/buttons/edit.html' %}
-                    <a class="btn btn-default edit-harvest-registry-btn" href="#">
-                        <i class="fa fa-clock-o"></i> Edit harvest
-                    </a>
+                    {% url 'admin:core_oaipmh_harvester_app_edit_harvest_registry' registry.id as edit_harvest_url %}
+                    {% include 'core_main_app/common/buttons/edit.html' with edit_url=edit_harvest_url label='Edit Harvest' %}
                     <a class="btn btn-default deactivate-registry-btn" href="#">
                         <i class="fa fa-ban"></i> Deactivate
                     </a>
