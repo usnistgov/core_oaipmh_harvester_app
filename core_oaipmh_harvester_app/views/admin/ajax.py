@@ -127,19 +127,14 @@ class EditRegistryView(EditObjectModalView):
     form_class = EditRegistryForm
     model = OaiRegistry
     success_url = reverse_lazy("admin:core_oaipmh_harvester_app_registries")
+    success_message = 'Data provider edited with success.'
 
     def _save(self, form):
         # Save treatment.
-        # It should return an HttpResponse.
         try:
             oai_registry_api.upsert(self.object)
-            messages.add_message(self.request, messages.SUCCESS, 'Data provider edited with '
-                                                                 'success.')
         except Exception, e:
             form.add_error(None, e.message)
-            return super(EditRegistryView, self).form_invalid(form)
-
-        return HttpResponseRedirect(self.get_success_url())
 
 
 def view_registry(request):
@@ -172,12 +167,12 @@ class EditHarvestRegistryView(EditObjectModalView):
     form_class = EditHarvestRegistryForm
     model = OaiRegistry
     success_url = reverse_lazy("admin:core_oaipmh_harvester_app_registries")
+    success_message = 'Data provider edited with success.'
     metadata_formats = None
     sets = None
 
     def _save(self, form):
         # Save treatment.
-        # It should return an HttpResponse.
         try:
             registry_id = self.object.id
             metadata_formats = form.cleaned_data.get('metadata_formats', [])
@@ -191,13 +186,8 @@ class EditHarvestRegistryView(EditObjectModalView):
                 oai_set_api.get_all_by_registry_id(registry_id).
                 values_list('id'), False)
             oai_set_api.update_for_all_harvest_by_list_ids(sets.values_list('id'), True)
-            messages.add_message(self.request, messages.SUCCESS, 'Data provider edited with '
-                                                                 'success.')
         except Exception, e:
             form.add_error(None, e.message)
-            return super(EditHarvestRegistryView, self).form_invalid(form)
-
-        return HttpResponseRedirect(self.get_success_url())
 
     def get_form_kwargs(self):
         """This method is what injects forms with their keyword
