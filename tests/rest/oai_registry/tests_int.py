@@ -1,12 +1,12 @@
 """ Int Test Rest OaiRegistry
 """
 import requests
-from django.contrib.auth.models import User
-from mock.mock import patch, Mock
+from mock.mock import patch
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import \
     MongoIntegrationBaseTestCase
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
 from core_oaipmh_harvester_app.rest.oai_registry import views as rest_oai_registry
@@ -23,7 +23,7 @@ class TestSelectRegistry(MongoIntegrationBaseTestCase):
 
     def test_select_registry_returns(self):
         # Arrange
-        user = _create_mock_user(has_perm=True)
+        user = create_mock_user('1', has_perm=True)
 
         # Act
         response = RequestMock.do_request_get(rest_oai_registry.RegistryDetail.as_view(), user=user,
@@ -43,7 +43,7 @@ class TestSelectAllRegistries(MongoIntegrationBaseTestCase):
     def test_select_all_registries(self):
         # Arrange
         self.fixture.insert_registry()
-        user = _create_mock_user(has_perm=True)
+        user = create_mock_user('1', has_perm=True)
 
         # Act
         response = RequestMock.do_request_get(rest_oai_registry.RegistryList.as_view(), user,
@@ -79,7 +79,7 @@ class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.InfoRegistry.as_view(),
-                                                user=_create_mock_user(is_staff=True),
+                                                user=create_mock_user('1', is_staff=True),
                                                 param=self.param)
 
         # Assert
@@ -98,7 +98,7 @@ class TestUpdateRegistryConf(MongoIntegrationBaseTestCase):
     def test_update_registry_info(self):
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.RegistryDetail.as_view(),
-                                                user=_create_mock_user(is_staff=True),
+                                                user=create_mock_user('1', is_staff=True),
                                                 data=self.data,
                                                 param=self.param)
 
@@ -117,7 +117,7 @@ class TestActivateRegistry(MongoIntegrationBaseTestCase):
     def test_activate_registry(self):
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.ActivateRegistry.as_view(),
-                                                user=_create_mock_user(is_staff=True),
+                                                user=create_mock_user('1', is_staff=True),
                                                 param=self.param)
 
         # Assert
@@ -135,7 +135,7 @@ class TestDeactivateRegistry(MongoIntegrationBaseTestCase):
     def test_deactivate_registry(self):
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.DeactivateRegistry.as_view(),
-                                                user=_create_mock_user(is_staff=True),
+                                                user=create_mock_user('1', is_staff=True),
                                                 param=self.param)
 
         # Assert
@@ -153,27 +153,8 @@ class TestDeleteRegistry(MongoIntegrationBaseTestCase):
     def test_delete_registry(self):
         # Act
         response = RequestMock.do_request_delete(rest_oai_registry.RegistryDetail.as_view(),
-                                                 user=_create_mock_user(is_staff=True),
+                                                 user=create_mock_user('1', is_staff=True),
                                                  param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-
-def _create_mock_user(is_staff=False, has_perm=False, is_anonymous=False):
-    """ Mock an User.
-
-        Returns:
-            User mock.
-
-    """
-    mock_user = Mock(spec=User)
-    mock_user.is_staff = is_staff
-    if is_staff:
-        mock_user.has_perm.return_value = True
-        mock_user.is_anonymous.return_value = False
-    else:
-        mock_user.has_perm.return_value = has_perm
-        mock_user.is_anonymous.return_value = is_anonymous
-
-    return mock_user

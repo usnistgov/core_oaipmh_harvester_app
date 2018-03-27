@@ -4,11 +4,11 @@ import datetime
 from unittest.case import TestCase
 
 from bson.objectid import ObjectId
-from django.contrib.auth.models import User
 from mock.mock import patch, Mock
 from rest_framework import status
 
 from core_main_app.commons import exceptions
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api as \
     oai_harvester_metadata_format_api
@@ -26,7 +26,7 @@ class TestSelectRegistry(TestCase):
 
     def test_select_registry_unauthorized(self):
         # Arrange
-        user = _create_mock_user(has_perm=False)
+        user = create_mock_user('1', has_perm=False)
 
         # Act
         response = RequestMock.do_request_get(rest_oai_registry.RegistryDetail.as_view(), user,
@@ -34,7 +34,7 @@ class TestSelectRegistry(TestCase):
                                               param=self.param)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiRegistry, 'get_by_id')
     def test_select_registry_not_found(self, mock_get_by_name):
@@ -43,7 +43,7 @@ class TestSelectRegistry(TestCase):
 
         # Act
         response = RequestMock.do_request_get(rest_oai_registry.RegistryDetail.as_view(),
-                                              user=_create_mock_user(is_staff=True),
+                                              user=create_mock_user('1', is_staff=True, has_perm=True),
                                               data=self.data,
                                               param=self.param)
 
@@ -58,14 +58,14 @@ class TestSelectAllRegistries(TestCase):
 
     def test_select_registry_unauthorized(self):
         # Arrange
-        user = _create_mock_user(has_perm=False)
+        user = create_mock_user('1', has_perm=False)
 
         # Act
         response = RequestMock.do_request_get(rest_oai_registry.RegistryList.as_view(), user,
                                               self.data)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class TestAddRegistry(TestCase):
@@ -77,19 +77,19 @@ class TestAddRegistry(TestCase):
 
     def test_add_registry_unauthorized(self):
         # Arrange
-        user = _create_mock_user(is_staff=False)
+        user = create_mock_user('1', is_staff=False)
 
         # Act
         response = RequestMock.do_request_post(rest_oai_registry.RegistryList.as_view(), user,
                                                self.data)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_add_registry_serializer_invalid(self):
         # Act
         response = RequestMock.do_request_post(rest_oai_registry.RegistryList.as_view(),
-                                               user=_create_mock_user(is_staff=True),
+                                               user=create_mock_user('1', is_staff=True),
                                                data=self.bad_data)
 
         # Assert
@@ -102,7 +102,7 @@ class TestAddRegistry(TestCase):
 
         # Act
         response = RequestMock.do_request_post(rest_oai_registry.RegistryList.as_view(),
-                                               user=_create_mock_user(is_staff=True),
+                                               user=create_mock_user('1', is_staff=True),
                                                data=self.data)
 
         # Assert
@@ -118,11 +118,11 @@ class TestUpdateRegistryInfo(TestCase):
     def test_update_registry_info_unauthorized(self):
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.InfoRegistry.as_view(),
-                                                user=_create_mock_user(is_staff=False),
+                                                user=create_mock_user('1', is_staff=False),
                                                 param=self.param)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiRegistry, 'get_by_id')
     def test_update_registry_info_not_found(self, mock_get_by_id):
@@ -131,7 +131,7 @@ class TestUpdateRegistryInfo(TestCase):
 
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.InfoRegistry.as_view(),
-                                                user=_create_mock_user(is_staff=True),
+                                                user=create_mock_user('1', is_staff=True),
                                                 param=self.param)
 
         # Assert
@@ -148,12 +148,12 @@ class TestUpdateRegistryConf(TestCase):
     def test_update_registry_info_unauthorized(self):
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.RegistryDetail.as_view(),
-                                                user=_create_mock_user(is_staff=False),
+                                                user=create_mock_user('1', is_staff=False),
                                                 data=self.data,
                                                 param=self.param)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiRegistry, 'get_by_id')
     def test_update_registry_info_serializer_invalid(self, mock_get_by_id):
@@ -162,7 +162,7 @@ class TestUpdateRegistryConf(TestCase):
         mock_get_by_id.return_value = mock_registry
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.RegistryDetail.as_view(),
-                                                user=_create_mock_user(is_staff=True),
+                                                user=create_mock_user('1', is_staff=True),
                                                 data=self.bad_data,
                                                 param=self.param)
 
@@ -176,7 +176,7 @@ class TestUpdateRegistryConf(TestCase):
 
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.RegistryDetail.as_view(),
-                                                user=_create_mock_user(is_staff=True),
+                                                user=create_mock_user('1', is_staff=True),
                                                 data=self.data,
                                                 param=self.param)
 
@@ -193,11 +193,11 @@ class TestDeactivateRegistry(TestCase):
     def test_deactivate_registry_unauthorized(self):
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.DeactivateRegistry.as_view(),
-                                                user=_create_mock_user(is_staff=False),
-                                                data=self.data)
+                                                user=create_mock_user('1', is_staff=False),
+                                                param=self.param)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiRegistry, 'get_by_id')
     def test_deactivate_registry_not_found(self, mock_get_by_id):
@@ -206,7 +206,7 @@ class TestDeactivateRegistry(TestCase):
 
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.DeactivateRegistry.as_view(),
-                                                user=_create_mock_user(is_staff=True),
+                                                user=create_mock_user('1', is_staff=True),
                                                 data=self.data,
                                                 param=self.param)
 
@@ -223,12 +223,12 @@ class TestActivateRegistry(TestCase):
     def test_activate_registry_unauthorized(self):
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.ActivateRegistry.as_view(),
-                                                user=_create_mock_user(is_staff=False),
+                                                user=create_mock_user('1', is_staff=False),
                                                 data=self.data,
                                                 param=self.param)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiRegistry, 'get_by_id')
     def test_activate_registry_not_found(self, mock_get_by_id):
@@ -237,7 +237,7 @@ class TestActivateRegistry(TestCase):
 
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.ActivateRegistry.as_view(),
-                                                user=_create_mock_user(is_staff=True),
+                                                user=create_mock_user('1', is_staff=True),
                                                 data=self.data,
                                                 param=self.param)
 
@@ -254,12 +254,12 @@ class TestDeleteRegistry(TestCase):
     def test_delete_registry_unauthorized(self):
         # Act
         response = RequestMock.do_request_delete(rest_oai_registry.RegistryDetail.as_view(),
-                                                 user=_create_mock_user(is_staff=False),
+                                                 user=create_mock_user('1', is_staff=False),
                                                  data=self.data,
                                                  param=self.param)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiRegistry, 'get_by_id')
     def test_delete_registry_not_found(self, mock_get_by_id):
@@ -268,7 +268,7 @@ class TestDeleteRegistry(TestCase):
 
         # Act
         response = RequestMock.do_request_delete(rest_oai_registry.RegistryDetail.as_view(),
-                                                 user=_create_mock_user(is_staff=True),
+                                                 user=create_mock_user('1', is_staff=True),
                                                  data=self.data,
                                                  param=self.param)
 
@@ -299,7 +299,7 @@ class TestHarvestRegistry(TestCase):
 
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.Harvest.as_view(),
-                                                user=_create_mock_user(is_staff=True),
+                                                user=create_mock_user('1', is_staff=True),
                                                 param=self.param)
 
         # Assert
@@ -308,11 +308,11 @@ class TestHarvestRegistry(TestCase):
     def test_harvest_registry_unauthorized(self):
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.Harvest.as_view(),
-                                                user=_create_mock_user(is_staff=False),
-                                                data=self.param)
+                                                user=create_mock_user('1', is_staff=False),
+                                                param=self.param)
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiRegistry, 'get_by_id')
     def test_havest_registry_not_found(self, mock_get_by_id):
@@ -321,30 +321,11 @@ class TestHarvestRegistry(TestCase):
 
         # Act
         response = RequestMock.do_request_patch(rest_oai_registry.Harvest.as_view(),
-                                                user=_create_mock_user(is_staff=True),
+                                                user=create_mock_user('1', is_staff=True),
                                                 param=self.param)
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-
-def _create_mock_user(is_staff=False, has_perm=False, is_anonymous=False):
-    """ Mock an User.
-
-        Returns:
-            User mock.
-
-    """
-    mock_user = Mock(spec=User)
-    mock_user.is_staff = is_staff
-    if is_staff:
-        mock_user.has_perm.return_value = True
-        mock_user.is_anonymous.return_value = False
-    else:
-        mock_user.has_perm.return_value = has_perm
-        mock_user.is_anonymous.return_value = is_anonymous
-
-    return mock_user
 
 
 def _create_mock_oai_registry():
