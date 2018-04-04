@@ -1,6 +1,7 @@
 """
     Serializers used throughout the Rest API
 """
+from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from rest_framework.serializers import CharField, IntegerField, BooleanField, ListField
 from rest_framework_mongoengine.serializers import DocumentSerializer
 
@@ -34,3 +35,21 @@ class UpdateRegistrySerializer(BasicSerializer):
 class HarvestSerializer(BasicSerializer):
     metadata_formats = ListField(child=CharField(), required=False)
     sets = ListField(child=CharField(), required=False)
+
+
+class OaiRecordSerializer(DocumentSerializer):
+    """ OaiRecord serializer
+    """
+    xml_content = CharField()
+
+    class Meta:
+        """ Meta
+        """
+        model = OaiRecord
+        fields = ["identifier",
+                  "registry",
+                  "harvester_sets",
+                  "harvester_metadata_format",
+                  "title",
+                  "xml_content",
+                  "last_modification_date"]

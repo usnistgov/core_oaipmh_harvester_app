@@ -9,6 +9,7 @@ import json
 from core_oaipmh_harvester_app.utils import transform_operations
 import os
 from tests.test_settings import OAI_HARVESTER_ROOT
+from core_main_app.utils import xml as xml_utils
 
 DUMP_OAI_PMH_TEST_PATH = os.path.join(OAI_HARVESTER_ROOT, 'utils', 'data')
 
@@ -90,6 +91,8 @@ class OaiPmhFixtures(FixtureInterface):
             oai_record.title = oai_record.identifier
             oai_record.registry = self.registry
             oai_record.harvester_metadata_format = self.oai_metadata_formats[0]
+            oai_record.dict_content = xml_utils.raw_xml_to_dict(oai_record.xml_content,
+                                                                xml_utils.post_processor)
             saved_oai_records.append(oai_record.save())
 
         return saved_oai_records
