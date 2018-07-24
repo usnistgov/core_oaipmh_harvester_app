@@ -142,3 +142,15 @@ class OaiRecord(AbstractData):
 
         """
         return OaiRecord.objects(__raw__=query)
+
+    @staticmethod
+    def aggregate(pipeline):
+        """Execute an aggregate on the Data collection.
+
+        Args:
+            pipeline:
+
+        Returns:
+
+        """
+        return OaiRecord.objects.aggregate(*pipeline)

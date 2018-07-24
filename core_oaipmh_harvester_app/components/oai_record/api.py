@@ -125,3 +125,15 @@ def execute_query(query):
 
     """
     return OaiRecord.execute_query(query)
+
+
+def aggregate(pipeline):
+    """Execute an aggregate on the OaiRecord collection.
+
+    Args:
+        pipeline:
+
+    Returns:
+
+    """
+    return OaiRecord.aggregate(pipeline)
