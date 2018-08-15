@@ -31,7 +31,7 @@ chdir(normpath(join(abspath(__file__), pardir)))
 
 setup(
     name="core_oaipmh_harvester_app",
-    version="1.0.0-beta4",
+    version="1.0.0-beta5",
     description="OAI-PMH harvesting capabilities for the curator core project",
     long_description=long_desc,
     author="NIST IT Lab",
