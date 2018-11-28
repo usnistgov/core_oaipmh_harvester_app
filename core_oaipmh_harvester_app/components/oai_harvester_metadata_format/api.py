@@ -1,10 +1,9 @@
 """
 OaiHarvesterMetadataFormat API
 """
-
+from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
 from rest_framework import status
-import requests
 from core_main_app.utils.xml import get_hash
 from core_main_app.components.template import api as api_template
 from core_main_app.commons import exceptions
@@ -156,7 +155,7 @@ def init_schema_info(oai_harvester_metadata_format):
         Init OaiHarvesterMetadataFormat.
 
     """
-    http_response = requests.get(oai_harvester_metadata_format.schema)
+    http_response = send_get_request(oai_harvester_metadata_format.schema)
     if http_response.status_code == status.HTTP_200_OK:
         string_xml = http_response.text
         oai_harvester_metadata_format.xml_schema = string_xml

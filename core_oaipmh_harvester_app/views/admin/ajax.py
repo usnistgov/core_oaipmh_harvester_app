@@ -7,7 +7,7 @@ from wsgiref.util import FileWrapper
 from django.contrib import messages
 from django.contrib.staticfiles import finders
 from django.core.urlresolvers import reverse_lazy
-from django.http.response import HttpResponseBadRequest, HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
 from django.utils import formats
 from os.path import join
@@ -47,7 +47,7 @@ def add_registry(request):
                 messages.add_message(request, messages.SUCCESS, 'Data provider added with success.')
             else:
                 return HttpResponseBadRequest('Please enter a valid URL.')
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
     return HttpResponse(json.dumps({}), content_type='application/javascript')
@@ -177,10 +177,10 @@ class EditHarvestRegistryView(EditObjectModalView):
             registry_id = self.object.id
             metadata_formats = form.cleaned_data.get('metadata_formats', [])
             sets = form.cleaned_data.get('sets', [])
-            oai_metadata_format_api. \
-                update_for_all_harvest_by_list_ids(
-                oai_metadata_format_api.get_all_by_registry_id(registry_id).
-                values_list('id'), False)
+            oai_metadata_format_api.update_for_all_harvest_by_list_ids(
+                oai_metadata_format_api.get_all_by_registry_id(registry_id).values_list('id'),
+                False
+            )
             oai_metadata_format_api.update_for_all_harvest_by_list_ids(metadata_formats.values_list('id'), True)
             oai_set_api.update_for_all_harvest_by_list_ids(
                 oai_set_api.get_all_by_registry_id(registry_id).

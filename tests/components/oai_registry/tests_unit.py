@@ -309,7 +309,7 @@ class TestAddRegistry(TestCase):
         """
         # Arrange
         mock_registry.return_value = False
-        mock.return_value = OaiPmhMessage.get_message_labelled(self.error_message % "identify"),\
+        mock.return_value = OaiPmhMessage.get_message_labelled(self.error_message % "identify"), \
                             status.HTTP_500_INTERNAL_SERVER_ERROR
 
         # Act + Assert

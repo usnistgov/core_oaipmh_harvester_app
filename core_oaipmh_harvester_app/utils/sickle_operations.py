@@ -1,14 +1,27 @@
+""" Sickle utils provide tool operation for sickle library.
 """
-    Sickle utils provide tool operation for sickle library
-"""
-
 from rest_framework import status
 from sickle import Sickle
 from sickle.models import Record
 from sickle.oaiexceptions import NoSetHierarchy, NoMetadataFormat
+
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
+from core_oaipmh_harvester_app.settings import SSL_CERTIFICATES_DIR
 from core_oaipmh_harvester_app.utils import sickle_serializers
 from xml_utils.xsd_tree.xsd_tree import XSDTree
+
+
+def _sickle_init(url):
+    """ Initialize Sickle object. Allows for proper HTTPS handling, similar to
+    core_main_app request_utils.
+
+    Args:
+        url: URL of the Data Provider.
+
+    Returns:
+        Sickle object
+    """
+    return Sickle(url, verify=SSL_CERTIFICATES_DIR)
 
 
 def sickle_identify(url):
@@ -23,7 +36,7 @@ def sickle_identify(url):
 
     """
     try:
-        sickle = Sickle(url)
+        sickle = _sickle_init(url)
         identify = sickle.Identify()
         serializer = sickle_serializers.IdentifySerializer(identify)
         return serializer.data, status.HTTP_200_OK
@@ -45,7 +58,7 @@ def sickle_list_sets(url):
 
     """
     try:
-        sickle = Sickle(url)
+        sickle = _sickle_init(url)
         list_sets = sickle.ListSets()
         serializer = sickle_serializers.SetSerializer(list_sets, many=True)
         return serializer.data, status.HTTP_200_OK
@@ -70,7 +83,7 @@ def sickle_list_metadata_formats(url):
 
     """
     try:
-        sickle = Sickle(url)
+        sickle = _sickle_init(url)
         list_metadata_formats = sickle.ListMetadataFormats()
         serializer = sickle_serializers.MetadataFormatSerializer(list_metadata_formats, many=True)
         return serializer.data, status.HTTP_200_OK

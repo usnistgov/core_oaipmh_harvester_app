@@ -4,6 +4,8 @@ OaiRegistry API
 
 import datetime
 
+from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR
+
 from core_main_app.commons import exceptions
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
@@ -14,8 +16,6 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import a
     as oai_harvester_metadata_format_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set import api as \
     oai_harvester_metadata_format_set_api
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set.models \
-    import OaiHarvesterMetadataFormatSet
 from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_harvester_set_api
 from core_oaipmh_harvester_app.components.oai_identify import api as api_oai_identify
 from core_oaipmh_harvester_app.components.oai_identify import api as oai_identify_api
@@ -125,6 +125,7 @@ def add_registry_by_url(url, harvest_rate, harvest):
     if check_registry_url_already_exists(url):
         raise oai_pmh_exceptions.OAIAPINotUniqueError(message='Unable to create the data provider.'
                                                               ' The data provider already exists.')
+
     identify_response = _get_identify_as_object(url)
     sets_response = _get_sets_as_object(url)
     metadata_formats_response = _get_metadata_formats_as_object(url)
@@ -144,8 +145,9 @@ def add_registry_by_url(url, harvest_rate, harvest):
         # Manual Rollback
         if registry is not None:
             registry.delete()
+
         raise oai_pmh_exceptions.OAIAPILabelledException(message=e.message,
-                                                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                                                         status_code=HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def update_registry_info(registry):

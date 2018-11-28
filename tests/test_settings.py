@@ -12,4 +12,7 @@ INSTALLED_APPS = [
     # Local apps
     "tests",
 ]
+
 OAI_HARVESTER_ROOT = dirname(realpath(__file__))
+
+SSL_CERTIFICATES_DIR = 'certs'

@@ -7,6 +7,7 @@ import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verbs_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
 from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
+from tests.test_settings import SSL_CERTIFICATES_DIR
 from tests.components.oai_registry.fixtures.fixtures import OaiPmhMock
 from rest_framework import status
 import requests
@@ -86,7 +87,7 @@ class TestListRecordsParameter(TestCase):
                                    set_h=self.set, from_date=self.from_, until_date=self.until)
 
         # Assert
-        mock_get.assert_called_with(self.url, params=expected_params)
+        mock_get.assert_called_with(self.url, expected_params, verify=SSL_CERTIFICATES_DIR)
 
     @patch.object(requests, 'get')
     def test_harvest_params_with_resumption_token(self, mock_get):
@@ -102,7 +103,7 @@ class TestListRecordsParameter(TestCase):
                                    resumption_token=resumption_token)
 
         # Asset
-        mock_get.assert_called_with(self.url, params=expected_params)
+        mock_get.assert_called_with(self.url, expected_params, verify=SSL_CERTIFICATES_DIR)
 
     @patch.object(requests, 'get')
     def test_harvest_params_returns_error_if_not_200_OK(self, mock_get):

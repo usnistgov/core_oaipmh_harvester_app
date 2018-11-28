@@ -1,6 +1,7 @@
 """
     Oai-PMH verbs API.
 """
+from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_oaipmh_harvester_app.utils import sickle_operations, transform_operations
 from rest_framework import status
 from rest_framework.response import Response
@@ -146,7 +147,7 @@ def list_records(url, metadata_prefix=None, resumption_token=None, set_h=None, f
             params['from'] = from_date
             params['until'] = until_date
         rtn = []
-        http_response = requests.get(url, params=params)
+        http_response = send_get_request(url, params=params)
         resumption_token = None
         if http_response.status_code == status.HTTP_200_OK:
             xml = http_response.text
@@ -194,7 +195,7 @@ def get_data(url):
             registry_url = str(url).split('?')[0]
             data, status_code = identify(registry_url)
             if status_code == status.HTTP_200_OK:
-                http_response = requests.get(url)
+                http_response = send_get_request(url)
                 if http_response.status_code == status.HTTP_200_OK:
                     return Response(http_response.text, status=status.HTTP_200_OK)
                 else:
