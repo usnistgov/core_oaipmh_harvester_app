@@ -1,19 +1,18 @@
 """ REST abstract views for the Oai Record API
 """
-
 import json
-
 from abc import ABCMeta, abstractmethod
+
 from bson.objectid import ObjectId
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
-from core_oaipmh_harvester_app.utils.query.mongo.query_builder import OaiPmhQueryBuilder
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api as \
     oai_harvester_metadata_format_api
 from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
+from core_oaipmh_harvester_app.utils.query.mongo.query_builder import OaiPmhQueryBuilder
 
 
 # FIXME: Could inherit AbstractExecuteQuery from core_main_app
@@ -23,38 +22,52 @@ class AbstractExecuteQueryView(APIView):
     __metaclass__ = ABCMeta
 
     def get(self, request):
-        """Execute query on OaiRecord and return results.
+        """ Execute query on OaiRecord and return results
 
         Args:
-            request:
+
+            request: HTTP request
 
         Returns:
 
+            - code: 200
+              content: List of data
+            - code: 400
+              content: Bad request
+            - code: 500
+              content: Internal server error
         """
-
         return self.execute_query()
 
     def post(self, request):
-        """Execute query on OaiRecord and return results
+        """ Execute query on OaiRecord and return results
 
         Warning:
-            Need to backslash double quotes in JSON payload.
+        
+            Need to backslash double quotes in JSON payload
+        
+        Parameters:
 
-        Example:
             {"query": "{\"$or\": [{\"image.owner\": \"Peter\"}, {\"image.owner.#text\":\"Peter\"}]}"}
             {"query": "Keyword1 Keyword2", "registries": "[\"5aa00a074697f6d6ac21946e\"]"}
 
         Args:
-            request:
+
+            request: HTTP request
 
         Returns:
 
+            - code: 200
+              content: List of data
+            - code: 400
+              content: Bad request
+            - code: 500
+              content: Internal server error
         """
-
         return self.execute_query()
 
     def execute_query(self):
-        """ Compute and return query results.
+        """ Compute and return query results
         """
         try:
             # get query and templates
@@ -78,14 +91,16 @@ class AbstractExecuteQueryView(APIView):
 
     def build_query(self, query, templates, registries):
         """ Build the raw query.
+
         Args:
+
             query:
             templates:
             registries:
 
         Returns:
-            The raw query.
 
+            The raw query
         """
         # build query builder
         query_builder = OaiPmhQueryBuilder(query, self.sub_document_root)
@@ -120,35 +135,38 @@ class AbstractExecuteQueryView(APIView):
         return query_builder.get_raw_query()
 
     def execute_raw_query(self, raw_query):
-        """ Execute the raw query in database.
+        """ Execute the raw query in database
+
         Args:
-            raw_query: Query to execute.
+
+            raw_query: Query to execute
 
         Returns:
-            Results of the query.
 
+            Results of the query
         """
         return oai_record_api.execute_query(raw_query).order_by('title')
 
     @abstractmethod
     def build_response(self, data_list):
-        """ Build the paginated response.
+        """ Build the paginated response
 
         Args:
-            data_list: List of data.
+
+            data_list: List of data
 
         Returns:
-            The response.
 
+            The response
         """
         raise NotImplementedError("build_response method is not implemented.")
 
     @abstractmethod
     def get_registries(self):
-        """ Get a list of registry ids. Should return empty list if not found. JSON format.
+        """ Get a list of registry ids. Should return empty list if not found. JSON format
 
         Returns:
-            List of registry ids (JSON format).
 
+            List of registry ids (JSON format)
         """
         raise NotImplementedError("get_registries method is not implemented.")

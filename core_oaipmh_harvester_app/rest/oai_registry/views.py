@@ -1,7 +1,5 @@
 """ OaiRegistry rest api
 """
-from core_oaipmh_common_app.commons import exceptions as exceptions_oai
-from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from django.utils.decorators import method_decorator
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -10,6 +8,8 @@ from rest_framework.views import APIView
 
 from core_main_app.commons import exceptions
 from core_main_app.utils.decorators import api_staff_member_required, api_permission_required
+from core_oaipmh_common_app.commons import exceptions as exceptions_oai
+from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.commons import rights
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api as \
     oai_metadata_format_api
@@ -21,13 +21,18 @@ from core_oaipmh_harvester_app.rest import serializers
 class RegistryList(APIView):
     @method_decorator(api_permission_required(rights.oai_pmh_content_type, rights.oai_pmh_access))
     def get(self, request):
-        """ Return all registries (Data provider).
+        """ Get all Registries (Data provider)
 
-        GET http://<server_ip>:<server_port>/<rest_oai_pmh_url>/registry
+        Args:
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
+            - code: 200
+              content: List of Registries
+            - code: 500
+              content: Internal server error
         """
         try:
             registry = oai_registry_api.get_all()
@@ -40,22 +45,28 @@ class RegistryList(APIView):
 
     @method_decorator(api_staff_member_required())
     def post(self, request):
-        """ Add a new registry (Data provider).
+        """ Create a Registry (Data provider)
 
-        POST http://<server_ip>:<server_port>/<rest_oai_pmh_url>/registry
+        Parameters:
+
+            {
+                "url" : "value",
+                "harvest_rate" : "number",
+                "harvest" : "True or False"
+            }
 
         Args:
-            request (HttpRequest): request.
+
+            request: HTTP request
 
         Returns:
-            Response object.
 
-        Examples:
-            >>> {"url":"value","harvest_rate":"number", "harvest":"True or False"}
-
-        Raises:
-            OAIAPISerializeLabelledException: Serialization error.
-
+            - code: 201
+              content: Created Registry
+            - code: 400
+              content: Validation error
+            - code: 500
+              content: Internal server error
         """
         try:
             # Build serializer
@@ -81,17 +92,21 @@ class RegistryList(APIView):
 class RegistryDetail(APIView):
     @method_decorator(api_permission_required(rights.oai_pmh_content_type, rights.oai_pmh_access))
     def get(self, request, registry_id):
-        """ Get a registry (Data provider) by its id.
+        """ Retrieve a Registry (Data provider)
 
-        GET http://<server_ip>:<server_port>/<rest_oai_pmh_url>/registry/{id}
+        Args:
 
-        Params:
-            request (HttpRequest): request.
-            registry_id: Registry id.
+            request: HTTP request
+            registry_id: ObjectId
 
         Returns:
-            Response object.
 
+            - code: 200
+              content: Registry
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             registry = oai_registry_api.get_by_id(registry_id)
@@ -109,17 +124,21 @@ class RegistryDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     def delete(self, request, registry_id):
-        """ Delete a given registry (Data provider).
-
-        DELETE http://<server_ip>:<server_port>/<rest_oai_pmh_url>/registry/{id}
+        """ Delete a Registry (Data provider)
 
         Args:
-            request (HttpRequest): request.
-            registry_id: Registry id.
+
+            request: HTTP request
+            registry_id: ObjectId
 
         Returns:
-            Response object.
 
+            - code: 204
+              content: Deletion succeed
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             registry = oai_registry_api.get_by_id(registry_id)
@@ -137,20 +156,30 @@ class RegistryDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
-        """ Update oai-pmh configuration for a given registry (Data provider).
+        """ Update oai-pmh configuration for a given registry (Data provider)
 
-        PATCH http://<server_ip>:<server_port>/<rest_oai_pmh_url>/registry/{id}
+        Parameters:
+
+            {
+                "harvest_rate" : "value", 
+                "harvest" : "True or False"
+            }
 
         Args:
-            request (HttpRequest): request.
-            registry_id: Registry id.
+
+            request: HTTP request
+            registry_id: ObjectId
 
         Returns:
-            Response object.
 
-        Examples:
-            >>> {"harvest_rate":"value", "harvest":"True or False"}
-
+            - code: 200
+              content: Success message
+            - code: 400
+              content: Validation error
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             registry = oai_registry_api.get_by_id(registry_id)
@@ -181,17 +210,21 @@ class RegistryDetail(APIView):
 class ActivateRegistry(APIView):
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
-        """ Activate a given registry (Data provider).
-
-        PATCH http://<server_ip>:<server_port>/<rest_oai_pmh_url>/registry/{id}/activate
+        """ Activate a given registry (Data provider)
 
         Args:
-            request (HttpRequest): request.
-            registry_id: Registry id.
+
+            request: HTTP request
+            registry_id: ObjectId
 
         Returns:
-            Response object.
 
+            - code: 200
+              content: Success message
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             registry = oai_registry_api.get_by_id(registry_id)
@@ -214,17 +247,21 @@ class ActivateRegistry(APIView):
 class DeactivateRegistry(APIView):
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
-        """ Deactivate a given registry (Data provider).
-
-        PATCH http://<server_ip>:<server_port>/<rest_oai_pmh_url>/registry/{id}/deactivate
+        """ Deactivate a given registry (Data provider)
 
         Args:
-            request (HttpRequest): request.
-            registry_id: Registry id.
+
+            request: HTTP request
+            registry_id: ObjectId
 
         Returns:
-            Response object.
 
+            - code: 200
+              content: Success message
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             registry = oai_registry_api.get_by_id(registry_id)
@@ -247,17 +284,21 @@ class DeactivateRegistry(APIView):
 class InfoRegistry(APIView):
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
-        """ Update oai-pmh information for a given registry (Data provider).
-
-        PATCH http://<server_ip>:<server_port>/<rest_oai_pmh_url>/registry/{id)/info
+        """ Update oai-pmh information for a given registry (Data provider)
 
         Args:
-            request (HttpRequest): request.
-            registry_id: Registry id.
+
+            request: HTTP request
+            registry_id: ObjectId
 
         Returns:
-            Response object.
 
+            - code: 200
+              content: Success message
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             registry = oai_registry_api.get_by_id(registry_id)
@@ -280,17 +321,21 @@ class InfoRegistry(APIView):
 class Harvest(APIView):
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
-        """ Harvest a given registry (Data provider).
-
-        PATCH http://<server_ip>:<server_port>/<rest_oai_pmh_url>/registry/{id}/harvest
+        """ Harvest a given registry (Data provider)
 
         Args:
-            request (HttpRequest): request.
-            registry_id: Registry id.
+
+            request: HTTP request
+            registry_id: ObjectId
 
         Returns:
-            Response object.
 
+            - code: 200
+              content: Success message
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             registry = oai_registry_api.get_by_id(registry_id)
@@ -314,21 +359,31 @@ class Harvest(APIView):
 
     @method_decorator(api_staff_member_required())
     def put(self, request, registry_id):
-        """ Edit the harvesting configuration of a registry (Data Provider).
-            Configure metadata_formats and sets to harvest.
+        """ Edit the harvesting configuration of a registry (Data Provider)
+            Configure metadata_formats and sets to harvest
 
-        PUT http://<server_ip>:<server_port>/<rest_oai_pmh_url>/harvest/{id}
+        Parameters:
+
+            {
+                "metadata_formats": ["id1", "id2"..],
+                "sets": ["id1", "id2"..]
+            }
 
         Args:
-            request (HttpRequest): request.
-            registry_id: Registry id.
+
+            request: HTTP request
+            registry_id: ObjectId
 
         Returns:
-            Response object.
 
-        Examples:
-            >>> {"metadata_formats": ["id1", "id2"..], "sets": ["id1", "id2"..]}
-
+            - code: 200
+              content: Success message
+            - code: 400
+              content: Validation error
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             # Build serializer
