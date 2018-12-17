@@ -125,7 +125,7 @@ def _revoke_all_scheduled_tasks():
                  chain.from_iterable(current_app.control.inspect().scheduled().itervalues())
                  if scheduled["request"]["name"] in list_tasks])
         else:
-            logger.info('Impossible to retrieve scheduled tasks. Is Celery started?')
+            logger.warning('Impossible to retrieve scheduled tasks. Is Celery started?')
         logger.info('FINISH revoking OAI-PMH scheduled tasks.')
     except Exception as e:
         logger.error('ERROR : Error while revoking the scheduled tasks: {0}'
