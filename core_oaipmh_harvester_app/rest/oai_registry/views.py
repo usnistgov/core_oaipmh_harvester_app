@@ -19,6 +19,7 @@ from core_oaipmh_harvester_app.rest import serializers
 
 
 class RegistryList(APIView):
+    @method_decorator(api_staff_member_required())
     @method_decorator(api_permission_required(rights.oai_pmh_content_type, rights.oai_pmh_access))
     def get(self, request):
         """ Get all Registries (Data provider)
@@ -90,6 +91,7 @@ class RegistryList(APIView):
 
 
 class RegistryDetail(APIView):
+    @method_decorator(api_staff_member_required())
     @method_decorator(api_permission_required(rights.oai_pmh_content_type, rights.oai_pmh_access))
     def get(self, request, registry_id):
         """ Retrieve a Registry (Data provider)

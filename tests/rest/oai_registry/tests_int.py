@@ -23,7 +23,7 @@ class TestSelectRegistry(MongoIntegrationBaseTestCase):
 
     def test_select_registry_returns(self):
         # Arrange
-        user = create_mock_user('1', has_perm=True)
+        user = create_mock_user('1', has_perm=True, is_staff=True)
 
         # Act
         response = RequestMock.do_request_get(rest_oai_registry.RegistryDetail.as_view(), user=user,
@@ -43,7 +43,7 @@ class TestSelectAllRegistries(MongoIntegrationBaseTestCase):
     def test_select_all_registries(self):
         # Arrange
         self.fixture.insert_registry()
-        user = create_mock_user('1', has_perm=True)
+        user = create_mock_user('1', has_perm=True, is_staff=True)
 
         # Act
         response = RequestMock.do_request_get(rest_oai_registry.RegistryList.as_view(), user,
