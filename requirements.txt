@@ -1,5 +1,5 @@
 celery==4.1.1
-Django==1.11.18
+Django==1.11.20
 djangorestframework==3.7.3
 django-rest-framework-mongoengine==3.3.1
 django-simple-menu==1.2.1
