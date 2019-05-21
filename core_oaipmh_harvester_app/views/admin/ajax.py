@@ -65,7 +65,7 @@ def deactivate_registry(request):
         registry = oai_registry_api.get_by_id(request.GET['id'])
         registry.is_activated = False
         oai_registry_api.upsert(registry)
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
     return HttpResponse(json.dumps({}), content_type='application/javascript')
@@ -83,7 +83,7 @@ def activate_registry(request):
         registry = oai_registry_api.get_by_id(request.GET['id'])
         registry.is_activated = True
         oai_registry_api.upsert(registry)
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
     return HttpResponse(json.dumps({}), content_type='application/javascript')
@@ -100,7 +100,7 @@ def delete_registry(request):
     try:
         registry = oai_registry_api.get_by_id(request.GET['id'])
         oai_registry_api.delete(registry)
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
     return HttpResponse(json.dumps({}), content_type='application/javascript')
@@ -117,7 +117,7 @@ def check_registry(request):
     try:
         req, status_code = oai_verb_api.identify(request.GET['url'])
         is_available = status_code == status.HTTP_200_OK
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
     return HttpResponse(json.dumps({'is_available': is_available}), content_type='application/javascript')
@@ -133,7 +133,7 @@ class EditRegistryView(EditObjectModalView):
         # Save treatment.
         try:
             oai_registry_api.upsert(self.object)
-        except Exception, e:
+        except Exception as e:
             form.add_error(None, e.message)
 
 
@@ -158,7 +158,7 @@ def view_registry(request):
         }
         return HttpResponse(json.dumps({'template': template.render(context)}),
                             content_type='application/javascript')
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
 
@@ -186,7 +186,7 @@ class EditHarvestRegistryView(EditObjectModalView):
                 oai_set_api.get_all_by_registry_id(registry_id).
                 values_list('id'), False)
             oai_set_api.update_for_all_harvest_by_list_ids(sets.values_list('id'), True)
-        except Exception, e:
+        except Exception as e:
             form.add_error(None, e.message)
 
     def get_form_kwargs(self):
@@ -223,7 +223,7 @@ def update_registry(request):
         oai_registry_api.update_registry_info(registry)
 
         return HttpResponse(json.dumps({}), content_type='application/javascript')
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
 
@@ -255,7 +255,7 @@ def check_update_registry(request):
                 update_info.append(result_json)
 
             return HttpResponse(json.dumps(update_info), content_type='application/javascript')
-        except Exception, e:
+        except Exception as e:
             return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
 
@@ -272,7 +272,7 @@ def harvest_registry(request):
         oai_registry_api.harvest_registry(registry)
 
         return HttpResponse(json.dumps({}), content_type='application/javascript')
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
 

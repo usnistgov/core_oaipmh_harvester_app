@@ -208,7 +208,7 @@ def get_data(url):
         else:
             raise oai_pmh_exceptions.OAIAPIException(message='An error occurred, url malformed.',
                                                      status_code=status.HTTP_400_BAD_REQUEST)
-    except requests.HTTPError, err:
+    except requests.HTTPError as err:
         raise oai_pmh_exceptions.OAIAPILabelledException(message=err.message, status_code=err.response.status_code)
     except oai_pmh_exceptions.OAIAPIException as e:
         raise e
