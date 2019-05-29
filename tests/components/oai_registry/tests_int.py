@@ -1,14 +1,16 @@
 """ Int Test OaiRegistry
 """
+from builtins import next
+
 import requests
 from bson.objectid import ObjectId
-from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from mock.mock import patch
 from rest_framework import status
 
 from core_main_app.commons import exceptions
-from core_main_app.utils.integration_tests.integration_base_test_case\
+from core_main_app.utils.integration_tests.integration_base_test_case \
     import MongoIntegrationBaseTestCase
+from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api \
     as oai_harvester_metadata_format_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models \

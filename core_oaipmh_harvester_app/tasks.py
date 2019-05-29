@@ -1,6 +1,7 @@
 """ OAI-PMH Harvester tasks
 """
 import logging
+from builtins import str
 from itertools import chain
 
 from celery import current_app
@@ -122,7 +123,7 @@ def _revoke_all_scheduled_tasks():
             list_tasks = _get_all_oai_tasks_full_name()
             current_app.control.revoke(
                 [scheduled["request"]["id"] for scheduled in
-                 chain.from_iterable(current_app.control.inspect().scheduled().itervalues())
+                 chain.from_iterable(iter(list(current_app.control.inspect().scheduled().values())))
                  if scheduled["request"]["name"] in list_tasks])
         else:
             logger.warning('Impossible to retrieve scheduled tasks. Is Celery started?')

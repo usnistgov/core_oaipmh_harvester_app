@@ -1,14 +1,18 @@
 """
     Oai-PMH verbs API.
 """
-from core_main_app.utils.requests_utils.requests_utils import send_get_request
-from core_oaipmh_harvester_app.utils import sickle_operations, transform_operations
+from builtins import next
+from builtins import str
+
+import requests
 from rest_framework import status
 from rest_framework.response import Response
+
+from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
-from xml_utils.xsd_tree.xsd_tree import XSDTree
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
-import requests
+from core_oaipmh_harvester_app.utils import sickle_operations, transform_operations
+from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
 def identify(url):
@@ -42,7 +46,7 @@ def identify_as_object(url):
             data = transform_operations.transform_dict_identifier_to_oai_identifier(data)
         except Exception as e:
             data = OaiPmhMessage.get_message_labelled('An error occurred when attempting to identify resource: %s'
-                                                      % e.message)
+                                                      % str(e))
             status_code = status.HTTP_400_BAD_REQUEST
 
     return data, status_code
@@ -79,7 +83,7 @@ def list_metadata_formats_as_object(url):
             data = transform_operations.transform_dict_metadata_format_to_oai_harvester_metadata_format(data)
         except Exception as e:
             data = OaiPmhMessage.get_message_labelled('An error occurred when attempting to get the metadata '
-                                                      'formats: %s' % e.message)
+                                                      'formats: %s' % str(e))
             status_code = status.HTTP_400_BAD_REQUEST
 
     return data, status_code
@@ -116,7 +120,7 @@ def list_sets_as_object(url):
             data = transform_operations.transform_dict_set_to_oai_harvester_set(data)
         except Exception as e:
             data = OaiPmhMessage.get_message_labelled('An error occurred when attempting to get the sets: %s'
-                                                      % e.message)
+                                                      % str(e))
             status_code = status.HTTP_400_BAD_REQUEST
 
     return data, status_code

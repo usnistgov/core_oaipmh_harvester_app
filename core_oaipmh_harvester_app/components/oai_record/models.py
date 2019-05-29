@@ -1,6 +1,7 @@
 """
 OaiRecord model
 """
+from builtins import str
 from django_mongoengine import fields
 from mongoengine import errors as mongoengine_errors
 from mongoengine.queryset.base import PULL, CASCADE
@@ -63,9 +64,9 @@ class OaiRecord(AbstractData):
         try:
             return OaiRecord.objects().get(identifier=identifier, harvester_metadata_format=harvester_metadata_format)
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))
 
     @staticmethod
     def get_all():

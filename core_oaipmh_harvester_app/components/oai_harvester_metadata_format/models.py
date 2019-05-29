@@ -2,6 +2,7 @@
 OaiHarvesterMetadataFormat model
 """
 
+from builtins import str
 from django_mongoengine import fields
 from mongoengine.queryset.base import NULLIFY, CASCADE
 from core_oaipmh_common_app.components.oai_metadata_format.models import OaiMetadataFormat
@@ -83,9 +84,9 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
         try:
             return OaiHarvesterMetadataFormat.objects().get(metadata_prefix=metadata_prefix, registry=str(registry_id))
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))
 
     @staticmethod
     def delete_all_by_registry_id(registry_id):

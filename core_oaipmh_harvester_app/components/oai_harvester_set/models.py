@@ -2,6 +2,7 @@
 OaiHarvesterSet model
 """
 
+from builtins import str
 from django_mongoengine import fields
 from mongoengine.queryset.base import CASCADE
 from core_oaipmh_common_app.components.oai_set.models import OaiSet
@@ -65,9 +66,9 @@ class OaiHarvesterSet(OaiSet):
             return OaiHarvesterSet.objects().get(set_spec=set_spec,
                                                  registry=str(registry_id))
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))
 
     @staticmethod
     def delete_all_by_registry_id(registry_id):

@@ -146,7 +146,7 @@ def add_registry_by_url(url, harvest_rate, harvest):
         if registry is not None:
             registry.delete()
 
-        raise oai_pmh_exceptions.OAIAPILabelledException(message=e.message,
+        raise oai_pmh_exceptions.OAIAPILabelledException(message=str(e),
                                                          status_code=HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -233,7 +233,7 @@ def harvest_registry(registry):
     except Exception as e:
         registry.is_harvesting = False
         upsert(registry)
-        raise oai_pmh_exceptions.OAIAPILabelledException(message=e.message,
+        raise oai_pmh_exceptions.OAIAPILabelledException(message=str(e),
                                                          status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -498,7 +498,7 @@ def _harvest_records(registry, metadata_format, last_update, registry_all_sets, 
                 for oai_record in list_oai_record:
                     _upsert_record_for_registry(oai_record, metadata_format, registry)
             except Exception as e:
-                errors.append({'status_code': status.HTTP_400_BAD_REQUEST, 'error': e.message})
+                errors.append({'status_code': status.HTTP_400_BAD_REQUEST, 'error': str(e)})
         # Else, we get the status code with the error message provided by the http_response
         else:
             error = {'status_code': http_response.status_code,

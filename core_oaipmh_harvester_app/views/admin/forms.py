@@ -1,3 +1,6 @@
+from builtins import object
+from builtins import str
+
 from django import forms
 from django.core.validators import MinValueValidator
 from mongodbforms import DocumentForm
@@ -38,7 +41,7 @@ class EditRegistryForm(DocumentForm):
     harvest = forms.BooleanField(label='Enable automatic harvesting', initial=True, required=False,
                                  widget=forms.CheckboxInput())
 
-    class Meta:
+    class Meta(object):
         document = OaiRegistry
         fields = ['harvest_rate', 'harvest']
 
@@ -65,7 +68,7 @@ class EditHarvestRegistryForm(DocumentForm):
     sets = FormDataModelChoiceFieldSet(label='Sets', queryset=None, required=False,
                                        widget=forms.CheckboxSelectMultiple())
 
-    class Meta:
+    class Meta(object):
         document = OaiRegistry
         fields = ['metadata_formats', 'sets']
 

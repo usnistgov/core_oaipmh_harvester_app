@@ -1,6 +1,7 @@
 """ Unit Test Rest OaiRegistry
 """
 import datetime
+from builtins import str
 from unittest.case import TestCase
 
 from bson.objectid import ObjectId

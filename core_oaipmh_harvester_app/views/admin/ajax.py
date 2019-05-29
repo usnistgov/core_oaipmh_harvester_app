@@ -1,7 +1,11 @@
 import datetime
 import json
-import urllib
-from StringIO import StringIO
+import urllib.error
+import urllib.parse
+import urllib.request
+from builtins import str
+from io import StringIO
+from os.path import join
 from wsgiref.util import FileWrapper
 
 from django.contrib import messages
@@ -10,7 +14,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
 from django.utils import formats
-from os.path import join
+from future import standard_library
 from rest_framework import status
 
 import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as \
@@ -26,6 +30,8 @@ from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.views.admin.forms import AddRegistryForm, EditRegistryForm, \
     EditHarvestRegistryForm
 from xml_utils.xsd_tree.xsd_tree import XSDTree
+
+standard_library.install_aliases()
 
 
 def add_registry(request):
@@ -348,7 +354,7 @@ def get_data(request):
     url = request.GET['url']
     args_url = json.loads(request.GET['args_url'])
     # Encode args for the Get request
-    encoded_args = urllib.urlencode(args_url)
+    encoded_args = urllib.parse.urlencode(args_url)
     # Build the url
     url = url + "?" + encoded_args
     try:

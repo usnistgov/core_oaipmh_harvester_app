@@ -2,9 +2,10 @@
     Transform operations utils provide tool operation to transform oai-pmh dict representation to object
 """
 
-from core_oaipmh_common_app.utils import UTCdatetime
+from builtins import str
 
 from core_main_app.utils.xml import raw_xml_to_dict
+from core_oaipmh_common_app.utils import UTCdatetime
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
 from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify

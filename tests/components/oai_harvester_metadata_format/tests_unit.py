@@ -1,16 +1,17 @@
 import datetime
+from builtins import str
 from unittest.case import TestCase
 
 import requests
 from bson.objectid import ObjectId
-from core_main_app.commons import exceptions
-from core_main_app.components.template import api as api_template
-from core_main_app.components.template.models import Template
 from mock.mock import Mock, patch
 from rest_framework import status
 
 import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api \
     as harvester_metadata_format_api
+from core_main_app.commons import exceptions
+from core_main_app.components.template import api as api_template
+from core_main_app.components.template.models import Template
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models \
     import OaiHarvesterMetadataFormat
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry

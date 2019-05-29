@@ -1,15 +1,14 @@
 """ fixtures files for Data
 """
+import json
+import os
+from builtins import object
+
+from core_main_app.utils import xml as xml_utils
 from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
-from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api as oai_harvester_metadata_format_api
-from core_oaipmh_harvester_app.components.oai_record import api as oai_record_api
-import json
 from core_oaipmh_harvester_app.utils import transform_operations
-import os
 from tests.test_settings import OAI_HARVESTER_ROOT
-from core_main_app.utils import xml as xml_utils
 
 DUMP_OAI_PMH_TEST_PATH = os.path.join(OAI_HARVESTER_ROOT, 'utils', 'data')
 

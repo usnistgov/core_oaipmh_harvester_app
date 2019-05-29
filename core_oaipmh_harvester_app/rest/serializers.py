@@ -1,17 +1,19 @@
 """
     Serializers used throughout the Rest API
 """
-from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
+from builtins import object
+
 from rest_framework.serializers import CharField, IntegerField, BooleanField, ListField
 from rest_framework_mongoengine.serializers import DocumentSerializer
 
 from core_main_app.commons.serializers import BasicSerializer
+from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 
 class RegistrySerializer(DocumentSerializer):
-    class Meta:
+    class Meta(object):
         model = OaiRegistry
         fields = "__all__"
 
@@ -42,7 +44,7 @@ class OaiRecordSerializer(DocumentSerializer):
     """
     xml_content = CharField()
 
-    class Meta:
+    class Meta(object):
         """ Meta
         """
         model = OaiRecord

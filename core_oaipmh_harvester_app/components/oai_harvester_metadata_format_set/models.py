@@ -3,11 +3,12 @@ OaiHarvesterMetadataFormatSet model
 """
 
 from django_mongoengine import fields, Document
-from mongoengine.queryset.base import CASCADE
 from mongoengine import errors as mongoengine_errors
+from mongoengine.queryset.base import CASCADE
+
+from core_main_app.commons import exceptions
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
-from core_main_app.commons import exceptions
 
 
 class OaiHarvesterMetadataFormatSet(Document):
@@ -33,9 +34,9 @@ class OaiHarvesterMetadataFormatSet(Document):
             return OaiHarvesterMetadataFormatSet.objects.get(harvester_metadata_format=oai_harvester_metadata_format,
                                                              harvester_set=oai_harvester_set)
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))
 
     @staticmethod
     def upsert_last_update_by_metadata_format_and_set(harvester_metadata_format, harvester_set,
@@ -54,4 +55,4 @@ class OaiHarvesterMetadataFormatSet(Document):
                 harvester_metadata_format=harvester_metadata_format,
                 harvester_set=harvester_set).update_one(last_update=last_update, upsert=True)
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))

@@ -1,5 +1,7 @@
 """ Int Test Rest OaiRegistry
 """
+from builtins import str
+
 import requests
 from mock.mock import patch
 from rest_framework import status

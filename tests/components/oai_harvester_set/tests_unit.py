@@ -1,11 +1,13 @@
+from builtins import str
 from unittest.case import TestCase
+
 from bson.objectid import ObjectId
 from mock.mock import Mock, patch
+
 import core_oaipmh_harvester_app.components.oai_harvester_set.api as harvester_set_api
 from core_main_app.commons import exceptions
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
-from core_main_app.utils.xml import OrderedDict
 
 
 class TestOaiHarvesterSetGetById(TestCase):

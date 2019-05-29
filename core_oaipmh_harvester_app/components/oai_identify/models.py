@@ -2,6 +2,7 @@
 OaiIdentify model
 """
 
+from builtins import str
 from django_mongoengine import fields, Document
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from mongoengine.queryset.base import CASCADE
@@ -45,6 +46,6 @@ class OaiIdentify(Document):
         try:
             return OaiIdentify.objects().get(registry=str(registry_id))
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))
