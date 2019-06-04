@@ -42,7 +42,7 @@ def sickle_identify(url):
         return serializer.data, status.HTTP_200_OK
     except Exception as e:
         content = OaiPmhMessage.get_message_labelled('An error occurred when attempting to identify resource: %s'
-                                                     % e.message)
+                                                     % str(e))
         return content, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
@@ -63,11 +63,11 @@ def sickle_list_sets(url):
         serializer = sickle_serializers.SetSerializer(list_sets, many=True)
         return serializer.data, status.HTTP_200_OK
     except NoSetHierarchy as e:
-        content = OaiPmhMessage.get_message_labelled('%s' % e.message)
+        content = OaiPmhMessage.get_message_labelled('%s' % str(e))
         return content, status.HTTP_204_NO_CONTENT
     except Exception as e:
         content = OaiPmhMessage.get_message_labelled('An error occurred when attempting to get the sets: %s'
-                                                     % e.message)
+                                                     % str(e))
         return content, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
@@ -89,11 +89,11 @@ def sickle_list_metadata_formats(url):
         return serializer.data, status.HTTP_200_OK
     except NoMetadataFormat as e:
         # This repository does not support sets
-        content = OaiPmhMessage.get_message_labelled('%s' % e.message)
+        content = OaiPmhMessage.get_message_labelled('%s' % str(e))
         return content, status.HTTP_204_NO_CONTENT
     except Exception as e:
         content = OaiPmhMessage.get_message_labelled('An error occurred when attempting to get the metadata formats: %s'
-                                                     % e.message)
+                                                     % str(e))
         return content, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 

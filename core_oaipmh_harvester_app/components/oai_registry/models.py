@@ -38,9 +38,9 @@ class OaiRegistry(Document):
         try:
             return OaiRegistry.objects().get(pk=str(oai_registry_id))
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))
 
     @staticmethod
     def get_by_name(oai_registry_name):
@@ -59,9 +59,9 @@ class OaiRegistry(Document):
         try:
             return OaiRegistry.objects().get(name=oai_registry_name)
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))
 
     @staticmethod
     def get_all():

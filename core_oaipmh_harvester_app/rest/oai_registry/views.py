@@ -41,7 +41,7 @@ class RegistryList(APIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -86,7 +86,7 @@ class RegistryList(APIView):
         except exceptions_oai.OAIAPIException as e:
             return e.response()
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -121,7 +121,7 @@ class RegistryDetail(APIView):
         except exceptions_oai.OAIAPIException as e:
             return e.response()
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -153,7 +153,7 @@ class RegistryDetail(APIView):
         except exceptions_oai.OAIAPIException as e:
             return e.response()
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -205,7 +205,7 @@ class RegistryDetail(APIView):
         except exceptions_oai.OAIAPIException as e:
             return e.response()
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -242,7 +242,7 @@ class ActivateRegistry(APIView):
         except exceptions_oai.OAIAPIException as e:
             return e.response()
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -279,7 +279,7 @@ class DeactivateRegistry(APIView):
         except exceptions_oai.OAIAPIException as e:
             return e.response()
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -311,12 +311,12 @@ class InfoRegistry(APIView):
 
             return Response(content, status=status.HTTP_200_OK)
         except exceptions.DoesNotExist as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except exceptions_oai.OAIAPIException as e:
             return e.response()
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -351,12 +351,12 @@ class Harvest(APIView):
                                                              format(registry.name))
                 return Response(content, status=status.HTTP_200_OK)
         except exceptions.DoesNotExist as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except exceptions_oai.OAIAPIException as e:
             return e.response()
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(api_staff_member_required())
@@ -416,10 +416,10 @@ class Harvest(APIView):
             content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except exceptions.DoesNotExist as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except exceptions_oai.OAIAPIException as e:
             return e.response()
         except Exception as e:
-            content = OaiPmhMessage.get_message_labelled(e.message)
+            content = OaiPmhMessage.get_message_labelled(str(e))
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

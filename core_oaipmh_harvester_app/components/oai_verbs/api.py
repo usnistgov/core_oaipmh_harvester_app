@@ -177,7 +177,7 @@ def list_records(url, metadata_prefix=None, resumption_token=None, set_h=None, f
         return e.response(), resumption_token
     except Exception as e:
         content = OaiPmhMessage.get_message_labelled('An error occurred during the list_records process: %s'
-                                                     % e.message)
+                                                     % str(e))
         return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR), resumption_token
 
 
@@ -213,10 +213,10 @@ def get_data(url):
             raise oai_pmh_exceptions.OAIAPIException(message='An error occurred, url malformed.',
                                                      status_code=status.HTTP_400_BAD_REQUEST)
     except requests.HTTPError as err:
-        raise oai_pmh_exceptions.OAIAPILabelledException(message=err.message, status_code=err.response.status_code)
+        raise oai_pmh_exceptions.OAIAPILabelledException(message=str(err), status_code=err.response.status_code)
     except oai_pmh_exceptions.OAIAPIException as e:
         raise e
     except Exception as e:
-        content = 'An error occurred when attempting to retrieve data: %s' % e.message
+        content = 'An error occurred when attempting to retrieve data: %s' % str(e)
         raise oai_pmh_exceptions.OAIAPILabelledException(message=content,
                                                          status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)

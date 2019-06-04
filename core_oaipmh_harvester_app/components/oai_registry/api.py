@@ -186,7 +186,7 @@ def update_registry_info(registry):
     except Exception as e:
         registry.isUpdating = False
         upsert(registry)
-        raise oai_pmh_exceptions.OAIAPILabelledException(message=e.message,
+        raise oai_pmh_exceptions.OAIAPILabelledException(message=str(e),
                                                          status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

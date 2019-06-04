@@ -54,7 +54,7 @@ def add_registry(request):
             else:
                 return HttpResponseBadRequest('Please enter a valid URL.')
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
     return HttpResponse(json.dumps({}), content_type='application/javascript')
 
@@ -72,7 +72,7 @@ def deactivate_registry(request):
         registry.is_activated = False
         oai_registry_api.upsert(registry)
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
     return HttpResponse(json.dumps({}), content_type='application/javascript')
 
@@ -90,7 +90,7 @@ def activate_registry(request):
         registry.is_activated = True
         oai_registry_api.upsert(registry)
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
     return HttpResponse(json.dumps({}), content_type='application/javascript')
 
@@ -107,7 +107,7 @@ def delete_registry(request):
         registry = oai_registry_api.get_by_id(request.GET['id'])
         oai_registry_api.delete(registry)
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
     return HttpResponse(json.dumps({}), content_type='application/javascript')
 
@@ -124,7 +124,7 @@ def check_registry(request):
         req, status_code = oai_verb_api.identify(request.GET['url'])
         is_available = status_code == status.HTTP_200_OK
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
     return HttpResponse(json.dumps({'is_available': is_available}), content_type='application/javascript')
 
@@ -140,7 +140,7 @@ class EditRegistryView(EditObjectModalView):
         try:
             oai_registry_api.upsert(self.object)
         except Exception as e:
-            form.add_error(None, e.message)
+            form.add_error(None, str(e))
 
 
 def view_registry(request):
@@ -165,7 +165,7 @@ def view_registry(request):
         return HttpResponse(json.dumps({'template': template.render(context)}),
                             content_type='application/javascript')
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
 
 class EditHarvestRegistryView(EditObjectModalView):
@@ -193,7 +193,7 @@ class EditHarvestRegistryView(EditObjectModalView):
                 values_list('id'), False)
             oai_set_api.update_for_all_harvest_by_list_ids(sets.values_list('id'), True)
         except Exception as e:
-            form.add_error(None, e.message)
+            form.add_error(None, str(e))
 
     def get_form_kwargs(self):
         """This method is what injects forms with their keyword
@@ -230,7 +230,7 @@ def update_registry(request):
 
         return HttpResponse(json.dumps({}), content_type='application/javascript')
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
 
 def check_update_registry(request):
@@ -262,7 +262,7 @@ def check_update_registry(request):
 
             return HttpResponse(json.dumps(update_info), content_type='application/javascript')
         except Exception as e:
-            return HttpResponseBadRequest(e.message, content_type='application/javascript')
+            return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
 
 def harvest_registry(request):
@@ -279,7 +279,7 @@ def harvest_registry(request):
 
         return HttpResponse(json.dumps({}), content_type='application/javascript')
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
 
 def check_harvest_registry(request):
@@ -371,7 +371,7 @@ def get_data(request):
 
         return HttpResponse(json.dumps(content), content_type="application/javascript")
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type="application/javascript")
+        return HttpResponseBadRequest(str(e), content_type="application/javascript")
 
 
 def download_xml_build_req(request):
