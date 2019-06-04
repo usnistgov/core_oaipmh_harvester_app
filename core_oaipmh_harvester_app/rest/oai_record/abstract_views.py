@@ -86,7 +86,7 @@ class AbstractExecuteQueryView(with_metaclass(ABCMeta, APIView)):
                 content = {'message': 'Query should be passed in parameter.'}
                 return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except Exception as api_exception:
-            content = {'message': api_exception.message}
+            content = {'message': str(api_exception)}
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def build_query(self, query, templates, registries):

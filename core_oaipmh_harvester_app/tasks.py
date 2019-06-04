@@ -49,7 +49,7 @@ def watch_registry_harvest_task():
         logger.info('FINISH watching registries.')
     except Exception as e:
         logger.error('ERROR : Error while watching new registries to harvest: {0}'.format(
-            e.message))
+            str(e)))
     finally:
         # Periodic call every WATCH_REGISTRY_HARVEST_RATE seconds
         watch_registry_harvest_task.apply_async(countdown=WATCH_REGISTRY_HARVEST_RATE)
@@ -92,7 +92,7 @@ def _harvest_registry(registry):
         logger.info('FINISH harvesting registry: {0}'.format(registry.name.encode("utf-8")))
     except Exception as e:
         logger.error('ERROR : Impossible to harvest the registry {0}: '
-                     '{1}.'.format(registry.name.encode("utf-8"), e.message))
+                     '{1}.'.format(registry.name.encode("utf-8"), str(e)))
     finally:
         # Harvest again in harvest_rate seconds.
         harvest_task.apply_async((str(registry.id),), countdown=registry.harvest_rate)
@@ -111,7 +111,7 @@ def _stop_harvest_registry(registry):
                                                                                encode("utf-8")))
     except Exception as e:
         logger.error('ERROR : Error while stopping the harvest process for the registry {0}: '
-                     '{1}.'.format(registry.name.encode("utf-8"), e.message))
+                     '{1}.'.format(registry.name.encode("utf-8"), str(e)))
 
 
 def _revoke_all_scheduled_tasks():
@@ -130,7 +130,7 @@ def _revoke_all_scheduled_tasks():
         logger.info('FINISH revoking OAI-PMH scheduled tasks.')
     except Exception as e:
         logger.error('ERROR : Error while revoking the scheduled tasks: {0}'
-                     .format(e.message))
+                     .format(str(e)))
 
 
 def _get_all_oai_tasks_full_name():
