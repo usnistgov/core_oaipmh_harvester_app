@@ -45,7 +45,7 @@ def watch_registry_harvest_task():
                 registry.is_queued = True
                 oai_registry_api.upsert(registry)
                 logger.info('Registry {0} has been queued and will be harvested.'.
-                            format(registry.name.encode("utf-8")))
+                            format(registry.name))
         logger.info('FINISH watching registries.')
     except Exception as e:
         logger.error('ERROR : Error while watching new registries to harvest: {0}'.format(
@@ -84,15 +84,15 @@ def _harvest_registry(registry):
 
     """
     try:
-        logger.info('START harvesting registry: {0}'.format(registry.name.encode("utf-8")))
+        logger.info('START harvesting registry: {0}'.format(registry.name))
         if not registry.is_updating:
             oai_registry_api.update_registry_info(registry)
         if not registry.is_harvesting:
             oai_registry_api.harvest_registry(registry)
-        logger.info('FINISH harvesting registry: {0}'.format(registry.name.encode("utf-8")))
+        logger.info('FINISH harvesting registry: {0}'.format(registry.name))
     except Exception as e:
         logger.error('ERROR : Impossible to harvest the registry {0}: '
-                     '{1}.'.format(registry.name.encode("utf-8"), str(e)))
+                     '{1}.'.format(registry.name, str(e)))
     finally:
         # Harvest again in harvest_rate seconds.
         harvest_task.apply_async((str(registry.id),), countdown=registry.harvest_rate)
@@ -107,11 +107,10 @@ def _stop_harvest_registry(registry):
     try:
         registry.is_queued = False
         oai_registry_api.upsert(registry)
-        logger.info('Harvesting for Registry {0} has been deactivated.'.format(registry.name.
-                                                                               encode("utf-8")))
+        logger.info('Harvesting for Registry {0} has been deactivated.'.format(registry.name))
     except Exception as e:
         logger.error('ERROR : Error while stopping the harvest process for the registry {0}: '
-                     '{1}.'.format(registry.name.encode("utf-8"), str(e)))
+                     '{1}.'.format(registry.name, str(e)))
 
 
 def _revoke_all_scheduled_tasks():
