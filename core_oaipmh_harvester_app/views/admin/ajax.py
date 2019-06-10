@@ -358,9 +358,8 @@ def get_data(request):
     # Build the url
     url = url + "?" + encoded_args
     try:
-        req = oai_verb_api.get_data(url)
-        xml_string = req.data
-        request.session['xmlStringOAIPMH'] = str(xml_string.encode("utf8"))
+        xml_string = oai_verb_api.get_data(url).data
+        request.session['xmlStringOAIPMH'] = xml_string
         # loads XSLT
         xslt_path = finders.find(join('core_main_app', 'common', 'xsl', 'xml2html.xsl'))
         # reads XSLT

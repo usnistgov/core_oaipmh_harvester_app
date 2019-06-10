@@ -116,5 +116,5 @@ class RequestForm(forms.Form):
         self.fields['metadata_prefix'].choices = self.data_providers
         self.fields['set'].choices = self.data_providers
         for o in oai_registry_api.get_all_activated_registry():
-            self.data_providers.append((str(o.id)+'|'+o.url, str(o.name.encode('utf8'))))
+            self.data_providers.append((str(o.id)+'|'+o.url, str(o.name)))
         self.fields['data_provider'].choices = self.data_providers
