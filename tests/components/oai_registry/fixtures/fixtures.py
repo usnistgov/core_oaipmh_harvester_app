@@ -2,7 +2,6 @@
 """
 import json
 import os
-from builtins import object
 
 from core_main_app.utils import xml as xml_utils
 from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface

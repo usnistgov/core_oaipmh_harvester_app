@@ -1,7 +1,6 @@
 """ OAI-PMH Harvester tasks
 """
 import logging
-from builtins import str
 from itertools import chain
 
 from celery import current_app

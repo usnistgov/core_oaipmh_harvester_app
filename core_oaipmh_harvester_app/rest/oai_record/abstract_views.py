@@ -2,10 +2,8 @@
 """
 import json
 from abc import ABCMeta, abstractmethod
-from builtins import str
 
 from bson.objectid import ObjectId
-from future.utils import with_metaclass
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -18,7 +16,7 @@ from core_oaipmh_harvester_app.utils.query.mongo.query_builder import OaiPmhQuer
 
 
 # FIXME: Could inherit AbstractExecuteQuery from core_main_app
-class AbstractExecuteQueryView(with_metaclass(ABCMeta, APIView)):
+class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
     sub_document_root = 'dict_content'
 
     def get(self, request):

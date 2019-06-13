@@ -1,8 +1,6 @@
 """
     Oai-PMH verbs API.
 """
-from builtins import next
-from builtins import str
 
 import requests
 from rest_framework import status

@@ -2,7 +2,6 @@
 OaiHarvesterSet model
 """
 
-from builtins import str
 from django_mongoengine import fields
 from mongoengine.queryset.base import CASCADE
 from core_oaipmh_common_app.components.oai_set.models import OaiSet

@@ -3,7 +3,6 @@ import json
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import str
 from io import StringIO
 from os.path import join
 from wsgiref.util import FileWrapper
@@ -14,7 +13,6 @@ from django.core.urlresolvers import reverse_lazy
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
 from django.utils import formats
-from future import standard_library
 from rest_framework import status
 
 import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as \
@@ -31,7 +29,6 @@ from core_oaipmh_harvester_app.views.admin.forms import AddRegistryForm, EditReg
     EditHarvestRegistryForm
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
-standard_library.install_aliases()
 
 
 def add_registry(request):

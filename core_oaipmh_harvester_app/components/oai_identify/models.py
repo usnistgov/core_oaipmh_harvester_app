@@ -2,7 +2,6 @@
 OaiIdentify model
 """
 
-from builtins import str
 from django_mongoengine import fields, Document
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from mongoengine.queryset.base import CASCADE

@@ -1,6 +1,5 @@
 """ Int Test OaiRegistry
 """
-from builtins import next
 
 import requests
 from bson.objectid import ObjectId

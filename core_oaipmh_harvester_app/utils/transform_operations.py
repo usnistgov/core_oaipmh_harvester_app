@@ -2,7 +2,6 @@
     Transform operations utils provide tool operation to transform oai-pmh dict representation to object
 """
 
-from builtins import str
 
 from core_main_app.utils.xml import raw_xml_to_dict
 from core_oaipmh_common_app.utils import UTCdatetime

@@ -1,6 +1,3 @@
-from builtins import object
-from builtins import str
-
 from django import forms
 from django.core.validators import MinValueValidator
 from mongodbforms import DocumentForm

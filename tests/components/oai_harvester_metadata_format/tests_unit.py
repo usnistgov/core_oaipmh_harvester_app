@@ -1,5 +1,4 @@
 import datetime
-from builtins import str
 from unittest.case import TestCase
 
 import requests

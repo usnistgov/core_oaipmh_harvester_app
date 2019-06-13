@@ -1,7 +1,6 @@
 """ REST views for the data API
 """
 import json
-from builtins import str
 
 from rest_framework.response import Response
 

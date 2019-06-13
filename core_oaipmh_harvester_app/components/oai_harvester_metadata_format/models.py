@@ -2,7 +2,6 @@
 OaiHarvesterMetadataFormat model
 """
 
-from builtins import str
 from django_mongoengine import fields
 from mongoengine.queryset.base import NULLIFY, CASCADE
 from core_oaipmh_common_app.components.oai_metadata_format.models import OaiMetadataFormat
