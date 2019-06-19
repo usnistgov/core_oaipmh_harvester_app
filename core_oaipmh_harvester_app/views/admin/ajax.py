@@ -30,7 +30,6 @@ from core_oaipmh_harvester_app.views.admin.forms import AddRegistryForm, EditReg
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
-
 def add_registry(request):
     """ Add a registry.
     Args:

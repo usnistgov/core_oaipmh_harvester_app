@@ -1,9 +1,9 @@
 """Url router for the REST API
 """
 from django.conf.urls import url
-from core_oaipmh_harvester_app.rest.oai_registry import views as oai_registry_views
-from core_oaipmh_harvester_app.rest.oai_record import views as oai_record_views
 
+from core_oaipmh_harvester_app.rest.oai_record import views as oai_record_views
+from core_oaipmh_harvester_app.rest.oai_registry import views as oai_registry_views
 
 urlpatterns = [
     url(r'^registry/(?P<registry_id>\w+)/info/$', oai_registry_views.InfoRegistry.as_view(),

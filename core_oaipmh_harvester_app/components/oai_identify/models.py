@@ -3,10 +3,11 @@ OaiIdentify model
 """
 
 from django_mongoengine import fields, Document
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
-from mongoengine.queryset.base import CASCADE
 from mongoengine import errors as mongoengine_errors
+from mongoengine.queryset.base import CASCADE
+
 from core_main_app.commons import exceptions
+from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 
 class OaiIdentify(Document):

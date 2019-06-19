@@ -1,16 +1,18 @@
 """ Unit Test oai_verbs
 """
 from unittest.case import TestCase
-from mock.mock import patch
-from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
-import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verbs_api
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
-from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
-from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
-from tests.test_settings import SSL_CERTIFICATES_DIR
-from tests.components.oai_registry.fixtures.fixtures import OaiPmhMock
-from rest_framework import status
+
 import requests
+from mock.mock import patch
+from rest_framework import status
+
+import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verbs_api
+from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
+from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
+from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
+from tests.components.oai_registry.fixtures.fixtures import OaiPmhMock
+from tests.test_settings import SSL_CERTIFICATES_DIR
 
 
 class TestIdentifyAsObject(TestCase):

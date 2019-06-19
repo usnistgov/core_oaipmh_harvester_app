@@ -1,21 +1,21 @@
 """ Permissions Test for OAI Registry Rest API
 """
+from bson.objectid import ObjectId
+from django.db.models.query import QuerySet
 from django.test import SimpleTestCase
 from mock.mock import patch, Mock
 from rest_framework import status
-from bson.objectid import ObjectId
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
-from django.db.models.query import QuerySet
 
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from core_oaipmh_harvester_app.rest.oai_registry import views as rest_oai_registry
-from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
-from core_oaipmh_harvester_app.rest.serializers import RegistrySerializer, UpdateRegistrySerializer, HarvestSerializer
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api as \
     oai_metadata_format_api
 from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_set_api
+from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
+from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.rest.oai_registry import views as rest_oai_registry
+from core_oaipmh_harvester_app.rest.serializers import RegistrySerializer, UpdateRegistrySerializer, HarvestSerializer
 
 
 class TestGetRegistry(SimpleTestCase):
