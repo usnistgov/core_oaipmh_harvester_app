@@ -1,5 +1,8 @@
+""" OAI pmh havester Ajax file
+"""
 import datetime
 import json
+import logging
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -29,6 +32,7 @@ from core_oaipmh_harvester_app.views.admin.forms import AddRegistryForm, EditReg
     EditHarvestRegistryForm
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
+logger = logging.getLogger(__name__)
 
 def add_registry(request):
     """ Add a registry.
@@ -247,8 +251,8 @@ def check_update_registry(request):
                 if registry.last_update is not None:
                     try:
                         last_update = formats.date_format(registry.last_update, "DATETIME_FORMAT")
-                    except (TypeError, Exception):
-                        pass
+                    except Exception as e:
+                        logger.warning("check_update_registry threw an exception: {0}".format(str(e)))
 
                 result_json = {'registry_id': str(registry.id), 'is_updating': registry.is_updating,
                                "name": registry.name,

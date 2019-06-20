@@ -1,8 +1,8 @@
 """
 OaiRegistry API
 """
-
 import datetime
+import logging
 
 from rest_framework import status
 from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR
@@ -22,6 +22,8 @@ from core_oaipmh_harvester_app.components.oai_record import api as oai_record_ap
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
 from core_oaipmh_harvester_app.utils import transform_operations
+
+logger = logging.getLogger(__name__)
 
 
 def upsert(oai_registry):
@@ -357,7 +359,7 @@ def _upsert_metadata_format_for_registry(metadata_format, registry):
         oai_harvester_metadata_format_api.upsert(metadata_format_to_save)
     except exceptions.ApiError as e:
         # Log exception. Do not save the metadata format.
-        pass
+        logger.warning("_upsert_metadata_format_for_registry threw an exception: {0}".format(str(e)))
 
 
 def _upsert_set_for_registry(set_, registry):
