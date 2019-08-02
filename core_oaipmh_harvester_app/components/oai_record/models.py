@@ -77,7 +77,7 @@ class OaiRecord(AbstractData):
         return OaiRecord.objects().all()
 
     @staticmethod
-    def get_all_by_registry_id(registry_id, order_by_field=None):
+    def get_all_by_registry_id(registry_id, order_by_field):
         """ Return a list of OaiRecord by registry id. Possibility to order_by the list.
 
         Args:
@@ -88,7 +88,7 @@ class OaiRecord(AbstractData):
             List of OaiRecord.
 
         """
-        return OaiRecord.objects(registry=str(registry_id)).order_by(order_by_field)
+        return OaiRecord.objects(registry=str(registry_id)).order_by(*order_by_field)
 
     @staticmethod
     def get_count_by_registry_id(registry_id):
@@ -111,7 +111,7 @@ class OaiRecord(AbstractData):
             registry_id: The registry id.
 
         """
-        OaiRecord.get_all_by_registry_id(registry_id).delete()
+        OaiRecord.get_all_by_registry_id(registry_id, []).delete()
 
     @staticmethod
     def execute_full_text_query(text, list_metadata_format_id):
@@ -131,17 +131,18 @@ class OaiRecord(AbstractData):
         return OaiRecord.objects.find(full_text_query)
 
     @staticmethod
-    def execute_query(query):
+    def execute_query(query, order_by_field):
         """Executes a query on the OaiRecord collection.
 
         Args:
             query: Query to execute.
+            order_by_field: Order by Data field
 
         Returns:
             Results of the query.
 
         """
-        return OaiRecord.objects(__raw__=query)
+        return OaiRecord.objects(__raw__=query).order_by(*order_by_field)
 
     @staticmethod
     def aggregate(pipeline):

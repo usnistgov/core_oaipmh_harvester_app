@@ -72,12 +72,13 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
             query = self.request.data.get('query', None)
             templates = self.request.data.get('templates', '[]')
             registries = self.get_registries()
+            order_by_field = self.request.data.get('order_by_field', '').split(',')
 
             if query is not None:
                 # prepare query
                 raw_query = self.build_query(query, templates, registries)
                 # execute query
-                data_list = self.execute_raw_query(raw_query)
+                data_list = self.execute_raw_query(raw_query, order_by_field)
                 # build and return response
                 return self.build_response(data_list)
             else:
@@ -132,18 +133,19 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
         # create a raw query
         return query_builder.get_raw_query()
 
-    def execute_raw_query(self, raw_query):
+    def execute_raw_query(self, raw_query, order_by_field):
         """ Execute the raw query in database
 
         Args:
 
             raw_query: Query to execute
+            order_by_field:
 
         Returns:
 
             Results of the query
         """
-        return oai_record_api.execute_query(raw_query).order_by('title')
+        return oai_record_api.execute_query(raw_query, order_by_field)
 
     @abstractmethod
     def build_response(self, data_list):

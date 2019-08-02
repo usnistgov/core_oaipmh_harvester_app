@@ -3,6 +3,7 @@ OaiRecord API
 """
 
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
+from core_main_app.settings import DATA_SORTING_FIELDS
 
 
 def upsert(oai_record):
@@ -54,7 +55,7 @@ def get_all():
     return OaiRecord.get_all()
 
 
-def get_all_by_registry_id(registry_id, order_by_field=None):
+def get_all_by_registry_id(registry_id, order_by_field=DATA_SORTING_FIELDS):
     """ Return a list of OaiRecord by registry id. Possibility to order_by the list.
 
     Args:
@@ -114,17 +115,19 @@ def execute_full_text_query(text, list_metadata_format_id):
     return OaiRecord.execute_full_text_query(text, list_metadata_format_id)
 
 
-def execute_query(query):
+def execute_query(query, order_by_field=DATA_SORTING_FIELDS):
+
     """Executes a query on the OaiRecord collection.
 
     Args:
         query: Query to execute.
+        order_by_field: Order by Data field
 
     Returns:
         Results of the query.
 
     """
-    return OaiRecord.execute_query(query)
+    return OaiRecord.execute_query(query, order_by_field)
 
 
 def aggregate(pipeline):
