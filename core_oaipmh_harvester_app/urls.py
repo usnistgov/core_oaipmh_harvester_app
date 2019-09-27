@@ -1,7 +1,8 @@
 """ Url router for the main application
 """
-from django.conf.urls import url, include
+from django.conf.urls import include
+from django.urls import re_path
 
 urlpatterns = [
-    url(r'^rest/', include('core_oaipmh_harvester_app.rest.urls')),
+    re_path(r'^rest/', include('core_oaipmh_harvester_app.rest.urls')),
 ]
