@@ -10,8 +10,6 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sites',
-    # Extra apps
-    "password_policies",
     # Local apps
     "core_main_app",
     "tests",
