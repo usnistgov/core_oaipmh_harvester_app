@@ -12,7 +12,7 @@ from wsgiref.util import FileWrapper
 
 from django.contrib import messages
 from django.contrib.staticfiles import finders
-from django.urls import reverse_lazy
+from django.core.urlresolvers import reverse_lazy
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
 from django.utils import formats
