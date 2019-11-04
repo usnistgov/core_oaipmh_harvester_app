@@ -11,19 +11,19 @@ def request_builder_view(request):
     assets = {
         "js": [
             {
-                "path": "core_oaipmh_harvester_app/admin/js/registries/request_builder/init.js",
+                "path": "core_oaipmh_harvester_app/admin/js/registries/"
+                        "request_builder/init.js",
                 "is_raw": False
             },
             {
-                "path": "core_oaipmh_harvester_app/admin/js/registries/request_builder/populate.js",
+                "path": "core_oaipmh_harvester_app/admin/js/registries/"
+                        "request_builder/submit.js",
                 "is_raw": False
             },
             {
-                "path": "core_oaipmh_harvester_app/admin/js/registries/request_builder/submit.js",
-                "is_raw": False
-            },
-            {
-                "path": "core_oaipmh_harvester_app/libs/bootstrap-datetimepicker/1.0/js/bootstrap-datetimepicker.js",
+                "path": "core_oaipmh_harvester_app/libs/"
+                        "bootstrap-datetimepicker/1.0/js/"
+                        "bootstrap-datetimepicker.js",
                 "is_raw": False
             },
             {
@@ -32,8 +32,10 @@ def request_builder_view(request):
             }
         ],
         "css": [
-            "core_oaipmh_harvester_app/libs/bootstrap-datetimepicker/1.0/css/bootstrap-datetimepicker.css",
-            "core_oaipmh_harvester_app/admin/css/registries/request_builder/main.css",
+            "core_oaipmh_harvester_app/libs/bootstrap-datetimepicker/1.0/css/"
+            "bootstrap-datetimepicker.css",
+            "core_oaipmh_harvester_app/admin/css/registries/request_builder/"
+            "main.css",
             "core_main_app/common/css/XMLTree.css"
         ]
     }

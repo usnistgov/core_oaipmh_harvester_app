@@ -1,87 +1,118 @@
 {% extends 'core_main_app/_render/admin/theme/tools/box.html' %}
 
-{% block box_title %}{% endblock %}
+{% block box_title %}OAI-PMH Provider Request Form{% endblock %}
 
 {% block box_tools %}
 {% endblock %}
 
 {% block box_body %}
-    <div class="alert alert-warning" id="banner_submit_wait" style="display: none;">
+    <div class="alert alert-warning" id="banner_submit_wait"
+         style="display: none">
         <h4><i class='fa fa-circle-o-notch fa-spin'></i>&nbsp;&nbsp;Please wait ...</h4>
     </div>
-    <div class="alert alert-error" id="banner_build_errors" style="display: none;">
+    <div class="alert alert-error" id="banner_build_errors"
+         style="display: none">
         <h4><i class="fa fa-exclamation-circle fa-1x"></i> Error</h4>
         <div id="build_errors">
         </div>
     </div>
-    <div>
+    <div class="row" id="request-builder-form">
     {% if data.request_form.fields.data_provider.choices|length > 1 %}
         <form class="form-horizontal">
             <div class="form-group">
-                <label class="col-sm-2 control-label">{{data.request_form.data_provider.label}}:</label>
-                <div class="col-sm-8">{{data.request_form.data_provider}}</div>
+                <label class="col-sm-2 control-label">
+                    {{data.request_form.data_provider.label}}:
+                </label>
+                <div class="col-sm-8">
+                    {{data.request_form.data_provider}}
+                </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">{{data.request_form.verb.label}}:</label>
+                <label class="col-sm-2 control-label">
+                    {{data.request_form.verb.label}}:
+                </label>
                 <div class="col-sm-8">{{data.request_form.verb}}</div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">{{data.request_form.set.label}}:</label>
+                <label class="col-sm-2 control-label">
+                    {{data.request_form.set.label}}:
+                </label>
                 <div class="col-sm-8">{{data.request_form.set}}</div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">{{data.request_form.metadata_prefix.label}}:</label>
-                <div class="col-sm-8">{{data.request_form.metadata_prefix}}</div>
+                <label class="col-sm-2 control-label">
+                    {{data.request_form.metadata_prefix.label}}:
+                </label>
+                <div class="col-sm-8">
+                    {{data.request_form.metadata_prefix}}
+                </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">{{data.request_form.identifiers.label}}:</label>
-                <div class="col-sm-8">{{data.request_form.identifiers}}</div>
+                <label class="col-sm-2 control-label">
+                    {{data.request_form.identifier.label}}:
+                </label>
+                <div class="col-sm-8">{{data.request_form.identifier}}</div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">{{data.request_form.From.label}}:</label>
+                <label class="col-sm-2 control-label">
+                    {{data.request_form.from_date.label}}:
+                </label>
                 <div class="col-sm-8">
                     <div class="input-group">
-                        <span class="input-group-addon" onclick="$('#{{data.request_form.From.id_for_label}}').focus();">
+                        <span class="input-group-addon"
+                              onclick="$('#{{data.request_form.from_date.id_for_label}}').focus();">
                             <i class="fa fa-calendar"></i>
                         </span>
-                        {{data.request_form.From}}
+                        {{data.request_form.from_date}}
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">{{data.request_form.until.label}}: </label>
+                <label class="col-sm-2 control-label">
+                    {{data.request_form.until_date.label}}:
+                </label>
                 <div class="col-sm-8">
                     <div class="input-group">
-                        <span class="input-group-addon" onclick="$('#{{data.request_form.until.id_for_label}}').focus();">
+                        <span class="input-group-addon"
+                              onclick="$('#{{data.request_form.until_date.id_for_label}}').focus();">
                             <i class="fa fa-calendar"></i>
                         </span>
-                        {{data.request_form.until}}
+                        {{data.request_form.until_date}}
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">{{data.request_form.resumption_token.label}}:</label>
-                <div class="col-sm-8">{{data.request_form.resumption_token}}</div>
+                <label class="col-sm-2 control-label">
+                    {{data.request_form.resumption_token.label}}:
+                </label>
+                <div class="col-sm-8">
+                    {{data.request_form.resumption_token}}
+                </div>
             </div>
         </form>
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-8">
-                <button class="btn btn-primary" id="submitBtn" onclick="checkSubmit()">Submit</button>
-                <button id="downloadXML" class="btn btn-default download" style="display: none"
-                        onclick="location.href='{% url 'admin:core_oaipmh_harvester_app_download_xml_build_req' %}';">
-                    <i class="icon-arrow-down"></i> Download XML
-                </button>
-            </div>
+
+        <div class="col-sm-offset-2 col-sm-8">
+            <button class="btn btn-primary" id="submit-btn"
+                    onclick="checkSubmit()">
+                <i class="fa fa-send"></i> Submit
+            </button>
+            <button id="download-xml" class="btn btn-default"
+                    style="display: none"
+                    onclick="location.href='{% url 'admin:core_oaipmh_harvester_app_download_xml_build_req' %}';">
+                <i class="fa fa-download"></i> Download XML
+            </button>
         </div>
-        <br/><br/><br/>
     {% else %}
-        <p align="center"> There are currently no Data Providers registered. Please
-        <a href="{%url 'admin:core_oaipmh_harvester_app_registries'%}">add a new one</a>.
-            </p>
+        <p style="text-align: center">
+            There are currently no Data Providers registered. Please
+            <a href="{%url 'admin:core_oaipmh_harvester_app_registries'%}">
+                add a new one
+            </a>.
+        </p>
     {% endif %}
-</div>
-{% autoescape off %}
-<div style="background-color: #f0f0f0" id="result">
-</div>
-{% endautoescape %}
+    </div>
+    {% autoescape off %}
+        <div id="result" style="display: none">
+        </div>
+    {% endautoescape %}
 {% endblock %}

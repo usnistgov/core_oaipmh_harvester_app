@@ -2,107 +2,119 @@
 * Perform check before submit
 */
 checkSubmit = function() {
-    $("#build_errors").html("");
-    $("#banner_build_errors").hide(200);
-    $("#downloadXML").hide();
-    $("#result").text('');
-    var label = '';
-    if ($("select#id_data_provider").val() == '0') {
-        label = 'Please pick a data provider.';
-    } else if ($("select#id_verb").val() == '0') {
-        label = 'Please pick a verb.';
+    let $buildErrors = $("#build_errors");
+    let $bannerBuildErrors = $("#banner_build_errors");
+    let $result = $("#result");
+
+    $buildErrors.html("");
+    $bannerBuildErrors.hide(200);
+    $("#download-xml").hide();
+    $result.text("");
+    $result.hide();
+
+    let label = "";
+    let metadataPrefixValue = $("select#id_metadata_prefix").val();
+    let identifierValue = $("#id_identifier").val();
+    let resumptionTokenValue = $("#id_resumption_token").val();
+    let dataProviderValue = $("select#id_data_provider").val();
+    let verbValue = $("select#id_verb").val();
+
+    if (dataProviderValue === "0") {
+        label = "Please pick a data provider.";
+    } else if (verbValue === "0") {
+        label = "Please pick a verb.";
     } else {
-        if ($("select#id_verb").val() == '2') {
-            if ($("select#id_metadata_prefix").val() == '0') {
-                label = 'Please pick a metadata prefix.';
-            } else if ($("#id_identifiers").val().trim() == '') {
-                label = 'Please provide an identifier.';
+        if (verbValue === "2") {
+            if (metadataPrefixValue === "0") {
+                label = "Please pick a metadata prefix.";
+            } else if (identifierValue.trim() === "") {
+                label = "Please provide an identifier.";
             }
-        } else if ($("select#id_verb").val() == '3' || $("select#id_verb").val() == '5') {
-            if ($("select#id_metadata_prefix").val() == '0' && $("#id_resumption_token").val() == '') {
-                label = 'Please pick a metadata prefix.';
+        } else if (verbValue === "3" || verbValue === "5") {
+            if (metadataPrefixValue === "0" && resumptionTokenValue === "") {
+                label = "Please pick a metadata prefix.";
             }
         }
     }
-    if (label == '') {
+
+    if (label === "") {
         submit();
     } else {
-        $("#banner_build_errors").show(200);
-        $("#build_errors").html(label);
+        $bannerBuildErrors.show(200);
+        $buildErrors.html(label);
     }
-}
+};
 
 submit = function() {
-   $("#submitBtn").attr("disabled","disabled");
-   $("#banner_submit_wait").show(200);
-   var data_url = {};
+    $("#submit-btn").attr("disabled", "disabled");
+    $("#banner_submit_wait").show(200);
 
-    if ($("select#id_set").val() != '0')
+    let $result = $("#result");
+    let requestBuilderArgs = {};
+    let setValue = $("select#id_set").val();
+    let metadataPrefixValue = $("select#id_metadata_prefix").val();
+    let identifierValue = $("#id_identifier").val();
+    let resumptionTokenValue = $("#id_resumption_token").val();
+    let fromDateValue = $("#id_from_date").val();
+    let untilDateValue = $("#id_until_until_date").val();
+    let dataProviderValue = $("select#id_data_provider").val();
+    let verbValue = $("select#id_verb").val();
+
+    if (setValue !== "0")
+        requestBuilderArgs["set"] = setValue;
+
+    if (metadataPrefixValue !== "0")
+        requestBuilderArgs["metadataPrefix"] = metadataPrefixValue;
+
+    if (identifierValue !== "")
+        requestBuilderArgs["identifier"] = identifierValue;
+
+    if (typeof resumptionTokenValue !== "undefined" &&
+        resumptionTokenValue !== "")
+        requestBuilderArgs["resumptionToken"] = resumptionTokenValue;
+
+    if (fromDateValue !== "")
+        requestBuilderArgs["from"] = fromDateValue;
+
+    if (untilDateValue !== "")
+        requestBuilderArgs["until"] = untilDateValue;
+
+    let callURL = "";
+    if (dataProviderValue !== "0")
+        callURL = dataProviderValue.split("|")[1];
+
+    switch(verbValue)
     {
-        data_url['set'] = $("select#id_set").val();
+       case "1": requestBuilderArgs["verb"] = "Identify"; break;
+       case "2": requestBuilderArgs["verb"] = "GetRecord"; break;
+       case "3": requestBuilderArgs["verb"] = "ListRecords"; break;
+       case "4": requestBuilderArgs["verb"] = "ListSets"; break;
+       case "5": requestBuilderArgs["verb"] = "ListIdentifiers"; break;
+       case "6": requestBuilderArgs["verb"] = "ListMetadataFormats"; break;
     }
 
-    if ($("select#id_metadata_prefix").val() != '0')
-    {
-        data_url['metadataPrefix'] = $("select#id_metadata_prefix").val();
-    }
-
-    if ($("#id_identifiers").val() != '')
-    {
-        data_url['identifier'] = $("#id_identifiers").val();
-    }
-
-    if (typeof $("#id_resumptionToken").val() !== 'undefined' && $("#id_resumptionToken").val() != '')
-    {
-        data_url['resumptionToken'] = $("#id_resumption_token").val();
-    }
-
-    if ($("#id_From").val() != '')
-    {
-        data_url['from'] = $("#id_From").val();
-    }
-
-    if ($("#id_until").val() != '')
-    {
-        data_url['until'] = $("#id_until").val();
-    }
-
-    var callURL = '';
-    if ($("select#id_data_provider").val() != '0')
-    {
-        callURL = $("select#id_data_provider").val().split('|')[1];
-    }
-    switch($("select#id_verb").val())
-    {
-       case '1': data_url['verb'] = 'Identify'; break;
-       case '2': data_url['verb'] = 'GetRecord'; break;
-       case '3': data_url['verb'] = 'ListRecords'; break;
-       case '4': data_url['verb'] = 'ListSets'; break;
-       case '5': data_url['verb'] = 'ListIdentifiers'; break;
-       case '6': data_url['verb'] = 'ListMetadataFormats'; break;
-    }
-
-   $.ajax({
-            url : dataGetUrl,
-            type : "GET",
-            dataType: "json",
-            data : {
-                url : callURL,
-                args_url : JSON.stringify(data_url),
-            },
-            success: function(data){
-                $("#banner_submit_wait").hide(200);
-                $("#result").html(data.message);
-                $("#downloadXML").show(100);
-            },
-            complete: function(data){
-                $("#submitBtn").removeAttr("disabled");
-                $("#banner_submit_wait").hide(200);
-            },
-            error:function(data){
-                $("#banner_submit_wait").hide(200);
-                $("#banner_build_errors").show(200);
-                $("#build_errors").html(data.responseText);
-            }
-        });
-}
+    $.ajax({
+        url : dataGetUrl,
+        type : "GET",
+        dataType: "json",
+        data : {
+            url : callURL,
+            args_url : JSON.stringify(requestBuilderArgs),
+        },
+        success: function(data){
+            $("#banner_submit_wait").hide(200);
+            $result.html(data.message);
+            $result.show();
+            $("#download-xml").show(100);
+        },
+        complete: function(data){
+            $("#submit-btn").removeAttr("disabled");
+            $("#banner_submit_wait").hide(200);
+        },
+        error:function(data){
+            $("#banner_submit_wait").hide(200);
+            $("#banner_build_errors").show(200);
+            $("#build_errors").html(data.responseText);
+        }
+    });
+};
