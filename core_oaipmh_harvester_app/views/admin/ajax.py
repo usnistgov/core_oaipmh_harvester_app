@@ -12,9 +12,9 @@ from wsgiref.util import FileWrapper
 
 from django.contrib import messages
 from django.contrib.staticfiles import finders
-from django.urls import reverse_lazy
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
+from django.urls import reverse_lazy
 from django.utils import formats
 from rest_framework import status
 
@@ -33,6 +33,7 @@ from core_oaipmh_harvester_app.views.admin.forms import AddRegistryForm, EditReg
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 logger = logging.getLogger(__name__)
+
 
 def add_registry(request):
     """ Add a registry.
@@ -131,7 +132,7 @@ def check_registry(request):
 
 class EditRegistryView(EditObjectModalView):
     form_class = EditRegistryForm
-    model = OaiRegistry
+    document = OaiRegistry
     success_url = reverse_lazy("admin:core_oaipmh_harvester_app_registries")
     success_message = 'Data provider edited with success.'
 
@@ -171,7 +172,7 @@ def view_registry(request):
 class EditHarvestRegistryView(EditObjectModalView):
     template_name = 'core_oaipmh_harvester_app/admin/registries/list/modals/edit_harvest_registry_form.html'
     form_class = EditHarvestRegistryForm
-    model = OaiRegistry
+    document = OaiRegistry
     success_url = reverse_lazy("admin:core_oaipmh_harvester_app_registries")
     success_message = 'Data provider edited with success.'
     metadata_formats = None

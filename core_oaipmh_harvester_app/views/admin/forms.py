@@ -1,9 +1,9 @@
 from django import forms
 from django.core.validators import MinValueValidator
-from mongodbforms import DocumentForm
 
 import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from django_mongoengine.forms import DocumentForm
 
 VERBS = (("0", "Pick one"),
          ("1", "Identify"),
