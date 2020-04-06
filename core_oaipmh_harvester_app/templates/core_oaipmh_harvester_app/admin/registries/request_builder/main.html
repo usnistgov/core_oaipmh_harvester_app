@@ -16,50 +16,50 @@
         <div id="build_errors">
         </div>
     </div>
-    <div class="row" id="request-builder-form">
+    <div id="request-builder-form" class="p-3">
     {% if data.request_form.fields.data_provider.choices|length > 1 %}
         <form class="form-horizontal">
             <div class="form-group">
-                <label class="col-sm-2 control-label">
+                <label>
                     {{data.request_form.data_provider.label}}:
                 </label>
-                <div class="col-sm-8">
+                <div>
                     {{data.request_form.data_provider}}
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">
+                <label>
                     {{data.request_form.verb.label}}:
                 </label>
-                <div class="col-sm-8">{{data.request_form.verb}}</div>
+                <div>{{data.request_form.verb}}</div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">
+                <label>
                     {{data.request_form.set.label}}:
                 </label>
-                <div class="col-sm-8">{{data.request_form.set}}</div>
+                <div>{{data.request_form.set}}</div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">
+                <label>
                     {{data.request_form.metadata_prefix.label}}:
                 </label>
-                <div class="col-sm-8">
+                <div>
                     {{data.request_form.metadata_prefix}}
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">
+                <label>
                     {{data.request_form.identifier.label}}:
                 </label>
-                <div class="col-sm-8">{{data.request_form.identifier}}</div>
+                <div>{{data.request_form.identifier}}</div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">
+                <label >
                     {{data.request_form.from_date.label}}:
                 </label>
-                <div class="col-sm-8">
+                <div>
                     <div class="input-group">
-                        <span class="input-group-addon"
+                        <span class="m-1"
                               onclick="$('#{{data.request_form.from_date.id_for_label}}').focus();">
                             <i class="fa fa-calendar"></i>
                         </span>
@@ -68,12 +68,12 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">
+                <label>
                     {{data.request_form.until_date.label}}:
                 </label>
-                <div class="col-sm-8">
+                <div>
                     <div class="input-group">
-                        <span class="input-group-addon"
+                        <span class="m-1"
                               onclick="$('#{{data.request_form.until_date.id_for_label}}').focus();">
                             <i class="fa fa-calendar"></i>
                         </span>
@@ -82,21 +82,21 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">
+                <label>
                     {{data.request_form.resumption_token.label}}:
                 </label>
-                <div class="col-sm-8">
+                <div>
                     {{data.request_form.resumption_token}}
                 </div>
             </div>
         </form>
 
-        <div class="col-sm-offset-2 col-sm-8">
+        <div>
             <button class="btn btn-primary" id="submit-btn"
                     onclick="checkSubmit()">
                 <i class="fa fa-send"></i> Submit
             </button>
-            <button id="download-xml" class="btn btn-default"
+            <button id="download-xml" class="btn btn-secondary"
                     style="display: none"
                     onclick="location.href='{% url 'admin:core_oaipmh_harvester_app_download_xml_build_req' %}';">
                 <i class="fa fa-download"></i> Download XML
@@ -112,7 +112,7 @@
     {% endif %}
     </div>
     {% autoescape off %}
-        <div id="result" style="display: none">
+        <div id="result" class="m-3" style="display: none">
         </div>
     {% endautoescape %}
 {% endblock %}

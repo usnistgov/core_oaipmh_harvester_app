@@ -124,7 +124,7 @@ class RequestForm(forms.Form):
     )
     resumption_token = forms.CharField(
         label="Resumption Token", required=False, widget=forms.TextInput(
-            attrs={"class": "form-control", "style": "width:198px;height:30px"}
+            attrs={"class": "form-control"}
         )
     )
 
