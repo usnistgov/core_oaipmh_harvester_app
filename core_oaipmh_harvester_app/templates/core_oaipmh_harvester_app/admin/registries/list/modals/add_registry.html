@@ -5,7 +5,7 @@
 
 {% block modal_body %}
 <div class="alert alert-warning" id="banner_add_wait" style="display: none;">
-    <h4><i class='fa fa-circle-o-notch fa-spin fa-1x'></i>&nbsp;&nbsp;Please wait for connection verification ...</h4>
+    <h4><i class='fa fa-circle-notch fa-spin fa-1x'></i>&nbsp;&nbsp;Please wait for connection verification ...</h4>
 </div>
 <div class="alert alert-error" id="banner_add_errors" style="display: none;">
     <h4><i class="fa fa-exclamation-circle fa-1x"></i> Error</h4>
@@ -24,5 +24,5 @@
 
 {% block modal_footer %}
 <a class="btn btn-secondary pull-left" data-dismiss="modal" href="#"><i class="fa fa-times"></i> Cancel</a>
-<a id="add-registry-save" class="btn btn-success" onclick="saveRegistry();" href="#"><i class="fa fa-save"></i> Add data provider</a>
+<a id="add-registry-save" class="btn btn-primary" onclick="saveRegistry();" href="#"><i class="fa fa-save"></i> Add data provider</a>
 {% endblock %}
