@@ -1,5 +1,7 @@
 """ Apps file for setting oai-pmh when app is ready
 """
+import sys
+
 from django.apps import AppConfig
 
 from core_main_app.utils.databases.mongoengine_database import init_text_index
@@ -18,5 +20,6 @@ class HarvesterAppConfig(AppConfig):
         Returns:
 
         """
-        init_text_index(OaiRecord)
-        init_harvest()
+        if 'migrate' not in sys.argv:
+            init_text_index(OaiRecord)
+            init_harvest()
