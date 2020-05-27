@@ -9,15 +9,16 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api as \
-    oai_harvester_metadata_format_api
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
+    api as oai_harvester_metadata_format_api,
+)
 from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
 from core_oaipmh_harvester_app.utils.query.mongo.query_builder import OaiPmhQueryBuilder
 
 
 # FIXME: Could inherit AbstractExecuteQuery from core_main_app
 class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
-    sub_document_root = 'dict_content'
+    sub_document_root = "dict_content"
 
     def get(self, request):
         """ Execute query on OaiRecord and return results
@@ -69,10 +70,10 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
         """
         try:
             # get query and templates
-            query = self.request.data.get('query', None)
-            templates = self.request.data.get('templates', '[]')
+            query = self.request.data.get("query", None)
+            templates = self.request.data.get("templates", "[]")
             registries = self.get_registries()
-            order_by_field = self.request.data.get('order_by_field', '').split(',')
+            order_by_field = self.request.data.get("order_by_field", "").split(",")
 
             if query is not None:
                 # prepare query
@@ -82,10 +83,10 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
                 # build and return response
                 return self.build_response(data_list)
             else:
-                content = {'message': 'Query should be passed in parameter.'}
+                content = {"message": "Query should be passed in parameter."}
                 return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except Exception as api_exception:
-            content = {'message': str(api_exception)}
+            content = {"message": str(api_exception)}
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def build_query(self, query, templates, registries):
@@ -106,23 +107,31 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
         templates = json.loads(templates)
         registries = json.loads(registries)
         # if registries, check if activated
-        list_activated_registry = oai_registry_api.get_all_activated_registry().values_list('id')
+        list_activated_registry = oai_registry_api.get_all_activated_registry().values_list(
+            "id"
+        )
         if len(registries) > 0:
-            activated_registries = [str(id_) for id_ in registries if ObjectId(id_) in
-                                    list_activated_registry]
+            activated_registries = [
+                str(id_)
+                for id_ in registries
+                if ObjectId(id_) in list_activated_registry
+            ]
         else:
             activated_registries = list_activated_registry
 
         if len(templates) > 0:
             # get list of template ids
-            list_template_ids = [template['id'] for template in templates]
+            list_template_ids = [template["id"] for template in templates]
             # get all metadata formats used by the registries
-            list_metadata_format = oai_harvester_metadata_format_api. \
-                get_all_by_list_registry_ids(activated_registries)
+            list_metadata_format = oai_harvester_metadata_format_api.get_all_by_list_registry_ids(
+                activated_registries
+            )
             # Filter metadata formats that use the given templates
-            list_metadata_formats_id = [str(x.id) for x in list_metadata_format
-                                        if x.template is not None
-                                        and str(x.template.id) in list_template_ids]
+            list_metadata_formats_id = [
+                str(x.id)
+                for x in list_metadata_format
+                if x.template is not None and str(x.template.id) in list_template_ids
+            ]
             query_builder.add_list_metadata_formats_criteria(list_metadata_formats_id)
         else:
             # Only activated registries

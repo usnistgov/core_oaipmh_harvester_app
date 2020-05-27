@@ -12,11 +12,15 @@ import core_oaipmh_harvester_app.components.oai_registry.api as registry_api
 from core_main_app.commons import exceptions
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api as \
-    oai_harvester_metadata_format_api
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import \
-    OaiHarvesterMetadataFormat
-from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_harvester_set_api
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
+    api as oai_harvester_metadata_format_api,
+)
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
+    OaiHarvesterMetadataFormat,
+)
+from core_oaipmh_harvester_app.components.oai_harvester_set import (
+    api as oai_harvester_set_api,
+)
 from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
@@ -28,7 +32,8 @@ class TestOaiRegistryGetById(TestCase):
     """
     Test OaiRegistry GetById
     """
-    @patch.object(OaiRegistry, 'get_by_id')
+
+    @patch.object(OaiRegistry, "get_by_id")
     def test_get_by_id_return_object(self, mock_get_by_id):
         """
 
@@ -49,7 +54,7 @@ class TestOaiRegistryGetById(TestCase):
         # Assert
         self.assertIsInstance(result, OaiRegistry)
 
-    @patch.object(OaiRegistry, 'get_by_id')
+    @patch.object(OaiRegistry, "get_by_id")
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
         """
 
@@ -68,7 +73,7 @@ class TestOaiRegistryGetById(TestCase):
         with self.assertRaises(exceptions.DoesNotExist):
             registry_api.get_by_id(mock_absent_id)
 
-    @patch.object(OaiRegistry, 'get_by_id')
+    @patch.object(OaiRegistry, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
         """
 
@@ -92,7 +97,8 @@ class TestOaiRegistryGetByName(TestCase):
     """
     Test OaiRegistry GetByName
     """
-    @patch.object(OaiRegistry, 'get_by_name')
+
+    @patch.object(OaiRegistry, "get_by_name")
     def test_get_by_name_return_object(self, mock_get_by_name):
         """
 
@@ -113,8 +119,10 @@ class TestOaiRegistryGetByName(TestCase):
         # Assert
         self.assertIsInstance(result, OaiRegistry)
 
-    @patch.object(OaiRegistry, 'get_by_name')
-    def test_get_by_name_raises_exception_if_object_does_not_exist(self, mock_get_by_name):
+    @patch.object(OaiRegistry, "get_by_name")
+    def test_get_by_name_raises_exception_if_object_does_not_exist(
+        self, mock_get_by_name
+    ):
         """
 
         Args:
@@ -132,7 +140,7 @@ class TestOaiRegistryGetByName(TestCase):
         with self.assertRaises(exceptions.DoesNotExist):
             registry_api.get_by_name(mock_absent_name)
 
-    @patch.object(OaiRegistry, 'get_by_name')
+    @patch.object(OaiRegistry, "get_by_name")
     def test_get_by_name_raises_exception_if_internal_error(self, mock_get_by_name):
         """
 
@@ -156,7 +164,8 @@ class TestOaiRegistryGetAll(TestCase):
     """
     Test OaiRegistry GetAll
     """
-    @patch.object(OaiRegistry, 'get_all')
+
+    @patch.object(OaiRegistry, "get_all")
     def test_get_all_contains_only_oai_registry(self, mock_get_all):
         """
 
@@ -170,7 +179,7 @@ class TestOaiRegistryGetAll(TestCase):
 
 
 class TestOaiRegistryGetAllActivatedRegistry(TestCase):
-    @patch.object(OaiRegistry, 'get_all_by_is_activated')
+    @patch.object(OaiRegistry, "get_all_by_is_activated")
     def test_get_all_contains_only_oai_registry(self, mock_get_all):
         """
 
@@ -180,19 +189,22 @@ class TestOaiRegistryGetAllActivatedRegistry(TestCase):
         Returns:
 
         """
-        _generic_get_all_test(self, mock_get_all, registry_api.get_all_activated_registry())
+        _generic_get_all_test(
+            self, mock_get_all, registry_api.get_all_activated_registry()
+        )
 
 
 class TestOaiRegistryUpsert(TestCase):
     """
     Test OaiRegistry Upsert
     """
+
     def setUp(self):
         """ Set up the test
         """
         self.oai_registry = _create_oai_registry()
 
-    @patch.object(OaiRegistry, 'save')
+    @patch.object(OaiRegistry, "save")
     def test_upsert_oai_registry_raises_exception_if_save_failed(self, mock_save):
         """
 
@@ -214,12 +226,13 @@ class TestCheckRegistryUrlAlreadyExists(TestCase):
     """
     Test CheckRegistryUrlAlreadyExists
     """
+
     def setUp(self):
         """ Set up the test
         """
         self.oai_registry = _create_oai_registry()
 
-    @patch.object(OaiRegistry, 'check_registry_url_already_exists')
+    @patch.object(OaiRegistry, "check_registry_url_already_exists")
     def test_check_oai_registry_url_already_exists(self, mock_check):
         """
 
@@ -239,7 +252,7 @@ class TestCheckRegistryUrlAlreadyExists(TestCase):
         # Assert
         self.assertEquals(result, True)
 
-    @patch.object(OaiRegistry, 'check_registry_url_already_exists')
+    @patch.object(OaiRegistry, "check_registry_url_already_exists")
     def test_check_oai_registry_url_does_not_already_exist(self, mock_check):
         """
 
@@ -264,8 +277,11 @@ class TestOaiRegistryDelete(TestCase):
     """
     Test OaiRegistry Delete
     """
-    @patch.object(OaiRegistry, 'delete')
-    def test_delete_oai_registry_raises_exception_if_object_does_not_exist(self, mock_delete):
+
+    @patch.object(OaiRegistry, "delete")
+    def test_delete_oai_registry_raises_exception_if_object_does_not_exist(
+        self, mock_delete
+    ):
         """
 
         Args:
@@ -287,17 +303,20 @@ class TestAddRegistry(TestCase):
     """
     Test OaiRegistry Add
     """
+
     def setUp(self):
         """ Set up the test
         """
-        self.error_message = 'An error occurred: %s'
+        self.error_message = "An error occurred: %s"
         self.url = "http://www.server.com"
         self.harvest_rate = 5000
         self.harvest = True
 
-    @patch.object(oai_verbs_api, 'identify_as_object')
-    @patch.object(OaiRegistry, 'check_registry_url_already_exists')
-    def test_add_registry_by_url_raises_exception_if_bad_identify(self, mock_registry, mock):
+    @patch.object(oai_verbs_api, "identify_as_object")
+    @patch.object(OaiRegistry, "check_registry_url_already_exists")
+    def test_add_registry_by_url_raises_exception_if_bad_identify(
+        self, mock_registry, mock
+    ):
         """
 
         Args:
@@ -309,22 +328,31 @@ class TestAddRegistry(TestCase):
         """
         # Arrange
         mock_registry.return_value = False
-        mock.return_value = OaiPmhMessage.get_message_labelled(self.error_message % "identify"), \
-                            status.HTTP_500_INTERNAL_SERVER_ERROR
+        mock.return_value = (
+            OaiPmhMessage.get_message_labelled(self.error_message % "identify"),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
-            oai_registry_api.add_registry_by_url(self.url, self.harvest_rate, self.harvest)
+            oai_registry_api.add_registry_by_url(
+                self.url, self.harvest_rate, self.harvest
+            )
 
         self.assertEqual(ex.exception.message, self.error_message % "identify")
-        self.assertEqual(ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
-    @patch.object(oai_verbs_api.transform_operations, 'transform_dict_identifier_to_oai_identifier')
-    @patch.object(oai_verbs_api, 'identify')
-    @patch.object(OaiRegistry, 'check_registry_url_already_exists')
-    def test_add_registry_by_url_raises_exception_if_bad_identify_data(self, mock_registry,
-                                                                       mock_identify,
-                                                                       mock_transform):
+    @patch.object(
+        oai_verbs_api.transform_operations,
+        "transform_dict_identifier_to_oai_identifier",
+    )
+    @patch.object(oai_verbs_api, "identify")
+    @patch.object(OaiRegistry, "check_registry_url_already_exists")
+    def test_add_registry_by_url_raises_exception_if_bad_identify_data(
+        self, mock_registry, mock_identify, mock_transform
+    ):
         """
 
         Args:
@@ -343,16 +371,19 @@ class TestAddRegistry(TestCase):
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
-            oai_registry_api.add_registry_by_url(self.url, self.harvest_rate, self.harvest)
+            oai_registry_api.add_registry_by_url(
+                self.url, self.harvest_rate, self.harvest
+            )
 
         self.assertTrue(exception_message in ex.exception.message)
         self.assertEqual(ex.exception.status_code, status.HTTP_400_BAD_REQUEST)
 
-    @patch.object(oai_verbs_api, 'identify_as_object')
-    @patch.object(oai_verbs_api, 'list_sets_as_object')
-    @patch.object(OaiRegistry, 'check_registry_url_already_exists')
-    def test_add_registry_by_url_raises_exception_if_bad_sets(self, mock_registry, mock_sets,
-                                                              mock_identify):
+    @patch.object(oai_verbs_api, "identify_as_object")
+    @patch.object(oai_verbs_api, "list_sets_as_object")
+    @patch.object(OaiRegistry, "check_registry_url_already_exists")
+    def test_add_registry_by_url_raises_exception_if_bad_sets(
+        self, mock_registry, mock_sets, mock_identify
+    ):
         """
 
         Args:
@@ -366,23 +397,31 @@ class TestAddRegistry(TestCase):
         # Arrange
         mock_identify.return_value = [], status.HTTP_200_OK
         mock_registry.return_value = False
-        mock_sets.return_value = OaiPmhMessage.get_message_labelled(self.error_message % "sets"), \
-                                 status.HTTP_500_INTERNAL_SERVER_ERROR
+        mock_sets.return_value = (
+            OaiPmhMessage.get_message_labelled(self.error_message % "sets"),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
-            oai_registry_api.add_registry_by_url(self.url, self.harvest_rate, self.harvest)
+            oai_registry_api.add_registry_by_url(
+                self.url, self.harvest_rate, self.harvest
+            )
 
         self.assertEqual(ex.exception.message, self.error_message % "sets")
-        self.assertEqual(ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
-    @patch.object(oai_verbs_api.transform_operations, 'transform_dict_set_to_oai_harvester_set')
-    @patch.object(oai_verbs_api, 'list_sets')
-    @patch.object(oai_verbs_api, 'identify_as_object')
-    @patch.object(OaiRegistry, 'check_registry_url_already_exists')
-    def test_add_registry_by_url_raises_exception_if_bad_sets_data(self, mock_registry,
-                                                                   mock_identify, mock_set,
-                                                                   mock_transform):
+    @patch.object(
+        oai_verbs_api.transform_operations, "transform_dict_set_to_oai_harvester_set"
+    )
+    @patch.object(oai_verbs_api, "list_sets")
+    @patch.object(oai_verbs_api, "identify_as_object")
+    @patch.object(OaiRegistry, "check_registry_url_already_exists")
+    def test_add_registry_by_url_raises_exception_if_bad_sets_data(
+        self, mock_registry, mock_identify, mock_set, mock_transform
+    ):
         """
 
         Args:
@@ -403,18 +442,20 @@ class TestAddRegistry(TestCase):
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
-            oai_registry_api.add_registry_by_url(self.url, self.harvest_rate, self.harvest)
+            oai_registry_api.add_registry_by_url(
+                self.url, self.harvest_rate, self.harvest
+            )
 
         self.assertTrue(exception_message in ex.exception.message)
         self.assertEqual(ex.exception.status_code, status.HTTP_400_BAD_REQUEST)
 
-    @patch.object(oai_verbs_api, 'list_sets_as_object')
-    @patch.object(oai_verbs_api, 'identify_as_object')
-    @patch.object(oai_verbs_api, 'list_metadata_formats_as_object')
-    @patch.object(OaiRegistry, 'check_registry_url_already_exists')
-    def test_add_registry_by_url_raises_exception_if_bad_metadata_formats(self, mock_registry,
-                                                                          mock_metadata_formats,
-                                                                          mock_identify, mock_sets):
+    @patch.object(oai_verbs_api, "list_sets_as_object")
+    @patch.object(oai_verbs_api, "identify_as_object")
+    @patch.object(oai_verbs_api, "list_metadata_formats_as_object")
+    @patch.object(OaiRegistry, "check_registry_url_already_exists")
+    def test_add_registry_by_url_raises_exception_if_bad_metadata_formats(
+        self, mock_registry, mock_metadata_formats, mock_identify, mock_sets
+    ):
         """
 
         Args:
@@ -430,26 +471,38 @@ class TestAddRegistry(TestCase):
         mock_sets.return_value = [], status.HTTP_200_OK
         mock_identify.return_value = [], status.HTTP_200_OK
         mock_registry.return_value = False
-        mock_metadata_formats.return_value = OaiPmhMessage.get_message_labelled(self.error_message % "metadataFormats"),\
-                                                status.HTTP_500_INTERNAL_SERVER_ERROR
+        mock_metadata_formats.return_value = (
+            OaiPmhMessage.get_message_labelled(self.error_message % "metadataFormats"),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
-            oai_registry_api.add_registry_by_url(self.url, self.harvest_rate, self.harvest)
+            oai_registry_api.add_registry_by_url(
+                self.url, self.harvest_rate, self.harvest
+            )
 
         self.assertEqual(ex.exception.message, self.error_message % "metadataFormats")
-        self.assertEqual(ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
-    @patch.object(oai_verbs_api.transform_operations, 'transform_dict_metadata_format_to_oai_harvester_metadata_format')
-    @patch.object(oai_verbs_api, 'list_metadata_formats')
-    @patch.object(oai_verbs_api, 'list_sets')
-    @patch.object(oai_verbs_api, 'identify_as_object')
-    @patch.object(OaiRegistry, 'check_registry_url_already_exists')
-    def test_add_registry_by_url_raises_exception_if_bad_metadata_formats_data(self, mock_registry,
-                                                                               mock_identify,
-                                                                               mock_set,
-                                                                               mock_metadata_format,
-                                                                               mock_transform):
+    @patch.object(
+        oai_verbs_api.transform_operations,
+        "transform_dict_metadata_format_to_oai_harvester_metadata_format",
+    )
+    @patch.object(oai_verbs_api, "list_metadata_formats")
+    @patch.object(oai_verbs_api, "list_sets")
+    @patch.object(oai_verbs_api, "identify_as_object")
+    @patch.object(OaiRegistry, "check_registry_url_already_exists")
+    def test_add_registry_by_url_raises_exception_if_bad_metadata_formats_data(
+        self,
+        mock_registry,
+        mock_identify,
+        mock_set,
+        mock_metadata_format,
+        mock_transform,
+    ):
         """
 
         Args:
@@ -473,7 +526,9 @@ class TestAddRegistry(TestCase):
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
-            oai_registry_api.add_registry_by_url(self.url, self.harvest_rate, self.harvest)
+            oai_registry_api.add_registry_by_url(
+                self.url, self.harvest_rate, self.harvest
+            )
 
         self.assertTrue(exception_message in ex.exception.message)
         self.assertEqual(ex.exception.status_code, status.HTTP_400_BAD_REQUEST)
@@ -483,16 +538,18 @@ class TestUpdateRegistryInfo(TestCase):
     """
     Test OaiRegistry Update Info
     """
+
     def setUp(self):
         """ Set up the test
         """
-        self.error_message = 'An error occurred: %s'
+        self.error_message = "An error occurred: %s"
 
-    @patch.object(oai_verbs_api, 'identify_as_object')
-    @patch.object(OaiRegistry, 'check_registry_url_already_exists')
-    @patch.object(OaiRegistry, 'get_by_id')
-    def test_update_registry_info_raises_exception_if_bad_identify(self, mock_get, mock_registry,
-                                                                   mock):
+    @patch.object(oai_verbs_api, "identify_as_object")
+    @patch.object(OaiRegistry, "check_registry_url_already_exists")
+    @patch.object(OaiRegistry, "get_by_id")
+    def test_update_registry_info_raises_exception_if_bad_identify(
+        self, mock_get, mock_registry, mock
+    ):
         """
 
         Args:
@@ -507,22 +564,27 @@ class TestUpdateRegistryInfo(TestCase):
         mock_oai_registry = _create_mock_oai_registry()
         mock_get.return_value = mock_oai_registry
         mock_registry.return_value = False
-        mock.return_value = OaiPmhMessage.get_message_labelled(self.error_message % "identify"), \
-                            status.HTTP_500_INTERNAL_SERVER_ERROR
+        mock.return_value = (
+            OaiPmhMessage.get_message_labelled(self.error_message % "identify"),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
             oai_registry_api.update_registry_info(mock_oai_registry)
 
         self.assertEqual(ex.exception.message, self.error_message % "identify")
-        self.assertEqual(ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
-    @patch.object(oai_verbs_api, 'identify_as_object')
-    @patch.object(oai_verbs_api, 'list_sets_as_object')
-    @patch.object(OaiRegistry, 'check_registry_url_already_exists')
-    @patch.object(OaiRegistry, 'get_by_id')
-    def test_update_registry_info_raises_exception_if_bad_sets(self, mock_get, mock_registry,
-                                                               mock_sets, mock_identify):
+    @patch.object(oai_verbs_api, "identify_as_object")
+    @patch.object(oai_verbs_api, "list_sets_as_object")
+    @patch.object(OaiRegistry, "check_registry_url_already_exists")
+    @patch.object(OaiRegistry, "get_by_id")
+    def test_update_registry_info_raises_exception_if_bad_sets(
+        self, mock_get, mock_registry, mock_sets, mock_identify
+    ):
         """
 
         Args:
@@ -539,25 +601,28 @@ class TestUpdateRegistryInfo(TestCase):
         mock_get.return_value = mock_oai_registry
         mock_identify.return_value = [], status.HTTP_200_OK
         mock_registry.return_value = False
-        mock_sets.return_value = OaiPmhMessage.get_message_labelled(self.error_message % "sets"), status.\
-            HTTP_500_INTERNAL_SERVER_ERROR
+        mock_sets.return_value = (
+            OaiPmhMessage.get_message_labelled(self.error_message % "sets"),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
             oai_registry_api.update_registry_info(mock_oai_registry)
 
         self.assertEqual(ex.exception.message, self.error_message % "sets")
-        self.assertEqual(ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
-    @patch.object(oai_verbs_api, 'list_sets_as_object')
-    @patch.object(oai_verbs_api, 'identify_as_object')
-    @patch.object(oai_verbs_api, 'list_metadata_formats_as_object')
-    @patch.object(OaiRegistry, 'check_registry_url_already_exists')
-    @patch.object(OaiRegistry, 'get_by_id')
-    def test_update_registry_info_raises_exception_if_bad_metadata_formats(self, mock_get,
-                                                                           mock_registry,
-                                                                           mock_metadata_formats,
-                                                                           mock_identify, mock_sets):
+    @patch.object(oai_verbs_api, "list_sets_as_object")
+    @patch.object(oai_verbs_api, "identify_as_object")
+    @patch.object(oai_verbs_api, "list_metadata_formats_as_object")
+    @patch.object(OaiRegistry, "check_registry_url_already_exists")
+    @patch.object(OaiRegistry, "get_by_id")
+    def test_update_registry_info_raises_exception_if_bad_metadata_formats(
+        self, mock_get, mock_registry, mock_metadata_formats, mock_identify, mock_sets
+    ):
         """
 
         Args:
@@ -576,32 +641,43 @@ class TestUpdateRegistryInfo(TestCase):
         mock_sets.return_value = [], status.HTTP_200_OK
         mock_identify.return_value = [], status.HTTP_200_OK
         mock_registry.return_value = False
-        mock_metadata_formats.return_value = OaiPmhMessage.get_message_labelled(self.error_message % "metadataFormat"),\
-            status.HTTP_500_INTERNAL_SERVER_ERROR
+        mock_metadata_formats.return_value = (
+            OaiPmhMessage.get_message_labelled(self.error_message % "metadataFormat"),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
             oai_registry_api.update_registry_info(mock_oai_registry)
 
         self.assertEqual(ex.exception.message, self.error_message % "metadataFormat")
-        self.assertEqual(ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 class TestHarvestRegistry(TestCase):
     """
     Test OaiRegistry Harvest
     """
-    @patch.object(oai_registry_api, '_harvest_by_metadata_formats')
-    @patch.object(oai_registry_api, '_harvest_by_metadata_formats_and_sets')
-    @patch.object(oai_harvester_set_api, 'get_all_to_harvest_by_registry_id')
-    @patch.object(oai_harvester_set_api, 'get_all_by_registry_id')
-    @patch.object(oai_harvester_metadata_format_api, 'get_all_to_harvest_by_registry_id')
-    @patch.object(oai_registry_api, 'upsert')
-    def test_harvest_by_metadata_formats_and_sets(self, mock_upsert, mock_metadata_formats,
-                                                  mock_sets_all,
-                                                  mock_sets_to_harvest,
-                                                  mock_harvest_metadata_formats_and_sets,
-                                                  mock_harvest_by_metadata_formats):
+
+    @patch.object(oai_registry_api, "_harvest_by_metadata_formats")
+    @patch.object(oai_registry_api, "_harvest_by_metadata_formats_and_sets")
+    @patch.object(oai_harvester_set_api, "get_all_to_harvest_by_registry_id")
+    @patch.object(oai_harvester_set_api, "get_all_by_registry_id")
+    @patch.object(
+        oai_harvester_metadata_format_api, "get_all_to_harvest_by_registry_id"
+    )
+    @patch.object(oai_registry_api, "upsert")
+    def test_harvest_by_metadata_formats_and_sets(
+        self,
+        mock_upsert,
+        mock_metadata_formats,
+        mock_sets_all,
+        mock_sets_to_harvest,
+        mock_harvest_metadata_formats_and_sets,
+        mock_harvest_by_metadata_formats,
+    ):
         """
 
         Args:
@@ -630,40 +706,53 @@ class TestHarvestRegistry(TestCase):
         self.assertTrue(mock_harvest_metadata_formats_and_sets.called)
         self.assertFalse(mock_harvest_by_metadata_formats.called)
 
-    @patch.object(oai_registry_api, '_harvest_by_metadata_formats')
-    @patch.object(oai_registry_api, '_harvest_by_metadata_formats_and_sets')
-    @patch.object(oai_harvester_set_api, 'get_all_to_harvest_by_registry_id')
-    @patch.object(oai_harvester_set_api, 'get_all_by_registry_id')
-    @patch.object(oai_harvester_metadata_format_api, 'get_all_to_harvest_by_registry_id')
-    @patch.object(oai_registry_api, 'upsert')
-    def test_harvest_by_metadata_formats(self, mock_upsert, mock_metadata_formats, mock_sets_all,
-                                         mock_sets_to_harvest,
-                                         mock_harvest_metadata_formats_and_sets,
-                                         mock_harvest_by_metadata_formats):
-            # Arrange
-            mock_oai_registry = _create_mock_oai_registry()
-            mock_upsert.return_value = mock_oai_registry
-            mock_metadata_formats.return_value = []
-            mock_sets_all.return_value = [object(), object()]
-            # Harvest all sets.
-            mock_sets_to_harvest.return_value = mock_sets_all.return_value
+    @patch.object(oai_registry_api, "_harvest_by_metadata_formats")
+    @patch.object(oai_registry_api, "_harvest_by_metadata_formats_and_sets")
+    @patch.object(oai_harvester_set_api, "get_all_to_harvest_by_registry_id")
+    @patch.object(oai_harvester_set_api, "get_all_by_registry_id")
+    @patch.object(
+        oai_harvester_metadata_format_api, "get_all_to_harvest_by_registry_id"
+    )
+    @patch.object(oai_registry_api, "upsert")
+    def test_harvest_by_metadata_formats(
+        self,
+        mock_upsert,
+        mock_metadata_formats,
+        mock_sets_all,
+        mock_sets_to_harvest,
+        mock_harvest_metadata_formats_and_sets,
+        mock_harvest_by_metadata_formats,
+    ):
+        # Arrange
+        mock_oai_registry = _create_mock_oai_registry()
+        mock_upsert.return_value = mock_oai_registry
+        mock_metadata_formats.return_value = []
+        mock_sets_all.return_value = [object(), object()]
+        # Harvest all sets.
+        mock_sets_to_harvest.return_value = mock_sets_all.return_value
 
-            # Act
-            oai_registry_api.harvest_registry(mock_oai_registry)
+        # Act
+        oai_registry_api.harvest_registry(mock_oai_registry)
 
-            # Assert
-            self.assertTrue(mock_harvest_by_metadata_formats.called)
-            self.assertFalse(mock_harvest_metadata_formats_and_sets.called)
+        # Assert
+        self.assertTrue(mock_harvest_by_metadata_formats.called)
+        self.assertFalse(mock_harvest_metadata_formats_and_sets.called)
 
-    @patch.object(oai_registry_api, '_harvest_by_metadata_formats_and_sets')
-    @patch.object(oai_harvester_set_api, 'get_all_to_harvest_by_registry_id')
-    @patch.object(oai_harvester_set_api, 'get_all_by_registry_id')
-    @patch.object(oai_harvester_metadata_format_api, 'get_all_to_harvest_by_registry_id')
-    @patch.object(oai_registry_api, 'upsert')
-    def test_harvest_by_metadata_formats_and_sets_returns_errors(self, mock_upsert,
-                                                                 mock_metadata_formats,
-                                                                 mock_sets_all, mock_sets_to_harvest,
-                                                                 mock_harvest_metadata_formats_and_sets):
+    @patch.object(oai_registry_api, "_harvest_by_metadata_formats_and_sets")
+    @patch.object(oai_harvester_set_api, "get_all_to_harvest_by_registry_id")
+    @patch.object(oai_harvester_set_api, "get_all_by_registry_id")
+    @patch.object(
+        oai_harvester_metadata_format_api, "get_all_to_harvest_by_registry_id"
+    )
+    @patch.object(oai_registry_api, "upsert")
+    def test_harvest_by_metadata_formats_and_sets_returns_errors(
+        self,
+        mock_upsert,
+        mock_metadata_formats,
+        mock_sets_all,
+        mock_sets_to_harvest,
+        mock_harvest_metadata_formats_and_sets,
+    ):
         """
 
         Args:
@@ -683,7 +772,9 @@ class TestHarvestRegistry(TestCase):
         mock_sets_all.return_value = [object(), object()]
         # Don't harvest all sets.
         mock_sets_to_harvest.return_value = [object()]
-        errors = [{'status_code': status.HTTP_500_INTERNAL_SERVER_ERROR, 'error': "Error"}]
+        errors = [
+            {"status_code": status.HTTP_500_INTERNAL_SERVER_ERROR, "error": "Error"}
+        ]
         mock_harvest_metadata_formats_and_sets.return_value = errors
 
         # Act
@@ -692,15 +783,21 @@ class TestHarvestRegistry(TestCase):
         # Assert
         self.assertEquals(result, errors)
 
-    @patch.object(oai_registry_api, '_harvest_by_metadata_formats')
-    @patch.object(oai_harvester_set_api, 'get_all_to_harvest_by_registry_id')
-    @patch.object(oai_harvester_set_api, 'get_all_by_registry_id')
-    @patch.object(oai_harvester_metadata_format_api, 'get_all_to_harvest_by_registry_id')
-    @patch.object(oai_registry_api, 'upsert')
-    def test_harvest_by_metadata_formats_returns_errors(self, mock_upsert, mock_metadata_formats,
-                                                        mock_sets_all,
-                                                        mock_sets_to_harvest,
-                                                        mock_harvest_by_metadata_formats):
+    @patch.object(oai_registry_api, "_harvest_by_metadata_formats")
+    @patch.object(oai_harvester_set_api, "get_all_to_harvest_by_registry_id")
+    @patch.object(oai_harvester_set_api, "get_all_by_registry_id")
+    @patch.object(
+        oai_harvester_metadata_format_api, "get_all_to_harvest_by_registry_id"
+    )
+    @patch.object(oai_registry_api, "upsert")
+    def test_harvest_by_metadata_formats_returns_errors(
+        self,
+        mock_upsert,
+        mock_metadata_formats,
+        mock_sets_all,
+        mock_sets_to_harvest,
+        mock_harvest_by_metadata_formats,
+    ):
         """
 
         Args:
@@ -720,7 +817,9 @@ class TestHarvestRegistry(TestCase):
         mock_sets_all.return_value = [object(), object()]
         # Harvest all sets.
         mock_sets_to_harvest.return_value = mock_sets_all.return_value
-        errors = [{'status_code': status.HTTP_500_INTERNAL_SERVER_ERROR, 'error': "Error"}]
+        errors = [
+            {"status_code": status.HTTP_500_INTERNAL_SERVER_ERROR, "error": "Error"}
+        ]
         mock_harvest_by_metadata_formats.return_value = errors
 
         # Act
@@ -729,7 +828,7 @@ class TestHarvestRegistry(TestCase):
         # Assert
         self.assertEquals(result, errors)
 
-    @patch.object(oai_verbs_api, 'list_records')
+    @patch.object(oai_verbs_api, "list_records")
     def test_harvest_records_returns_errors_if_not_HTTP_200_OK(self, mock_list_records):
         """
 
@@ -741,10 +840,13 @@ class TestHarvestRegistry(TestCase):
         """
         # Arrange
         resumption_token = None
-        content = OaiPmhMessage.get_message_labelled('Error')
+        content = OaiPmhMessage.get_message_labelled("Error")
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        mock_list_records.return_value = Response(content, status=status_code), resumption_token
-        expected_error = [{'status_code': status_code, 'error': "Error"}]
+        mock_list_records.return_value = (
+            Response(content, status=status_code),
+            resumption_token,
+        )
+        expected_error = [{"status_code": status_code, "error": "Error"}]
         registry = Mock(spec=OaiRegistry())
         registry.url = "dummy_url"
         metadata_format = Mock(spec=OaiHarvesterMetadataFormat())
@@ -752,16 +854,18 @@ class TestHarvestRegistry(TestCase):
         last_update = registry_all_sets = None
 
         # Act
-        result = oai_registry_api._harvest_records(registry, metadata_format, last_update,
-                                                   registry_all_sets)
+        result = oai_registry_api._harvest_records(
+            registry, metadata_format, last_update, registry_all_sets
+        )
 
         # Assert
         self.assertEquals(result, expected_error)
 
-    @patch.object(transform_operations, 'transform_dict_record_to_oai_record')
-    @patch.object(oai_verbs_api, 'list_records')
-    def test_harvest_records_returns_errors_if_transform_raises(self, mock_list_records,
-                                                                mock_transform_operations):
+    @patch.object(transform_operations, "transform_dict_record_to_oai_record")
+    @patch.object(oai_verbs_api, "list_records")
+    def test_harvest_records_returns_errors_if_transform_raises(
+        self, mock_list_records, mock_transform_operations
+    ):
         """
 
         Args:
@@ -775,9 +879,14 @@ class TestHarvestRegistry(TestCase):
         resumption_token = None
         content = []
         status_code = status.HTTP_200_OK
-        mock_list_records.return_value = Response(content, status=status_code), resumption_token
+        mock_list_records.return_value = (
+            Response(content, status=status_code),
+            resumption_token,
+        )
         error_message = "Error"
-        expected_error = [{'status_code': status.HTTP_400_BAD_REQUEST, 'error': error_message}]
+        expected_error = [
+            {"status_code": status.HTTP_400_BAD_REQUEST, "error": error_message}
+        ]
         registry = Mock(spec=OaiRegistry())
         registry.url = "dummy_url"
         metadata_format = Mock(spec=OaiHarvesterMetadataFormat())
@@ -786,8 +895,9 @@ class TestHarvestRegistry(TestCase):
         mock_transform_operations.side_effect = Exception(error_message)
 
         # Act
-        result = oai_registry_api._harvest_records(registry, metadata_format, last_update,
-                                                   registry_all_sets)
+        result = oai_registry_api._harvest_records(
+            registry, metadata_format, last_update, registry_all_sets
+        )
 
         # Assert
         self.assertEquals(result, expected_error)
@@ -797,12 +907,13 @@ class TestGetIdentifyAsObject(TestCase):
     """
     Test Get Identify as object
     """
+
     def setUp(self):
         """ Set up the test
         """
-        self.error_message = 'An error occurred: %s'
+        self.error_message = "An error occurred: %s"
 
-    @patch.object(oai_verbs_api, 'identify_as_object')
+    @patch.object(oai_verbs_api, "identify_as_object")
     def test_get_identify_as_object_raises_exception_if_not_200_OK(self, mock):
         """
 
@@ -813,25 +924,30 @@ class TestGetIdentifyAsObject(TestCase):
 
         """
         # Arrange
-        mock.return_value = OaiPmhMessage.get_message_labelled(self.error_message % "identify"), status.\
-            HTTP_500_INTERNAL_SERVER_ERROR
+        mock.return_value = (
+            OaiPmhMessage.get_message_labelled(self.error_message % "identify"),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
             oai_registry_api._get_identify_as_object("dummy_url")
 
         self.assertEqual(ex.exception.message, self.error_message % "identify")
-        self.assertEqual(ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 class TestGetSetsAsObject(TestCase):
     """
     Test get sets as object
     """
-    def setUp(self):
-        self.error_message = 'An error occurred: %s'
 
-    @patch.object(oai_verbs_api, 'list_sets_as_object')
+    def setUp(self):
+        self.error_message = "An error occurred: %s"
+
+    @patch.object(oai_verbs_api, "list_sets_as_object")
     def test_get_sets_as_object_raises_exception_if_not_200_OK(self, mock):
         """
 
@@ -842,17 +958,21 @@ class TestGetSetsAsObject(TestCase):
 
         """
         # Arrange
-        mock.return_value = OaiPmhMessage.get_message_labelled(self.error_message % "sets"), status.\
-            HTTP_500_INTERNAL_SERVER_ERROR
+        mock.return_value = (
+            OaiPmhMessage.get_message_labelled(self.error_message % "sets"),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
             oai_registry_api._get_sets_as_object("dummy_url")
 
         self.assertEqual(ex.exception.message, self.error_message % "sets")
-        self.assertEqual(ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
-    @patch.object(oai_verbs_api, 'list_sets_as_object')
+    @patch.object(oai_verbs_api, "list_sets_as_object")
     def test_get_sets_as_object_no_exception_if_204_NO_CONTENT(self, mock):
         """
 
@@ -877,10 +997,11 @@ class TestGetMetadataFormatsAsObject(TestCase):
     """
     Test get metadata formats as object
     """
-    def setUp(self):
-        self.error_message = 'An error occurred: %s'
 
-    @patch.object(oai_verbs_api, 'list_metadata_formats_as_object')
+    def setUp(self):
+        self.error_message = "An error occurred: %s"
+
+    @patch.object(oai_verbs_api, "list_metadata_formats_as_object")
     def test_get_metadata_formats_as_object_raises_exception_if_not_200_OK(self, mock):
         """
 
@@ -891,17 +1012,21 @@ class TestGetMetadataFormatsAsObject(TestCase):
 
         """
         # Arrange
-        mock.return_value = OaiPmhMessage.get_message_labelled(self.error_message % "metadata formats"), status.\
-            HTTP_500_INTERNAL_SERVER_ERROR
+        mock.return_value = (
+            OaiPmhMessage.get_message_labelled(self.error_message % "metadata formats"),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
             oai_registry_api._get_metadata_formats_as_object("dummy_url")
 
         self.assertEqual(ex.exception.message, self.error_message % "metadata formats")
-        self.assertEqual(ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
-    @patch.object(oai_verbs_api, 'list_metadata_formats_as_object')
+    @patch.object(oai_verbs_api, "list_metadata_formats_as_object")
     def test_get_metadata_formats_as_object_no_exception_if_204_NO_CONTENT(self, mock):
         """
 
@@ -926,6 +1051,7 @@ class TestInitRegistry(TestCase):
     """
     Test OaiRegistry Init
     """
+
     def test_init_registry_returns_initialized_object(self):
         """
 
@@ -940,8 +1066,9 @@ class TestInitRegistry(TestCase):
         description = "This is the registry"
 
         # Act
-        result = oai_registry_api._init_registry(url, harvest, harvest_rate, repository_name,
-                                                 description)
+        result = oai_registry_api._init_registry(
+            url, harvest, harvest_rate, repository_name, description
+        )
 
         # Assert
         self.assertIsInstance(result, OaiRegistry)

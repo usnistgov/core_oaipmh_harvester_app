@@ -2,7 +2,9 @@
 OaiHarvesterSet API
 """
 
-from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
+from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
+    OaiHarvesterSet,
+)
 
 
 def upsert(oai_harvester_set):
@@ -50,8 +52,9 @@ def get_by_set_spec_and_registry_id(set_spec, registry_id):
         OaiHarvesterSet instance.
 
     """
-    return OaiHarvesterSet.get_by_set_spec_and_registry_id(set_spec=set_spec,
-                                                           registry_id=registry_id)
+    return OaiHarvesterSet.get_by_set_spec_and_registry_id(
+        set_spec=set_spec, registry_id=registry_id
+    )
 
 
 def get_all():
@@ -75,8 +78,9 @@ def get_all_by_registry_id(registry_id, order_by_field=None):
         List of OaiHarvesterSet.
 
     """
-    return OaiHarvesterSet.get_all_by_registry_id(registry_id=registry_id,
-                                                  order_by_field=order_by_field)
+    return OaiHarvesterSet.get_all_by_registry_id(
+        registry_id=registry_id, order_by_field=order_by_field
+    )
 
 
 def get_all_by_list_registry_ids(list_registry_ids, order_by_field=None):
@@ -90,8 +94,9 @@ def get_all_by_list_registry_ids(list_registry_ids, order_by_field=None):
         List of OaiHarvesterSet.
 
     """
-    return OaiHarvesterSet.get_all_by_list_registry_ids(list_registry_ids=list_registry_ids,
-                                                        order_by_field=order_by_field)
+    return OaiHarvesterSet.get_all_by_list_registry_ids(
+        list_registry_ids=list_registry_ids, order_by_field=order_by_field
+    )
 
 
 def get_all_to_harvest_by_registry_id(registry_id, order_by_field=None):
@@ -105,9 +110,9 @@ def get_all_to_harvest_by_registry_id(registry_id, order_by_field=None):
         List of OaiHarvesterSet.
 
     """
-    return OaiHarvesterSet.get_all_by_registry_id_and_harvest(registry_id=registry_id,
-                                                              harvest=True,
-                                                              order_by_field=order_by_field)
+    return OaiHarvesterSet.get_all_by_registry_id_and_harvest(
+        registry_id=registry_id, harvest=True, order_by_field=order_by_field
+    )
 
 
 def delete_all_by_registry_id(registry_id):
@@ -128,8 +133,9 @@ def update_for_all_harvest_by_registry_id(registry_id, harvest):
         harvest: Harvest (True/False).
 
     """
-    OaiHarvesterSet.update_for_all_harvest_by_registry_id(registry_id=registry_id,
-                                                          harvest=harvest)
+    OaiHarvesterSet.update_for_all_harvest_by_registry_id(
+        registry_id=registry_id, harvest=harvest
+    )
 
 
 def update_for_all_harvest_by_list_ids(list_oai_set_ids, harvest):

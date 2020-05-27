@@ -8,6 +8,7 @@ from rest_framework import serializers
 class IdentifySerializer(serializers.Serializer):
     """ Identify serializer.
     """
+
     adminEmail = serializers.CharField(required=False)
     baseURL = serializers.URLField(required=True)
     repositoryName = serializers.CharField(required=False)
@@ -27,6 +28,7 @@ class IdentifySerializer(serializers.Serializer):
 class SetSerializer(serializers.Serializer):
     """ Set serializer.
     """
+
     setName = serializers.CharField()
     setSpec = serializers.CharField()
     raw = serializers.CharField()
@@ -35,6 +37,7 @@ class SetSerializer(serializers.Serializer):
 class MetadataFormatSerializer(serializers.Serializer):
     """ MetadataFormat serializer.
     """
+
     metadataPrefix = serializers.CharField()
     metadataNamespace = serializers.CharField()
     schema = serializers.CharField()

@@ -7,7 +7,9 @@ from core_main_app.commons import exceptions
 from core_main_app.components.template import api as api_template
 from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_main_app.utils.xml import get_hash
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import OaiHarvesterMetadataFormat
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
+    OaiHarvesterMetadataFormat,
+)
 
 
 def upsert(oai_harvester_metadata_format):
@@ -41,7 +43,9 @@ def get_by_id(oai_harvester_metadata_format_id):
     Returns: OaiHarvesterMetadataFormat instance.
 
     """
-    return OaiHarvesterMetadataFormat.get_by_id(oai_metadata_format_id=oai_harvester_metadata_format_id)
+    return OaiHarvesterMetadataFormat.get_by_id(
+        oai_metadata_format_id=oai_harvester_metadata_format_id
+    )
 
 
 def get_by_metadata_prefix_and_registry_id(metadata_prefix, registry_id):
@@ -55,8 +59,9 @@ def get_by_metadata_prefix_and_registry_id(metadata_prefix, registry_id):
         OaiHarvesterMetadataFormat instance.
 
     """
-    return OaiHarvesterMetadataFormat.get_by_metadata_prefix_and_registry_id(metadata_prefix=metadata_prefix,
-                                                                             registry_id=registry_id)
+    return OaiHarvesterMetadataFormat.get_by_metadata_prefix_and_registry_id(
+        metadata_prefix=metadata_prefix, registry_id=registry_id
+    )
 
 
 def get_all():
@@ -80,7 +85,9 @@ def get_all_by_registry_id(registry_id, order_by_field=None):
         List of OaiHarvesterMetadataFormat.
 
     """
-    return OaiHarvesterMetadataFormat.get_all_by_registry_id(registry_id=registry_id, order_by_field=order_by_field)
+    return OaiHarvesterMetadataFormat.get_all_by_registry_id(
+        registry_id=registry_id, order_by_field=order_by_field
+    )
 
 
 def get_all_by_list_registry_ids(list_registry_ids, order_by_field=None):
@@ -94,8 +101,9 @@ def get_all_by_list_registry_ids(list_registry_ids, order_by_field=None):
         List of OaiHarvesterMetadataFormat.
 
     """
-    return OaiHarvesterMetadataFormat.get_all_by_list_registry_ids(list_registry_ids=list_registry_ids,
-                                                                   order_by_field=order_by_field)
+    return OaiHarvesterMetadataFormat.get_all_by_list_registry_ids(
+        list_registry_ids=list_registry_ids, order_by_field=order_by_field
+    )
 
 
 def get_all_to_harvest_by_registry_id(registry_id, order_by_field=None):
@@ -109,9 +117,9 @@ def get_all_to_harvest_by_registry_id(registry_id, order_by_field=None):
         List of OaiHarvesterMetadataFormat.
 
     """
-    return OaiHarvesterMetadataFormat.get_all_by_registry_id_and_harvest(registry_id=registry_id,
-                                                                         harvest=True,
-                                                                         order_by_field=order_by_field)
+    return OaiHarvesterMetadataFormat.get_all_by_registry_id_and_harvest(
+        registry_id=registry_id, harvest=True, order_by_field=order_by_field
+    )
 
 
 def delete_all_by_registry_id(registry_id):
@@ -132,7 +140,9 @@ def update_for_all_harvest_by_registry_id(registry_id, harvest):
         harvest: Harvest (True/False).
 
     """
-    OaiHarvesterMetadataFormat.update_for_all_harvest_by_registry_id(registry_id=registry_id, harvest=harvest)
+    OaiHarvesterMetadataFormat.update_for_all_harvest_by_registry_id(
+        registry_id=registry_id, harvest=harvest
+    )
 
 
 def update_for_all_harvest_by_list_ids(list_oai_metadata_format_ids, harvest):
@@ -143,7 +153,9 @@ def update_for_all_harvest_by_list_ids(list_oai_metadata_format_ids, harvest):
         harvest: Harvest (True/False)
 
     """
-    OaiHarvesterMetadataFormat.update_for_all_harvest_by_list_ids(list_oai_metadata_format_ids, harvest)
+    OaiHarvesterMetadataFormat.update_for_all_harvest_by_list_ids(
+        list_oai_metadata_format_ids, harvest
+    )
 
 
 def init_schema_info(oai_harvester_metadata_format):
@@ -163,18 +175,28 @@ def init_schema_info(oai_harvester_metadata_format):
         try:
             oai_harvester_metadata_format.hash = get_hash(string_xml)
         except exceptions.XSDError:
-            raise exceptions.ApiError("Impossible to hash the schema for the following "
-                                      "metadata format: {0}.")
+            raise exceptions.ApiError(
+                "Impossible to hash the schema for the following "
+                "metadata format: {0}."
+            )
         list_template = api_template.get_all_by_hash(oai_harvester_metadata_format.hash)
         # FIXME: What to do if several templates with the same hash.
         if len(list_template) == 1:
             oai_harvester_metadata_format.template = list_template[0]
         elif len(list_template) > 1:
-            raise exceptions.ApiError("Several templates have the same hash. "
-                                      "Impossible to determine a template for the following "
-                                      "metadata format: {0}.".format(oai_harvester_metadata_format.metadata_prefix))
+            raise exceptions.ApiError(
+                "Several templates have the same hash. "
+                "Impossible to determine a template for the following "
+                "metadata format: {0}.".format(
+                    oai_harvester_metadata_format.metadata_prefix
+                )
+            )
     else:
-        raise exceptions.ApiError("Impossible to init schema information for the following "
-                                  "metadata format: {0}.".format(oai_harvester_metadata_format.metadata_prefix))
+        raise exceptions.ApiError(
+            "Impossible to init schema information for the following "
+            "metadata format: {0}.".format(
+                oai_harvester_metadata_format.metadata_prefix
+            )
+        )
 
     return oai_harvester_metadata_format

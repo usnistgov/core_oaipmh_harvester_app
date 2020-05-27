@@ -13,8 +13,11 @@ from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 class OaiHarvesterSet(OaiSet):
     """Represents a set for Oai-Pmh Harvester"""
+
     raw = fields.DictField()
-    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE, unique_with='set_spec')
+    registry = fields.ReferenceField(
+        OaiRegistry, reverse_delete_rule=CASCADE, unique_with="set_spec"
+    )
     harvest = fields.BooleanField(blank=True)
 
     @staticmethod
@@ -29,7 +32,9 @@ class OaiHarvesterSet(OaiSet):
             List of OaiHarvesterSet.
 
         """
-        return OaiHarvesterSet.objects(registry=str(registry_id)).order_by(order_by_field)
+        return OaiHarvesterSet.objects(registry=str(registry_id)).order_by(
+            order_by_field
+        )
 
     @staticmethod
     def get_all_by_registry_id_and_harvest(registry_id, harvest, order_by_field=None):
@@ -44,8 +49,9 @@ class OaiHarvesterSet(OaiSet):
             List of OaiHarvesterSet.
 
         """
-        return OaiHarvesterSet.objects(registry=str(registry_id), harvest=harvest).\
-            order_by(order_by_field)
+        return OaiHarvesterSet.objects(
+            registry=str(registry_id), harvest=harvest
+        ).order_by(order_by_field)
 
     @staticmethod
     def get_by_set_spec_and_registry_id(set_spec, registry_id):
@@ -63,8 +69,9 @@ class OaiHarvesterSet(OaiSet):
 
         """
         try:
-            return OaiHarvesterSet.objects().get(set_spec=set_spec,
-                                                 registry=str(registry_id))
+            return OaiHarvesterSet.objects().get(
+                set_spec=set_spec, registry=str(registry_id)
+            )
         except mongoengine_errors.DoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
@@ -100,4 +107,6 @@ class OaiHarvesterSet(OaiSet):
             harvest: Harvest (True/False)
 
         """
-        OaiHarvesterSet.get_all_by_list_ids(list_oai_set_ids).update(set__harvest=harvest)
+        OaiHarvesterSet.get_all_by_list_ids(list_oai_set_ids).update(
+            set__harvest=harvest
+        )

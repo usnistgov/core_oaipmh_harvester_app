@@ -41,8 +41,9 @@ def sickle_identify(url):
         serializer = sickle_serializers.IdentifySerializer(identify)
         return serializer.data, status.HTTP_200_OK
     except Exception as e:
-        content = OaiPmhMessage.get_message_labelled('An error occurred when attempting to identify resource: %s'
-                                                     % str(e))
+        content = OaiPmhMessage.get_message_labelled(
+            "An error occurred when attempting to identify resource: %s" % str(e)
+        )
         return content, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
@@ -63,11 +64,12 @@ def sickle_list_sets(url):
         serializer = sickle_serializers.SetSerializer(list_sets, many=True)
         return serializer.data, status.HTTP_200_OK
     except NoSetHierarchy as e:
-        content = OaiPmhMessage.get_message_labelled('%s' % str(e))
+        content = OaiPmhMessage.get_message_labelled("%s" % str(e))
         return content, status.HTTP_204_NO_CONTENT
     except Exception as e:
-        content = OaiPmhMessage.get_message_labelled('An error occurred when attempting to get the sets: %s'
-                                                     % str(e))
+        content = OaiPmhMessage.get_message_labelled(
+            "An error occurred when attempting to get the sets: %s" % str(e)
+        )
         return content, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
@@ -85,15 +87,18 @@ def sickle_list_metadata_formats(url):
     try:
         sickle = _sickle_init(url)
         list_metadata_formats = sickle.ListMetadataFormats()
-        serializer = sickle_serializers.MetadataFormatSerializer(list_metadata_formats, many=True)
+        serializer = sickle_serializers.MetadataFormatSerializer(
+            list_metadata_formats, many=True
+        )
         return serializer.data, status.HTTP_200_OK
     except NoMetadataFormat as e:
         # This repository does not support sets
-        content = OaiPmhMessage.get_message_labelled('%s' % str(e))
+        content = OaiPmhMessage.get_message_labelled("%s" % str(e))
         return content, status.HTTP_204_NO_CONTENT
     except Exception as e:
-        content = OaiPmhMessage.get_message_labelled('An error occurred when attempting to get the metadata formats: %s'
-                                                     % str(e))
+        content = OaiPmhMessage.get_message_labelled(
+            "An error occurred when attempting to get the metadata formats: %s" % str(e)
+        )
         return content, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
@@ -108,14 +113,19 @@ def get_record_elt(xml_elt, metadata_prefix):
 
     """
     record = Record(xml_elt)
-    elt_ = {"identifier": record.header.identifier,
-            "datestamp": record.header.datestamp,
-            "deleted": record.deleted,
-            "sets": record.header.setSpecs,
-            "metadataPrefix": metadata_prefix,
-            "metadata": XSDTree.tostring(record.xml.find('.//'
-                                                         + '{http://www.openarchives.org/OAI/2.0/}'
-                                                         + 'metadata/'))
-            if not record.deleted else None,
-            "raw": record.raw}
+    elt_ = {
+        "identifier": record.header.identifier,
+        "datestamp": record.header.datestamp,
+        "deleted": record.deleted,
+        "sets": record.header.setSpecs,
+        "metadataPrefix": metadata_prefix,
+        "metadata": XSDTree.tostring(
+            record.xml.find(
+                ".//" + "{http://www.openarchives.org/OAI/2.0/}" + "metadata/"
+            )
+        )
+        if not record.deleted
+        else None,
+        "raw": record.raw,
+    }
     return elt_

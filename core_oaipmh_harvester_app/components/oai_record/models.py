@@ -8,9 +8,12 @@ from mongoengine.queryset.base import PULL, CASCADE
 from core_main_app.commons import exceptions
 from core_main_app.components.abstract_data.models import AbstractData
 from core_main_app.utils.databases.pymongo_database import get_full_text_query
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import \
-    OaiHarvesterMetadataFormat
-from core_oaipmh_harvester_app.components.oai_harvester_set.models import OaiHarvesterSet
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
+    OaiHarvesterMetadataFormat,
+)
+from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
+    OaiHarvesterSet,
+)
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 
@@ -18,10 +21,15 @@ class OaiRecord(AbstractData):
     """
         A record object
     """
+
     identifier = fields.StringField()
     deleted = fields.BooleanField()
-    harvester_sets = fields.ListField(fields.ReferenceField(OaiHarvesterSet, reverse_delete_rule=PULL), blank=True)
-    harvester_metadata_format = fields.ReferenceField(OaiHarvesterMetadataFormat, reverse_delete_rule=CASCADE)
+    harvester_sets = fields.ListField(
+        fields.ReferenceField(OaiHarvesterSet, reverse_delete_rule=PULL), blank=True
+    )
+    harvester_metadata_format = fields.ReferenceField(
+        OaiHarvesterMetadataFormat, reverse_delete_rule=CASCADE
+    )
     registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE)
 
     @staticmethod
@@ -61,7 +69,10 @@ class OaiRecord(AbstractData):
 
         """
         try:
-            return OaiRecord.objects().get(identifier=identifier, harvester_metadata_format=harvester_metadata_format)
+            return OaiRecord.objects().get(
+                identifier=identifier,
+                harvester_metadata_format=harvester_metadata_format,
+            )
         except mongoengine_errors.DoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
@@ -126,7 +137,10 @@ class OaiRecord(AbstractData):
         """
         full_text_query = get_full_text_query(text)
         # only no deleted records, add harvester_metadata_format criteria
-        full_text_query.update({'deleted':  False}, {'harvester_metadata_format__id': {'$in': list_metadata_format_id}})
+        full_text_query.update(
+            {"deleted": False},
+            {"harvester_metadata_format__id": {"$in": list_metadata_format_id}},
+        )
 
         return OaiRecord.objects.find(full_text_query)
 

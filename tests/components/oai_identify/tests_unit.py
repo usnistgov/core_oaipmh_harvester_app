@@ -15,7 +15,7 @@ class TestOaiIdentifyUpsert(TestCase):
     def setUp(self):
         self.oai_identify = _create_oai_identify()
 
-    @patch.object(OaiIdentify, 'save')
+    @patch.object(OaiIdentify, "save")
     def test_upsert_oai_identifier_raises_exception_if_save_failed(self, mock_save):
         # Arrange
         mock_save.side_effect = Exception()
@@ -24,7 +24,7 @@ class TestOaiIdentifyUpsert(TestCase):
         with self.assertRaises(Exception):
             oai_identify_api.upsert(self.oai_identify)
 
-    @patch.object(OaiIdentify, 'save')
+    @patch.object(OaiIdentify, "save")
     def test_upsert_oai_identify_with_raw_return_object(self, mock_create):
         # Arrange
         mock_create.return_value = self.oai_identify
@@ -35,7 +35,7 @@ class TestOaiIdentifyUpsert(TestCase):
         # Assert
         self.assertIsInstance(result, OaiIdentify)
 
-    @patch.object(OaiIdentify, 'save')
+    @patch.object(OaiIdentify, "save")
     def test_upsert_oai_identify_without_raw_return_object(self, mock_create):
         # Arrange
         self.oai_identify.raw = {}
@@ -48,10 +48,10 @@ class TestOaiIdentifyUpsert(TestCase):
         # Assert
         self.assertIsInstance(result, OaiIdentify)
 
-    @patch.object(OaiIdentify, 'save')
+    @patch.object(OaiIdentify, "save")
     def test_upsert_oai_identify_invalid_raw_return_object(self, mock_create):
         # Arrange
-        self.oai_identify.raw = '<root?</root>'
+        self.oai_identify.raw = "<root?</root>"
 
         mock_create.return_value = self.oai_identify
 
@@ -61,10 +61,10 @@ class TestOaiIdentifyUpsert(TestCase):
         # Act + Assert
         self.assertIsInstance(result, OaiIdentify)
 
-    @patch.object(OaiIdentify, 'save')
+    @patch.object(OaiIdentify, "save")
     def test_upsert_oai_identify_invalid_raw_return_empty_raw(self, mock_create):
         # Arrange
-        self.oai_identify.raw = '<root?</root>'
+        self.oai_identify.raw = "<root?</root>"
 
         mock_create.return_value = self.oai_identify
 
@@ -74,10 +74,10 @@ class TestOaiIdentifyUpsert(TestCase):
         # Act + Assert
         self.assertEquals(result.raw, {})
 
-    @patch.object(OaiIdentify, 'save')
+    @patch.object(OaiIdentify, "save")
     def test_upsert_oai_identify_no_exception_if_raw_not_string(self, mock_create):
         # Arrange
-        self.oai_identify.raw = OrderedDict([(u'test', u'Hello')])
+        self.oai_identify.raw = OrderedDict([("test", "Hello")])
 
         mock_create.return_value = self.oai_identify
 
@@ -89,7 +89,7 @@ class TestOaiIdentifyUpsert(TestCase):
 
 
 class TestOaiIdentifyGetByRegistryId(TestCase):
-    @patch.object(OaiIdentify, 'get_by_registry_id')
+    @patch.object(OaiIdentify, "get_by_registry_id")
     def test_get_by_registry_id_return_object(self, mock_get):
         # Arrange
         mock_oai_identify = _create_mock_oai_identify()
@@ -102,8 +102,10 @@ class TestOaiIdentifyGetByRegistryId(TestCase):
         # Assert
         self.assertIsInstance(result, OaiIdentify)
 
-    @patch.object(OaiIdentify, 'get_by_registry_id')
-    def test_get_by_registry_id_raises_exception_if_object_does_not_exist(self, mock_get):
+    @patch.object(OaiIdentify, "get_by_registry_id")
+    def test_get_by_registry_id_raises_exception_if_object_does_not_exist(
+        self, mock_get
+    ):
         # Arrange
         mock_absent_registry_id = str(ObjectId())
 
@@ -113,7 +115,7 @@ class TestOaiIdentifyGetByRegistryId(TestCase):
         with self.assertRaises(exceptions.DoesNotExist):
             oai_identify_api.get_by_registry_id(mock_absent_registry_id)
 
-    @patch.object(OaiIdentify, 'get_by_registry_id')
+    @patch.object(OaiIdentify, "get_by_registry_id")
     def test_get_by_registry_id_raises_exception_if_internal_error(self, mock_get):
         # Arrange
         mock_absent_registry_id = str(ObjectId())
@@ -123,11 +125,13 @@ class TestOaiIdentifyGetByRegistryId(TestCase):
         # Act + Assert
         with self.assertRaises(exceptions.ModelError):
             oai_identify_api.get_by_registry_id(mock_absent_registry_id)
-            
+
 
 class TestOaiIdentifyDelete(TestCase):
-    @patch.object(OaiIdentify, 'delete')
-    def test_delete_oai_identify_raises_exception_if_object_does_not_exist(self, mock_delete):
+    @patch.object(OaiIdentify, "delete")
+    def test_delete_oai_identify_raises_exception_if_object_does_not_exist(
+        self, mock_delete
+    ):
         # Arrange
         oai_identify = _create_oai_identify()
         mock_delete.side_effect = Exception()

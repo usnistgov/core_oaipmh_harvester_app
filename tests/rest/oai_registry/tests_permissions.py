@@ -9,13 +9,18 @@ from rest_framework import status
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
-from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import api as \
-    oai_metadata_format_api
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
+    api as oai_metadata_format_api,
+)
 from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_set_api
 from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.rest.oai_registry import views as rest_oai_registry
-from core_oaipmh_harvester_app.rest.serializers import RegistrySerializer, UpdateRegistrySerializer, HarvestSerializer
+from core_oaipmh_harvester_app.rest.serializers import (
+    RegistrySerializer,
+    UpdateRegistrySerializer,
+    HarvestSerializer,
+)
 
 
 class TestGetRegistry(SimpleTestCase):
@@ -26,35 +31,42 @@ class TestGetRegistry(SimpleTestCase):
 
     def test_anonymous_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_get(rest_oai_registry.RegistryDetail.as_view(), None,
-                                              self.data,
-                                              param=self.param)
+        response = RequestMock.do_request_get(
+            rest_oai_registry.RegistryDetail.as_view(),
+            None,
+            self.data,
+            param=self.param,
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
         # Arrange
-        user = create_mock_user('1')
+        user = create_mock_user("1")
 
         # Act
-        response = RequestMock.do_request_get(rest_oai_registry.RegistryDetail.as_view(), user=user,
-                                              param=self.param)
+        response = RequestMock.do_request_get(
+            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(oai_registry_api, "get_by_id")
     @patch.object(RegistrySerializer, "data")
-    def test_staff_returns_http_200(self, mock_oai_registry_api_get_by_id, mock_data_serializer_data):
+    def test_staff_returns_http_200(
+        self, mock_oai_registry_api_get_by_id, mock_data_serializer_data
+    ):
         # Arrange
-        user = create_mock_user('1', has_perm=True, is_staff=True)
+        user = create_mock_user("1", has_perm=True, is_staff=True)
         mock_oai_registry_api_get_by_id.return_value = None
         mock_data_serializer_data.return_value = []
 
         # Act
-        response = RequestMock.do_request_get(rest_oai_registry.RegistryDetail.as_view(), user=user,
-                                              param=self.param)
+        response = RequestMock.do_request_get(
+            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -68,35 +80,42 @@ class TestDeleteRegistry(SimpleTestCase):
 
     def test_anonymous_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_delete(rest_oai_registry.RegistryDetail.as_view(), None,
-                                              self.data,
-                                              param=self.param)
+        response = RequestMock.do_request_delete(
+            rest_oai_registry.RegistryDetail.as_view(),
+            None,
+            self.data,
+            param=self.param,
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
         # Arrange
-        user = create_mock_user('1')
+        user = create_mock_user("1")
 
         # Act
-        response = RequestMock.do_request_delete(rest_oai_registry.RegistryDetail.as_view(), user=user,
-                                              param=self.param)
+        response = RequestMock.do_request_delete(
+            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(oai_registry_api, "get_by_id")
     @patch.object(oai_registry_api, "delete")
-    def test_staff_returns_http_204(self, mock_oai_registry_api_get_by_id, mock_oai_registry_api_delete):
+    def test_staff_returns_http_204(
+        self, mock_oai_registry_api_get_by_id, mock_oai_registry_api_delete
+    ):
         # Arrange
-        user = create_mock_user('1', has_perm=True, is_staff=True)
+        user = create_mock_user("1", has_perm=True, is_staff=True)
         mock_oai_registry_api_get_by_id.return_value = None
         mock_oai_registry_api_delete.return_value = None
 
         # Act
-        response = RequestMock.do_request_delete(rest_oai_registry.RegistryDetail.as_view(), user=user,
-                                              param=self.param)
+        response = RequestMock.do_request_delete(
+            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -110,20 +129,24 @@ class TestPatchRegistry(SimpleTestCase):
 
     def test_anonymous_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.RegistryDetail.as_view(), None,
-                                                self.data,
-                                                param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.RegistryDetail.as_view(),
+            None,
+            self.data,
+            param=self.param,
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
         # Arrange
-        user = create_mock_user('1')
+        user = create_mock_user("1")
 
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.RegistryDetail.as_view(), user=user,
-                                                param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -133,11 +156,16 @@ class TestPatchRegistry(SimpleTestCase):
     @patch.object(UpdateRegistrySerializer, "is_valid")
     @patch.object(UpdateRegistrySerializer, "save")
     @patch.object(OaiPmhMessage, "get_message_labelled")
-    def test_staff_returns_http_200(self, mock_data_serializer_data,
-                                    mock_data_serializer_is_valid, mock_data_serializer_save,
-                                    mock_oaipmhmessage_get_message_labelled, mock_oai_registry_api_get_by_id):
+    def test_staff_returns_http_200(
+        self,
+        mock_data_serializer_data,
+        mock_data_serializer_is_valid,
+        mock_data_serializer_save,
+        mock_oaipmhmessage_get_message_labelled,
+        mock_oai_registry_api_get_by_id,
+    ):
         # Arrange
-        user = create_mock_user('1', has_perm=True, is_staff=True)
+        user = create_mock_user("1", has_perm=True, is_staff=True)
         mock_oai_registry_api_get_by_id.return_value = Mock(spec=OaiRegistry)
         mock_data_serializer_data.return_value = []
         mock_data_serializer_is_valid.return_value = True
@@ -145,33 +173,35 @@ class TestPatchRegistry(SimpleTestCase):
         mock_oaipmhmessage_get_message_labelled.return_value = None
 
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.RegistryDetail.as_view(), user=user,
-                                              param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class TestInfoRegistry(SimpleTestCase):
-
     def setUp(self):
         super(TestInfoRegistry, self).setUp()
         self.param = {"registry_id": 1}
 
     def test_anonymous_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.InfoRegistry.as_view(),
-                                                user=None,
-                                                param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.InfoRegistry.as_view(), user=None, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.InfoRegistry.as_view(),
-                                                user=create_mock_user('1'),
-                                                param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.InfoRegistry.as_view(),
+            user=create_mock_user("1"),
+            param=self.param,
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -179,18 +209,22 @@ class TestInfoRegistry(SimpleTestCase):
     @patch.object(oai_registry_api, "get_by_id")
     @patch.object(oai_registry_api, "update_registry_info")
     @patch.object(OaiPmhMessage, "get_message_labelled")
-    def test_staff_returns_http_200(self, mock_oaipmhmessage_get_message_labelled, mock_oai_registry_api_update_registry_info,
-                                  mock_oai_registry_api_get_by_id):
+    def test_staff_returns_http_200(
+        self,
+        mock_oaipmhmessage_get_message_labelled,
+        mock_oai_registry_api_update_registry_info,
+        mock_oai_registry_api_get_by_id,
+    ):
         # Arrange
-        user = create_mock_user('1', is_staff=True)
+        user = create_mock_user("1", is_staff=True)
         mock_oaipmhmessage_get_message_labelled.return_value = None
         mock_oai_registry_api_update_registry_info.return_value = Mock(spec=OaiRegistry)
         mock_oai_registry_api_get_by_id.return_value = Mock(spec=OaiRegistry)
 
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.InfoRegistry.as_view(),
-                                                user=user,
-                                                param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.InfoRegistry.as_view(), user=user, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -203,36 +237,44 @@ class TestHarvestRegistry(SimpleTestCase):
 
     def test_anonymous_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.Harvest.as_view(),
-                                                user=None,
-                                                param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.Harvest.as_view(), user=None, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.Harvest.as_view(),
-                                                user=create_mock_user('1'),
-                                                param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.Harvest.as_view(),
+            user=create_mock_user("1"),
+            param=self.param,
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(oai_registry_api, "get_by_id")
-    @patch.object(oai_registry_api, 'harvest_registry')
+    @patch.object(oai_registry_api, "harvest_registry")
     @patch.object(OaiPmhMessage, "get_message_labelled")
-    def test_staff_returns_http_200(self, mock_oaipmhmessage_get_message_labelled, mock_oai_registry_api_harvest_registry,
-                              mock_oai_registry_api_get_by_id):
+    def test_staff_returns_http_200(
+        self,
+        mock_oaipmhmessage_get_message_labelled,
+        mock_oai_registry_api_harvest_registry,
+        mock_oai_registry_api_get_by_id,
+    ):
         # Arrange
         mock_oaipmhmessage_get_message_labelled.return_value = None
         mock_oai_registry_api_harvest_registry.return_value = []
         mock_oai_registry_api_get_by_id.return_value = Mock(spec=OaiRegistry)
 
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.Harvest.as_view(),
-                                                user=create_mock_user('1', is_staff=True),
-                                                param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.Harvest.as_view(),
+            user=create_mock_user("1", is_staff=True),
+            param=self.param,
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -242,23 +284,22 @@ class TestEditHarvestRegistry(SimpleTestCase):
     def setUp(self):
         super(TestEditHarvestRegistry, self).setUp()
         self.param = {"registry_id": 0}
-        self.data = {
-                        "metadata_formats": [],
-                        "sets": []
-                    }
+        self.data = {"metadata_formats": [], "sets": []}
 
     def test_anonymous_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_put(rest_oai_registry.Harvest.as_view(),
-                                                user=None)
+        response = RequestMock.do_request_put(
+            rest_oai_registry.Harvest.as_view(), user=None
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_put(rest_oai_registry.Harvest.as_view(),
-                                                user=create_mock_user('1'))
+        response = RequestMock.do_request_put(
+            rest_oai_registry.Harvest.as_view(), user=create_mock_user("1")
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -271,30 +312,44 @@ class TestEditHarvestRegistry(SimpleTestCase):
     @patch.object(HarvestSerializer, "data")
     @patch.object(HarvestSerializer, "is_valid")
     @patch.object(oai_registry_api, "get_by_id")
-    @patch.object(oai_registry_api, 'harvest_registry')
+    @patch.object(oai_registry_api, "harvest_registry")
     @patch.object(OaiPmhMessage, "get_message_labelled")
-    def test_staff_returns_http_200(self, mock_oaipmhmessage_get_message_labelled, mock_oai_registry_api_harvest_registry,
-                                    mock_oai_registry_api_get_by_id, mock_data_serializer_is_valid, mock_data_serializer_data,
-                                    mock_oai_metadata_format_api_get_all_by_registry_id, mock_oai_set_api_get_all_by_registry_id,
-                                    mock_oai_metadata_format_api_update_for_all_harvest_by_list_ids,
-                                    mock_oai_set_api_update_for_all_harvest_by_list_ids, mock_queryset_values_list
-                                    ):
+    def test_staff_returns_http_200(
+        self,
+        mock_oaipmhmessage_get_message_labelled,
+        mock_oai_registry_api_harvest_registry,
+        mock_oai_registry_api_get_by_id,
+        mock_data_serializer_is_valid,
+        mock_data_serializer_data,
+        mock_oai_metadata_format_api_get_all_by_registry_id,
+        mock_oai_set_api_get_all_by_registry_id,
+        mock_oai_metadata_format_api_update_for_all_harvest_by_list_ids,
+        mock_oai_set_api_update_for_all_harvest_by_list_ids,
+        mock_queryset_values_list,
+    ):
         # Arrange
         mock_oaipmhmessage_get_message_labelled.return_value = None
         mock_oai_registry_api_harvest_registry.return_value = []
         mock_oai_registry_api_get_by_id.return_value = Mock(spec=OaiRegistry)
         mock_data_serializer_data.return_value = Mock(spec=HarvestSerializer)
         mock_data_serializer_is_valid.return_value = True
-        mock_oai_metadata_format_api_get_all_by_registry_id.return_value = Mock(spec=QuerySet)
+        mock_oai_metadata_format_api_get_all_by_registry_id.return_value = Mock(
+            spec=QuerySet
+        )
         mock_oai_set_api_get_all_by_registry_id.return_value = Mock(spec=QuerySet)
-        mock_oai_metadata_format_api_update_for_all_harvest_by_list_ids.return_value = None
+        mock_oai_metadata_format_api_update_for_all_harvest_by_list_ids.return_value = (
+            None
+        )
         mock_oai_set_api_update_for_all_harvest_by_list_ids.return_value = None
         mock_queryset_values_list.return_value = None
 
         # Act
-        response = RequestMock.do_request_put(rest_oai_registry.Harvest.as_view(),
-                                                user=create_mock_user('1', is_staff=True), param=self.param,
-                                                data=self.data)
+        response = RequestMock.do_request_put(
+            rest_oai_registry.Harvest.as_view(),
+            user=create_mock_user("1", is_staff=True),
+            param=self.param,
+            data=self.data,
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -307,19 +362,21 @@ class TestActivateRegistry(SimpleTestCase):
 
     def test_anonymous_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.ActivateRegistry.as_view(), None,
-                                              param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.ActivateRegistry.as_view(), None, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
         # Arrange
-        user = create_mock_user('1')
+        user = create_mock_user("1")
 
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.ActivateRegistry.as_view(), user=user,
-                                              param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.ActivateRegistry.as_view(), user=user, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -327,17 +384,23 @@ class TestActivateRegistry(SimpleTestCase):
     @patch.object(oai_registry_api, "get_by_id")
     @patch.object(oai_registry_api, "upsert")
     @patch.object(OaiPmhMessage, "get_message_labelled")
-    def test_staff_returns_http_200(self, mock_oaipmhmessage_get_message_labelled, mock_oai_registry_api_upsert,
-                                    mock_oai_registry_api_get_by_id):
+    def test_staff_returns_http_200(
+        self,
+        mock_oaipmhmessage_get_message_labelled,
+        mock_oai_registry_api_upsert,
+        mock_oai_registry_api_get_by_id,
+    ):
         # Arrange
         mock_oaipmhmessage_get_message_labelled.return_value = None
         mock_oai_registry_api_upsert.return_value = None
         mock_oai_registry_api_get_by_id.return_value = Mock(spec=OaiRegistry)
 
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.ActivateRegistry.as_view(),
-                                                user=create_mock_user('1', is_staff=True),
-                                                param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.ActivateRegistry.as_view(),
+            user=create_mock_user("1", is_staff=True),
+            param=self.param,
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -350,19 +413,21 @@ class TestDeactivateRegistry(SimpleTestCase):
 
     def test_anonymous_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.DeactivateRegistry.as_view(), None,
-                                              param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.DeactivateRegistry.as_view(), None, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
         # Arrange
-        user = create_mock_user('1')
+        user = create_mock_user("1")
 
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.DeactivateRegistry.as_view(), user=user,
-                                              param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.DeactivateRegistry.as_view(), user=user, param=self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -370,17 +435,23 @@ class TestDeactivateRegistry(SimpleTestCase):
     @patch.object(oai_registry_api, "get_by_id")
     @patch.object(oai_registry_api, "upsert")
     @patch.object(OaiPmhMessage, "get_message_labelled")
-    def test_staff_returns_http_200(self, mock_oaipmhmessage_get_message_labelled, mock_oai_registry_api_upsert,
-                                    mock_oai_registry_api_get_by_id):
+    def test_staff_returns_http_200(
+        self,
+        mock_oaipmhmessage_get_message_labelled,
+        mock_oai_registry_api_upsert,
+        mock_oai_registry_api_get_by_id,
+    ):
         # Arrange
         mock_oaipmhmessage_get_message_labelled.return_value = None
         mock_oai_registry_api_upsert.return_value = None
         mock_oai_registry_api_get_by_id.return_value = Mock(spec=OaiRegistry)
 
         # Act
-        response = RequestMock.do_request_patch(rest_oai_registry.DeactivateRegistry.as_view(),
-                                                user=create_mock_user('1', is_staff=True),
-                                                param=self.param)
+        response = RequestMock.do_request_patch(
+            rest_oai_registry.DeactivateRegistry.as_view(),
+            user=create_mock_user("1", is_staff=True),
+            param=self.param,
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -389,31 +460,39 @@ class TestDeactivateRegistry(SimpleTestCase):
 class TestGetAllRegistries(SimpleTestCase):
     def test_anonymous_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_get(rest_oai_registry.RegistryList.as_view(), None, None)
+        response = RequestMock.do_request_get(
+            rest_oai_registry.RegistryList.as_view(), None, None
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
         # Arrange
-        user = create_mock_user('1', has_perm=True)
+        user = create_mock_user("1", has_perm=True)
 
         # Act
-        response = RequestMock.do_request_get(rest_oai_registry.RegistryList.as_view(), user, None)
+        response = RequestMock.do_request_get(
+            rest_oai_registry.RegistryList.as_view(), user, None
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(oai_registry_api, "get_all")
     @patch.object(RegistrySerializer, "data")
-    def test_staff_returns_http_200(self, mock_oai_registry_api_get_all, mock_data_serializer_data):
+    def test_staff_returns_http_200(
+        self, mock_oai_registry_api_get_all, mock_data_serializer_data
+    ):
         # Arrange
-        user = create_mock_user('1', has_perm=True, is_staff=True)
+        user = create_mock_user("1", has_perm=True, is_staff=True)
         mock_oai_registry_api_get_all.return_value = None
         mock_data_serializer_data.return_value = None
 
         # Act
-        response = RequestMock.do_request_get(rest_oai_registry.RegistryList.as_view(), user, None)
+        response = RequestMock.do_request_get(
+            rest_oai_registry.RegistryList.as_view(), user, None
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -422,22 +501,25 @@ class TestGetAllRegistries(SimpleTestCase):
 class TestCreateRegistry(SimpleTestCase):
     def setUp(self):
         super(TestCreateRegistry, self).setUp()
-        self.param = {"url": "",
-                      "harvest_rate": 1, "harvest": False}
+        self.param = {"url": "", "harvest_rate": 1, "harvest": False}
 
     def test_anonymous_returns_http_403(self):
         # Act
-        response = RequestMock.do_request_post(rest_oai_registry.RegistryList.as_view(), None, None)
+        response = RequestMock.do_request_post(
+            rest_oai_registry.RegistryList.as_view(), None, None
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
         # Arrange
-        user = create_mock_user('1', has_perm=True)
+        user = create_mock_user("1", has_perm=True)
 
         # Act
-        response = RequestMock.do_request_post(rest_oai_registry.RegistryList.as_view(), user, None)
+        response = RequestMock.do_request_post(
+            rest_oai_registry.RegistryList.as_view(), user, None
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -446,17 +528,24 @@ class TestCreateRegistry(SimpleTestCase):
     @patch.object(RegistrySerializer, "is_valid")
     @patch.object(RegistrySerializer, "save")
     @patch.object(OaiPmhMessage, "get_message_labelled")
-    def test_staff_returns_http_201(self, mock_oaipmhmessage_get_message_labelled, mock_data_serializer_save,
-                                    mock_data_serializer_is_valid, mock_data_serializer_data):
+    def test_staff_returns_http_201(
+        self,
+        mock_oaipmhmessage_get_message_labelled,
+        mock_data_serializer_save,
+        mock_data_serializer_is_valid,
+        mock_data_serializer_data,
+    ):
         # Arrange
-        user = create_mock_user('1', is_staff=True)
+        user = create_mock_user("1", is_staff=True)
         mock_data_serializer_data.return_value = None
         mock_data_serializer_is_valid.return_value = True
         mock_data_serializer_save.return_value = Mock(spec=OaiRegistry)
         mock_oaipmhmessage_get_message_labelled.return_value = None
 
         # Act
-        response = RequestMock.do_request_post(rest_oai_registry.RegistryList.as_view(), user, self.param)
+        response = RequestMock.do_request_post(
+            rest_oai_registry.RegistryList.as_view(), user, self.param
+        )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

@@ -41,11 +41,12 @@ def identify_as_object(url):
     data, status_code = identify(url)
     if status_code == status.HTTP_200_OK:
         try:
-            data = transform_operations.transform_dict_identifier_to_oai_identifier(data)
+            data = transform_operations.transform_dict_identifier_to_oai_identifier(
+                data
+            )
         except Exception as e:
             data = OaiPmhMessage.get_message_labelled(
-                "An error occurred when attempting to identify resource: %s"
-                % str(e)
+                "An error occurred when attempting to identify resource: %s" % str(e)
             )
             status_code = status.HTTP_400_BAD_REQUEST
 
@@ -80,10 +81,9 @@ def list_metadata_formats_as_object(url):
     data, status_code = list_metadata_formats(url)
     if status_code == status.HTTP_200_OK:
         try:
-            data = transform_operations.\
-                transform_dict_metadata_format_to_oai_harvester_metadata_format(
-                    data
-                )
+            data = transform_operations.transform_dict_metadata_format_to_oai_harvester_metadata_format(
+                data
+            )
         except Exception as e:
             data = OaiPmhMessage.get_message_labelled(
                 "An error occurred when attempting to get the metadata "
@@ -125,16 +125,21 @@ def list_sets_as_object(url):
             data = transform_operations.transform_dict_set_to_oai_harvester_set(data)
         except Exception as e:
             data = OaiPmhMessage.get_message_labelled(
-                "An error occurred when attempting to get the sets: %s"
-                % str(e)
+                "An error occurred when attempting to get the sets: %s" % str(e)
             )
             status_code = status.HTTP_400_BAD_REQUEST
 
     return data, status_code
 
 
-def list_records(url, metadata_prefix=None, resumption_token=None, set_h=None,
-                 from_date=None, until_date=None):
+def list_records(
+    url,
+    metadata_prefix=None,
+    resumption_token=None,
+    set_h=None,
+    from_date=None,
+    until_date=None,
+):
     """ Performs an Oai-Pmh ListRecords request.
     Args:
         url: URL of the Data Provider.
@@ -178,12 +183,12 @@ def list_records(url, metadata_prefix=None, resumption_token=None, set_h=None,
         elif http_response.status_code == status.HTTP_404_NOT_FOUND:
             raise oai_pmh_exceptions.OAIAPILabelledException(
                 message="Impossible to get data from the server. Server not found",
-                status_code=status.HTTP_404_NOT_FOUND
+                status_code=status.HTTP_404_NOT_FOUND,
             )
         else:
             raise oai_pmh_exceptions.OAIAPILabelledException(
                 message="An error occurred while trying to get data from the server.",
-                status_code=http_response.status_code
+                status_code=http_response.status_code,
             )
 
         return Response(rtn, status=status.HTTP_200_OK), resumption_token
@@ -193,9 +198,10 @@ def list_records(url, metadata_prefix=None, resumption_token=None, set_h=None,
         content = OaiPmhMessage.get_message_labelled(
             "An error occurred during the list_records process: %s" % str(e)
         )
-        return Response(
-            content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        ), resumption_token
+        return (
+            Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR),
+            resumption_token,
+        )
 
 
 def get_data(url):
@@ -222,18 +228,19 @@ def get_data(url):
                 else:
                     raise oai_pmh_exceptions.OAIAPIException(
                         message="An error occurred.",
-                        status_code=http_response.status_code
+                        status_code=http_response.status_code,
                     )
             else:
-                content = "An error occurred when attempting to identify resource: %s" % data
+                content = (
+                    "An error occurred when attempting to identify resource: %s" % data
+                )
                 raise oai_pmh_exceptions.OAIAPILabelledException(
-                    message=content,
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    message=content, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
         else:
             raise oai_pmh_exceptions.OAIAPIException(
                 message="An error occurred, url malformed.",
-                status_code=status.HTTP_400_BAD_REQUEST
+                status_code=status.HTTP_400_BAD_REQUEST,
             )
     except requests.HTTPError as err:
         raise oai_pmh_exceptions.OAIAPILabelledException(

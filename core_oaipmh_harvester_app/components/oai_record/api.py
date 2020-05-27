@@ -43,7 +43,9 @@ def get_by_identifier_and_metadata_format(identifier, harvester_metadata_format)
     Returns: The OaiRecord instance.
 
     """
-    return OaiRecord.get_by_identifier_and_metadata_format(identifier, harvester_metadata_format)
+    return OaiRecord.get_by_identifier_and_metadata_format(
+        identifier, harvester_metadata_format
+    )
 
 
 def get_all():

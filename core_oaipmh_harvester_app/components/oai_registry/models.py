@@ -10,6 +10,7 @@ from core_main_app.commons import exceptions
 
 class OaiRegistry(Document):
     """ A registry object for Oai-Pmh Harvester"""
+
     name = fields.StringField()
     url = fields.URLField(unique=True)
     harvest_rate = fields.IntField(blank=True)

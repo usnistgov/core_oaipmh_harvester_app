@@ -9,7 +9,7 @@ from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.utils import transform_operations
 from tests.test_settings import OAI_HARVESTER_ROOT
 
-DUMP_OAI_PMH_TEST_PATH = os.path.join(OAI_HARVESTER_ROOT, 'utils', 'data')
+DUMP_OAI_PMH_TEST_PATH = os.path.join(OAI_HARVESTER_ROOT, "utils", "data")
 
 
 class OaiPmhFixtures(FixtureInterface):
@@ -30,12 +30,19 @@ class OaiPmhFixtures(FixtureInterface):
     """
         Registry's methods
     """
+
     def insert_data(self):
         pass
 
-    def insert_registry(self, name='Registry', insert_related_collections=True, insert_records=True):
-        self.registry = OaiRegistry(name=name, url=self.url, harvest_rate=self.harvest_rate,
-                                    harvest=self.harvest).save()
+    def insert_registry(
+        self, name="Registry", insert_related_collections=True, insert_records=True
+    ):
+        self.registry = OaiRegistry(
+            name=name,
+            url=self.url,
+            harvest_rate=self.harvest_rate,
+            harvest=self.harvest,
+        ).save()
         if insert_related_collections:
             self.oai_identify = self.insert_oai_identify()
             self.oai_sets = self.insert_oai_sets()
@@ -47,6 +54,7 @@ class OaiPmhFixtures(FixtureInterface):
     """
         OaiIdentify's methods
     """
+
     def insert_oai_identify(self):
         identify = OaiPmhMock.mock_oai_identify(version=1)
         identify.registry = self.registry
@@ -55,6 +63,7 @@ class OaiPmhFixtures(FixtureInterface):
     """
        OaiSet's methods
     """
+
     def insert_oai_sets(self):
         sets = OaiPmhMock.mock_oai_set(version=1)
         saved_sets = []
@@ -68,6 +77,7 @@ class OaiPmhFixtures(FixtureInterface):
     """
        OaiMetadataFormat's methods
     """
+
     def insert_oai_metadata_formats(self):
         metadata_formats = OaiPmhMock.mock_oai_metadata_format(version=1)
         saved_metadata_formats = []
@@ -89,8 +99,9 @@ class OaiPmhFixtures(FixtureInterface):
             oai_record.title = oai_record.identifier
             oai_record.registry = self.registry
             oai_record.harvester_metadata_format = self.oai_metadata_formats[0]
-            oai_record.dict_content = xml_utils.raw_xml_to_dict(oai_record.xml_content,
-                                                                xml_utils.post_processor)
+            oai_record.dict_content = xml_utils.raw_xml_to_dict(
+                oai_record.xml_content, xml_utils.post_processor
+            )
             saved_oai_records.append(oai_record.save())
 
         return saved_oai_records
@@ -99,27 +110,42 @@ class OaiPmhFixtures(FixtureInterface):
 class OaiPmhMock(object):
     @staticmethod
     def mock_oai_identify(version=1):
-        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'oai_identify_v{0}.json'.format(version))) as f:
+        with open(
+            os.path.join(
+                DUMP_OAI_PMH_TEST_PATH, "oai_identify_v{0}.json".format(version)
+            )
+        ) as f:
             data = f.read()
         data_json = json.loads(data)
-        oai_identifier = transform_operations.transform_dict_identifier_to_oai_identifier(data_json)
+        oai_identifier = transform_operations.transform_dict_identifier_to_oai_identifier(
+            data_json
+        )
         return oai_identifier
 
     @staticmethod
     def mock_oai_metadata_format(version=1):
-        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'oai_metadata_format_v{0}.json'.format(version))) as f:
+        with open(
+            os.path.join(
+                DUMP_OAI_PMH_TEST_PATH, "oai_metadata_format_v{0}.json".format(version)
+            )
+        ) as f:
             data = f.read()
         data_json = json.loads(data)
-        list_oai_metadata_formats = transform_operations.\
-            transform_dict_metadata_format_to_oai_harvester_metadata_format(data_json)
+        list_oai_metadata_formats = transform_operations.transform_dict_metadata_format_to_oai_harvester_metadata_format(
+            data_json
+        )
         return list_oai_metadata_formats
 
     @staticmethod
     def mock_oai_set(version=1):
-        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'oai_set_v{0}.json'.format(version))) as f:
+        with open(
+            os.path.join(DUMP_OAI_PMH_TEST_PATH, "oai_set_v{0}.json".format(version))
+        ) as f:
             data = f.read()
         data_json = json.loads(data)
-        list_sets = transform_operations.transform_dict_set_to_oai_harvester_set(data_json)
+        list_sets = transform_operations.transform_dict_set_to_oai_harvester_set(
+            data_json
+        )
         return list_sets
 
     @staticmethod
@@ -134,10 +160,14 @@ class OaiPmhMock(object):
 
     @staticmethod
     def mock_oai_record(version=1):
-        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, 'oai_record_v{0}.json'.format(version))) as f:
+        with open(
+            os.path.join(DUMP_OAI_PMH_TEST_PATH, "oai_record_v{0}.json".format(version))
+        ) as f:
             data = f.read()
         data_json = json.loads(data)
-        list_records = transform_operations.transform_dict_record_to_oai_record(data_json)
+        list_records = transform_operations.transform_dict_record_to_oai_record(
+            data_json
+        )
 
         return list_records
 
@@ -148,9 +178,9 @@ class OaiPmhMock(object):
 
     @staticmethod
     def mock_oai_response_list_records(with_resumption_token=True):
-        xml_file = 'response_list_records_oai_demo.xml'
+        xml_file = "response_list_records_oai_demo.xml"
         if not with_resumption_token:
-            xml_file = 'response_list_records_oai_demo_no_token.xml'
+            xml_file = "response_list_records_oai_demo_no_token.xml"
 
         with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, xml_file)) as f:
             data = f.read()

@@ -12,7 +12,8 @@ from core_oaipmh_harvester_app.tasks import init_harvest
 class HarvesterAppConfig(AppConfig):
     """ Core application settings
     """
-    name = 'core_oaipmh_harvester_app'
+
+    name = "core_oaipmh_harvester_app"
 
     def ready(self):
         """ Run when the app is ready
@@ -20,6 +21,6 @@ class HarvesterAppConfig(AppConfig):
         Returns:
 
         """
-        if 'migrate' not in sys.argv:
+        if "migrate" not in sys.argv:
             init_text_index(OaiRecord)
             init_harvest()

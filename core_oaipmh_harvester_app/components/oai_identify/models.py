@@ -12,6 +12,7 @@ from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 class OaiIdentify(Document):
     """Represents an identify object for Oai-Pmh Harvester"""
+
     admin_email = fields.StringField(blank=True)
     base_url = fields.URLField(unique=True)
     repository_name = fields.StringField(blank=True)
@@ -26,7 +27,9 @@ class OaiIdentify(Document):
     sample_identifier = fields.StringField(blank=True)
     scheme = fields.StringField(blank=True)
     raw = fields.DictField(blank=True)
-    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE, unique=True)
+    registry = fields.ReferenceField(
+        OaiRegistry, reverse_delete_rule=CASCADE, unique=True
+    )
 
     @staticmethod
     def get_by_registry_id(registry_id):

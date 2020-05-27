@@ -5,38 +5,63 @@ import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from django_mongoengine.forms import DocumentForm
 
-VERBS = (("0", "Pick one"),
-         ("1", "Identify"),
-         ("2", "Get Record"),
-         ("3", "List Records"),
-         ("4", "List Sets"),
-         ("5", "List Identifiers"),
-         ("6", "List Metadata Formats"))
+VERBS = (
+    ("0", "Pick one"),
+    ("1", "Identify"),
+    ("2", "Get Record"),
+    ("3", "List Records"),
+    ("4", "List Sets"),
+    ("5", "List Identifiers"),
+    ("6", "List Metadata Formats"),
+)
 
 
 class AddRegistryForm(forms.Form):
     """
         A registry form
     """
+
     name = forms.CharField(widget=forms.HiddenInput(), required=False)
     id = forms.CharField(widget=forms.HiddenInput(), required=False)
-    url = forms.URLField(label="Enter provider URL", required=True,
-                         widget=forms.TextInput(attrs={"class": "form-control",
-                                                       "placeholder": "https://remote-url.com:8080/oai/registry"}))
-    harvest_rate = forms.IntegerField(label="Harvest Rate (seconds)", required=False, validators=[MinValueValidator(0)],
-                                      widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "60"}),
-                                      min_value=0)
-    harvest = forms.BooleanField(label="Enable automatic harvesting", required=False, initial=True,
-                                 widget=forms.CheckboxInput(attrs={"class": "cmn-toggle cmn-toggle-round",
-                                                                   "visibility": "hidden"}))
+    url = forms.URLField(
+        label="Enter provider URL",
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "https://remote-url.com:8080/oai/registry",
+            }
+        ),
+    )
+    harvest_rate = forms.IntegerField(
+        label="Harvest Rate (seconds)",
+        required=False,
+        validators=[MinValueValidator(0)],
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "60"}),
+        min_value=0,
+    )
+    harvest = forms.BooleanField(
+        label="Enable automatic harvesting",
+        required=False,
+        initial=True,
+        widget=forms.CheckboxInput(
+            attrs={"class": "cmn-toggle cmn-toggle-round", "visibility": "hidden"}
+        ),
+    )
 
 
 class EditRegistryForm(DocumentForm):
-    harvest_rate = forms.IntegerField(label="Harvest Rate (seconds)",
-                                      validators=[MinValueValidator(0)],
-                                      widget=forms.NumberInput(attrs={"class": "form-control"}))
-    harvest = forms.BooleanField(label="Enable automatic harvesting", initial=True, required=False,
-                                 widget=forms.CheckboxInput())
+    harvest_rate = forms.IntegerField(
+        label="Harvest Rate (seconds)",
+        validators=[MinValueValidator(0)],
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    harvest = forms.BooleanField(
+        label="Enable automatic harvesting",
+        initial=True,
+        required=False,
+        widget=forms.CheckboxInput(),
+    )
 
     class Meta(object):
         document = OaiRegistry
@@ -59,11 +84,19 @@ class EditHarvestRegistryForm(DocumentForm):
     """
         A EditHarvestRegistryForm form
     """
-    metadata_formats = FormDataModelChoiceFieldMF(label="Metadata Formats", queryset=None,
-                                                  required=False,
-                                                  widget=forms.CheckboxSelectMultiple())
-    sets = FormDataModelChoiceFieldSet(label="Sets", queryset=None, required=False,
-                                       widget=forms.CheckboxSelectMultiple())
+
+    metadata_formats = FormDataModelChoiceFieldMF(
+        label="Metadata Formats",
+        queryset=None,
+        required=False,
+        widget=forms.CheckboxSelectMultiple(),
+    )
+    sets = FormDataModelChoiceFieldSet(
+        label="Sets",
+        queryset=None,
+        required=False,
+        widget=forms.CheckboxSelectMultiple(),
+    )
 
     class Meta(object):
         document = OaiRegistry
@@ -81,67 +114,68 @@ class EditHarvestRegistryForm(DocumentForm):
 class RequestForm(forms.Form):
     """ Request builder form
     """
+
     # Widget attributes
     default_attributes = {"class": "form-control"}
-    disabled_attributes = {
-        "class": "form-control",
-        "disabled": "true"
-    }
+    disabled_attributes = {"class": "form-control", "disabled": "true"}
     date_attributes = {
         "data-date-format": "yyyy-mm-ddThh:ii:00Z",
         "class": "form-control",
-        "style": "width:160px"
+        "style": "width:160px",
     }
 
     data_provider = forms.ChoiceField(
-        label="Data Provider", choices=[], required=False,
-        widget=forms.Select(attrs=default_attributes)
+        label="Data Provider",
+        choices=[],
+        required=False,
+        widget=forms.Select(attrs=default_attributes),
     )
     verb = forms.ChoiceField(
-        label="Verb", choices=VERBS, required=False,
-        widget=forms.Select(attrs=default_attributes)
+        label="Verb",
+        choices=VERBS,
+        required=False,
+        widget=forms.Select(attrs=default_attributes),
     )
     set = forms.ChoiceField(
-        label="Set", choices=[], required=False, widget=forms.Select(
-            attrs=disabled_attributes
-        )
+        label="Set",
+        choices=[],
+        required=False,
+        widget=forms.Select(attrs=disabled_attributes),
     )
     identifier = forms.CharField(
-        label="Identifier", required=False,
-        widget=forms.TextInput(attrs=default_attributes)
+        label="Identifier",
+        required=False,
+        widget=forms.TextInput(attrs=default_attributes),
     )
     metadata_prefix = forms.ChoiceField(
-        label="Metadata Prefix", choices=[], required=False,
-        widget=forms.Select(attrs=disabled_attributes)
+        label="Metadata Prefix",
+        choices=[],
+        required=False,
+        widget=forms.Select(attrs=disabled_attributes),
     )
     from_date = forms.CharField(
-        label="From", required=False,
-        widget=forms.DateInput(attrs=date_attributes)
+        label="From", required=False, widget=forms.DateInput(attrs=date_attributes)
     )
     until_date = forms.CharField(
-        label="Until", required=False,
-        widget=forms.DateInput(attrs=date_attributes)
+        label="Until", required=False, widget=forms.DateInput(attrs=date_attributes)
     )
     resumption_token = forms.CharField(
-        label="Resumption Token", required=False, widget=forms.TextInput(
-            attrs={"class": "form-control"}
-        )
+        label="Resumption Token",
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
     )
 
     def __init__(self):
         super(RequestForm, self).__init__()
 
-        default_fields = [
-            ("0", "Pick one")
-        ]
+        default_fields = [("0", "Pick one")]
 
         self.fields["metadata_prefix"].choices = default_fields
         self.fields["set"].choices = default_fields
 
         for registry in oai_registry_api.get_all_activated_registry():
-            default_fields.append((
-                "%s|%s" % (str(registry.id), registry.url),
-                str(registry.name)
-            ))
+            default_fields.append(
+                ("%s|%s" % (str(registry.id), registry.url), str(registry.name))
+            )
 
         self.fields["data_provider"].choices = default_fields
