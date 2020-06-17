@@ -11,6 +11,7 @@ from os.path import join
 from wsgiref.util import FileWrapper
 
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.staticfiles import finders
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
@@ -38,6 +39,7 @@ from django.utils.html import escape
 logger = logging.getLogger(__name__)
 
 
+@staff_member_required
 def add_registry(request):
     """ Add a registry.
     Args:
@@ -67,6 +69,7 @@ def add_registry(request):
     return HttpResponse(json.dumps({}), content_type="application/javascript")
 
 
+@staff_member_required
 def deactivate_registry(request):
     """ Deactivate a registry.
     Args:
@@ -87,6 +90,7 @@ def deactivate_registry(request):
     return HttpResponse(json.dumps({}), content_type="application/javascript")
 
 
+@staff_member_required
 def activate_registry(request):
     """ Activate a registry.
     Args:
@@ -107,6 +111,7 @@ def activate_registry(request):
     return HttpResponse(json.dumps({}), content_type="application/javascript")
 
 
+@staff_member_required
 def delete_registry(request):
     """ Delete a registry.
     Args:
@@ -126,6 +131,7 @@ def delete_registry(request):
     return HttpResponse(json.dumps({}), content_type="application/javascript")
 
 
+@staff_member_required
 def check_registry(request):
     """ Check the availability of a registry.
     Args:
@@ -162,6 +168,7 @@ class EditRegistryView(EditObjectModalView):
             form.add_error(None, str(e))
 
 
+@staff_member_required
 def view_registry(request):
     """ View a registry.
     Args:
@@ -250,6 +257,7 @@ class EditHarvestRegistryView(EditObjectModalView):
         return initial
 
 
+@staff_member_required
 def update_registry(request):
     """ Update information of a registry.
     Args:
@@ -269,6 +277,7 @@ def update_registry(request):
         )
 
 
+@staff_member_required
 def check_update_registry(request):
     """ Check if a registry is updating.
     Args:
@@ -314,6 +323,7 @@ def check_update_registry(request):
             )
 
 
+@staff_member_required
 def harvest_registry(request):
     """ Harvest a registry.
     Args:
@@ -333,6 +343,7 @@ def harvest_registry(request):
         )
 
 
+@staff_member_required
 def check_harvest_registry(request):
     """ Check if a registry is harvesting.
     Args:
@@ -361,6 +372,7 @@ def check_harvest_registry(request):
             )
 
 
+@staff_member_required
 def all_sets(request):
     """ Returns all the sets of a registry.
     Args:
@@ -385,6 +397,7 @@ def all_sets(request):
         )
 
 
+@staff_member_required
 def all_metadata_prefix(request):
     """ Returns all the sets of a registry
     Args:
@@ -411,6 +424,7 @@ def all_metadata_prefix(request):
         )
 
 
+@staff_member_required
 def get_data(request):
     """ Perform an OAI-PMH request.
     Args:
@@ -443,6 +457,7 @@ def get_data(request):
         )
 
 
+@staff_member_required
 def download_xml_build_req(request):
     """ Download xml of the building request.
     Args:

@@ -2,6 +2,7 @@
 Url router for the administration site
 """
 from django.contrib import admin
+from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import re_path
 
 from core_oaipmh_harvester_app.views.admin import (
@@ -57,12 +58,12 @@ admin_urls = [
     ),
     re_path(
         r"^harvesters/registry/harvest/(?P<pk>[\w-]+)/edit/$",
-        admin_ajax.EditHarvestRegistryView.as_view(),
+        staff_member_required(admin_ajax.EditHarvestRegistryView.as_view()),
         name="core_oaipmh_harvester_app_edit_harvest_registry",
     ),
     re_path(
         r"^harvesters/registry/(?P<pk>[\w-]+)/edit/$",
-        admin_ajax.EditRegistryView.as_view(),
+        staff_member_required(admin_ajax.EditRegistryView.as_view()),
         name="core_oaipmh_harvester_app_edit_registry",
     ),
     re_path(
