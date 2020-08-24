@@ -104,8 +104,13 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
         """
         # build query builder
         query_builder = OaiPmhQueryBuilder(query, self.sub_document_root)
-        templates = json.loads(templates)
-        registries = json.loads(registries)
+
+        if type(templates) is str:
+            templates = json.loads(templates)
+
+        if type(registries) is str:
+            registries = json.loads(registries)
+
         # if registries, check if activated
         list_activated_registry = oai_registry_api.get_all_activated_registry().values_list(
             "id"
