@@ -152,10 +152,10 @@ def _generic_get_all_test(self, mock_get_all, act_function):
 
 
 def _create_oai_record():
-    """ Get an OaiRecord object.
+    """Get an OaiRecord object.
 
-        Returns:
-            OaiRecord instance.
+    Returns:
+        OaiRecord instance.
 
     """
     oai_record = OaiRecord()
@@ -165,10 +165,10 @@ def _create_oai_record():
 
 
 def _create_mock_oai_record():
-    """ Mock an OaiRecord.
+    """Mock an OaiRecord.
 
-        Returns:
-            OaiRecord mock.
+    Returns:
+        OaiRecord mock.
 
     """
     mock_oai_record = Mock(spec=OaiRecord)
@@ -178,13 +178,13 @@ def _create_mock_oai_record():
 
 
 def _set_oai_record_fields(oai_record):
-    """ Set OaiRecord fields.
+    """Set OaiRecord fields.
 
-        Args:
-            oai_record:
+    Args:
+        oai_record:
 
-        Returns:
-            OaiRecord with assigned fields.
+    Returns:
+        OaiRecord with assigned fields.
 
     """
     oai_record.identifier = "oai:test/id.0006"

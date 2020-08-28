@@ -33,7 +33,7 @@ class OaiIdentify(Document):
 
     @staticmethod
     def get_by_registry_id(registry_id):
-        """ Return an OaiIdentify by its registry id.
+        """Return an OaiIdentify by its registry id.
 
         Args:
             registry_id:  The registry id.

@@ -6,8 +6,7 @@ from core_main_app.utils.query.mongo.query_builder import QueryBuilder
 
 
 class OaiPmhQueryBuilder(QueryBuilder):
-    """Query builder class
-    """
+    """Query builder class"""
 
     def add_list_metadata_formats_criteria(self, list_metadata_format_ids):
         """Add a criteria on OaiHarvesterMetadataFormat.

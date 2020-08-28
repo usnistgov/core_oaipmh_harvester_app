@@ -49,14 +49,12 @@ class HarvestSerializer(BasicSerializer):
 
 
 class OaiRecordSerializer(DocumentSerializer):
-    """ OaiRecord serializer
-    """
+    """OaiRecord serializer"""
 
     xml_content = CharField()
 
     class Meta(object):
-        """ Meta
-        """
+        """Meta"""
 
         model = OaiRecord
         fields = [

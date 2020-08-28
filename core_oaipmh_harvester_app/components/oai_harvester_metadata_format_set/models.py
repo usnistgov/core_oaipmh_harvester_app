@@ -30,14 +30,14 @@ class OaiHarvesterMetadataFormatSet(Document):
     def get_by_metadata_format_and_set(
         oai_harvester_metadata_format, oai_harvester_set
     ):
-        """ Get an OaiHarvesterMetadataFormatSet by its OaiHarvesterMetadataFormat and OaiHarvesterSet.
+        """Get an OaiHarvesterMetadataFormatSet by its OaiHarvesterMetadataFormat and OaiHarvesterSet.
 
-            Args:
-                oai_harvester_metadata_format:
-                oai_harvester_set:
+        Args:
+            oai_harvester_metadata_format:
+            oai_harvester_set:
 
-            Returns:
-                OaiHarvesterMetadataFormatSet instance.
+        Returns:
+            OaiHarvesterMetadataFormatSet instance.
 
         """
         try:
@@ -54,7 +54,7 @@ class OaiHarvesterMetadataFormatSet(Document):
     def upsert_last_update_by_metadata_format_and_set(
         harvester_metadata_format, harvester_set, last_update
     ):
-        """ Update the last_update date for a given metadata_format and set. Create an
+        """Update the last_update date for a given metadata_format and set. Create an
         OaiHarvesterMetadataFormatSet if doesn't exist.
 
             Args:

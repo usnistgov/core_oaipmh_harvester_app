@@ -16,7 +16,7 @@ from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 
 
 def transform_dict_identifier_to_oai_identifier(data):
-    """ Transforms a dict to an OaiIdentify object.
+    """Transforms a dict to an OaiIdentify object.
 
     Args:
         data: Data to transform.
@@ -44,7 +44,7 @@ def transform_dict_identifier_to_oai_identifier(data):
 
 
 def transform_dict_set_to_oai_harvester_set(data):
-    """ Transforms a dict to a list of OaiHarvesterSet object.
+    """Transforms a dict to a list of OaiHarvesterSet object.
 
     Args:
         data: Data to transform.
@@ -64,7 +64,7 @@ def transform_dict_set_to_oai_harvester_set(data):
 
 
 def transform_dict_metadata_format_to_oai_harvester_metadata_format(data):
-    """ Transforms a dict to a list of OaiHarvesterMetadataFormat object.
+    """Transforms a dict to a list of OaiHarvesterMetadataFormat object.
 
     Args:
         data: Data to transform.
@@ -85,7 +85,7 @@ def transform_dict_metadata_format_to_oai_harvester_metadata_format(data):
 
 
 def transform_dict_record_to_oai_record(data, registry_all_sets=[]):
-    """ Transforms a dict to a list of OaiRecord object.
+    """Transforms a dict to a list of OaiRecord object.
 
     Args:
         data: Data to transform.
@@ -99,8 +99,8 @@ def transform_dict_record_to_oai_record(data, registry_all_sets=[]):
     for obj in data:
         oai_record = OaiRecord()
         oai_record.identifier = obj["identifier"]
-        oai_record.last_modification_date = UTCdatetime.utc_datetime_iso8601_to_datetime(
-            obj["datestamp"]
+        oai_record.last_modification_date = (
+            UTCdatetime.utc_datetime_iso8601_to_datetime(obj["datestamp"])
         )
         oai_record.deleted = obj["deleted"]
         oai_record.harvester_sets = [

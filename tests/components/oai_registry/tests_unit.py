@@ -200,8 +200,7 @@ class TestOaiRegistryUpsert(TestCase):
     """
 
     def setUp(self):
-        """ Set up the test
-        """
+        """Set up the test"""
         self.oai_registry = _create_oai_registry()
 
     @patch.object(OaiRegistry, "save")
@@ -228,8 +227,7 @@ class TestCheckRegistryUrlAlreadyExists(TestCase):
     """
 
     def setUp(self):
-        """ Set up the test
-        """
+        """Set up the test"""
         self.oai_registry = _create_oai_registry()
 
     @patch.object(OaiRegistry, "check_registry_url_already_exists")
@@ -305,8 +303,7 @@ class TestAddRegistry(TestCase):
     """
 
     def setUp(self):
-        """ Set up the test
-        """
+        """Set up the test"""
         self.error_message = "An error occurred: %s"
         self.url = "http://www.server.com"
         self.harvest_rate = 5000
@@ -540,8 +537,7 @@ class TestUpdateRegistryInfo(TestCase):
     """
 
     def setUp(self):
-        """ Set up the test
-        """
+        """Set up the test"""
         self.error_message = "An error occurred: %s"
 
     @patch.object(oai_verbs_api, "identify_as_object")
@@ -909,8 +905,7 @@ class TestGetIdentifyAsObject(TestCase):
     """
 
     def setUp(self):
-        """ Set up the test
-        """
+        """Set up the test"""
         self.error_message = "An error occurred: %s"
 
     @patch.object(oai_verbs_api, "identify_as_object")
@@ -1105,10 +1100,10 @@ def _generic_get_all_test(self, mock_get_all, act_function):
 
 
 def _create_oai_registry():
-    """ Get an OaiRegistry object.
+    """Get an OaiRegistry object.
 
-        Returns:
-            OaiRegistry instance.
+    Returns:
+        OaiRegistry instance.
 
     """
     oai_registry = OaiRegistry()
@@ -1118,10 +1113,10 @@ def _create_oai_registry():
 
 
 def _create_mock_oai_registry():
-    """ Mock an OaiRegistry.
+    """Mock an OaiRegistry.
 
-        Returns:
-            OaiRegistry mock.
+    Returns:
+        OaiRegistry mock.
 
     """
     mock_oai_registry = Mock(spec=OaiRegistry)
@@ -1131,13 +1126,13 @@ def _create_mock_oai_registry():
 
 
 def _set_oai_registry_fields(oai_registry):
-    """ Set OaiRegistry fields.
+    """Set OaiRegistry fields.
 
-        Args:
-            oai_registry:
+    Args:
+        oai_registry:
 
-        Returns:
-            OaiRegistry with assigned fields.
+    Returns:
+        OaiRegistry with assigned fields.
 
     """
     oai_registry.name = "Registry"

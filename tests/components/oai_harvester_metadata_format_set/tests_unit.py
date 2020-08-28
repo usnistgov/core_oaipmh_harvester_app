@@ -148,10 +148,10 @@ class TestOaiHarvestMetadataFormatSetGetLastUpdateByMetadataFormatAndSet(TestCas
 
 
 def _create_oai_harvester_metadata_format_set():
-    """ Get an OaiHarvesterMetadataFormatSet object.
+    """Get an OaiHarvesterMetadataFormatSet object.
 
-        Returns:
-            OaiHarvesterMetadataFormatSet instance.
+    Returns:
+        OaiHarvesterMetadataFormatSet instance.
 
     """
     oai_harvester_metadata_format_set = OaiHarvesterMetadataFormatSet()
@@ -161,10 +161,10 @@ def _create_oai_harvester_metadata_format_set():
 
 
 def _create_mock_oai_harvester_metadata_format_set():
-    """ Mock an OaiHarvesterMetadataFormatSet.
+    """Mock an OaiHarvesterMetadataFormatSet.
 
-        Returns:
-            OaiHarvesterMetadataFormatSet mock.
+    Returns:
+        OaiHarvesterMetadataFormatSet mock.
 
     """
     mock_oai_harvester_metadata_format = Mock(spec=OaiHarvesterMetadataFormatSet)
@@ -174,13 +174,13 @@ def _create_mock_oai_harvester_metadata_format_set():
 
 
 def _set_oai_harvester_metadata_format_set_fields(oai_harvester_metadata_format_set):
-    """ Set OaiHarvesterMetadataFormatSet fields.
+    """Set OaiHarvesterMetadataFormatSet fields.
 
-        Args:
-            oai_harvester_metadata_format_set:
+    Args:
+        oai_harvester_metadata_format_set:
 
-        Returns:
-            OaiHarvesterMetadataFormatSet with assigned fields.
+    Returns:
+        OaiHarvesterMetadataFormatSet with assigned fields.
 
     """
     oai_harvester_metadata_format_set.harvester_metadata_format = "test"

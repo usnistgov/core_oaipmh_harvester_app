@@ -22,7 +22,7 @@ class OaiHarvesterSet(OaiSet):
 
     @staticmethod
     def get_all_by_registry_id(registry_id, order_by_field=None):
-        """ Return a list of OaiHarvesterSet by registry id. Possibility to order_by the list
+        """Return a list of OaiHarvesterSet by registry id. Possibility to order_by the list
 
         Args:
             registry_id: The registry id.
@@ -38,7 +38,7 @@ class OaiHarvesterSet(OaiSet):
 
     @staticmethod
     def get_all_by_registry_id_and_harvest(registry_id, harvest, order_by_field=None):
-        """ Return a list of OaiHarvesterSet by registry and harvest. Possibility to order_by the list.
+        """Return a list of OaiHarvesterSet by registry and harvest. Possibility to order_by the list.
 
         Args:
             registry_id: The registry id.
@@ -55,7 +55,7 @@ class OaiHarvesterSet(OaiSet):
 
     @staticmethod
     def get_by_set_spec_and_registry_id(set_spec, registry_id):
-        """ Return a OaiHarvesterSet by set_spec and registry.
+        """Return a OaiHarvesterSet by set_spec and registry.
 
         Args:
             set_spec: The set spec
@@ -79,7 +79,7 @@ class OaiHarvesterSet(OaiSet):
 
     @staticmethod
     def delete_all_by_registry_id(registry_id):
-        """ Delete all OaiHarvesterSet used by a registry.
+        """Delete all OaiHarvesterSet used by a registry.
 
         Args:
             registry_id: The registry id.
@@ -89,7 +89,7 @@ class OaiHarvesterSet(OaiSet):
 
     @staticmethod
     def update_for_all_harvest_by_registry_id(registry_id, harvest):
-        """ Update the harvest for all OaiHarvesterSet used by the registry.
+        """Update the harvest for all OaiHarvesterSet used by the registry.
 
         Args:
             registry_id: The registry id.
@@ -100,7 +100,7 @@ class OaiHarvesterSet(OaiSet):
 
     @staticmethod
     def update_for_all_harvest_by_list_ids(list_oai_set_ids, harvest):
-        """ Update the harvest for all OaiHarvesterSet by a list of ids.
+        """Update the harvest for all OaiHarvesterSet by a list of ids.
 
         Args:
             list_oai_set_ids: List of OaiHarvesterSet ids.

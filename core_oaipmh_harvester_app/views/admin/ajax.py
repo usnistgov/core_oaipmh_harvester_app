@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 
 @staff_member_required
 def add_registry(request):
-    """ Add a registry.
+    """Add a registry.
     Args:
         request:
 
@@ -71,7 +71,7 @@ def add_registry(request):
 
 @staff_member_required
 def deactivate_registry(request):
-    """ Deactivate a registry.
+    """Deactivate a registry.
     Args:
         request:
 
@@ -92,7 +92,7 @@ def deactivate_registry(request):
 
 @staff_member_required
 def activate_registry(request):
-    """ Activate a registry.
+    """Activate a registry.
     Args:
         request:
 
@@ -113,7 +113,7 @@ def activate_registry(request):
 
 @staff_member_required
 def delete_registry(request):
-    """ Delete a registry.
+    """Delete a registry.
     Args:
         request:
 
@@ -133,7 +133,7 @@ def delete_registry(request):
 
 @staff_member_required
 def check_registry(request):
-    """ Check the availability of a registry.
+    """Check the availability of a registry.
     Args:
         request:
 
@@ -170,7 +170,7 @@ class EditRegistryView(EditObjectModalView):
 
 @staff_member_required
 def view_registry(request):
-    """ View a registry.
+    """View a registry.
     Args:
         request:
 
@@ -234,7 +234,7 @@ class EditHarvestRegistryView(EditObjectModalView):
 
     def get_form_kwargs(self):
         """This method is what injects forms with their keyword
-            arguments."""
+        arguments."""
         # grab the current set of form #kwargs
         kwargs = super(EditHarvestRegistryView, self).get_form_kwargs()
         # Update the kwargs
@@ -259,7 +259,7 @@ class EditHarvestRegistryView(EditObjectModalView):
 
 @staff_member_required
 def update_registry(request):
-    """ Update information of a registry.
+    """Update information of a registry.
     Args:
         request:
 
@@ -279,7 +279,7 @@ def update_registry(request):
 
 @staff_member_required
 def check_update_registry(request):
-    """ Check if a registry is updating.
+    """Check if a registry is updating.
     Args:
         request:
 
@@ -325,7 +325,7 @@ def check_update_registry(request):
 
 @staff_member_required
 def harvest_registry(request):
-    """ Harvest a registry.
+    """Harvest a registry.
     Args:
         request:
 
@@ -345,7 +345,7 @@ def harvest_registry(request):
 
 @staff_member_required
 def check_harvest_registry(request):
-    """ Check if a registry is harvesting.
+    """Check if a registry is harvesting.
     Args:
         request:
 
@@ -374,7 +374,7 @@ def check_harvest_registry(request):
 
 @staff_member_required
 def all_sets(request):
-    """ Returns all the sets of a registry.
+    """Returns all the sets of a registry.
     Args:
         request:
 
@@ -399,7 +399,7 @@ def all_sets(request):
 
 @staff_member_required
 def all_metadata_prefix(request):
-    """ Returns all the sets of a registry
+    """Returns all the sets of a registry
     Args:
         request:
 
@@ -426,7 +426,7 @@ def all_metadata_prefix(request):
 
 @staff_member_required
 def get_data(request):
-    """ Perform an OAI-PMH request.
+    """Perform an OAI-PMH request.
     Args:
         request:
 
@@ -459,7 +459,7 @@ def get_data(request):
 
 @staff_member_required
 def download_xml_build_req(request):
-    """ Download xml of the building request.
+    """Download xml of the building request.
     Args:
         request:
 

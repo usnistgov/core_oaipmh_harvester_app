@@ -19,7 +19,7 @@ from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 class OaiRecord(AbstractData):
     """
-        A record object
+    A record object
     """
 
     identifier = fields.StringField()
@@ -80,7 +80,7 @@ class OaiRecord(AbstractData):
 
     @staticmethod
     def get_all():
-        """ Return all OaiRecord.
+        """Return all OaiRecord.
 
         Returns: List of OaiRecord.
 
@@ -89,7 +89,7 @@ class OaiRecord(AbstractData):
 
     @staticmethod
     def get_all_by_registry_id(registry_id, order_by_field):
-        """ Return a list of OaiRecord by registry id. Possibility to order_by the list.
+        """Return a list of OaiRecord by registry id. Possibility to order_by the list.
 
         Args:
             registry_id: The registry id.
@@ -103,7 +103,7 @@ class OaiRecord(AbstractData):
 
     @staticmethod
     def get_count_by_registry_id(registry_id):
-        """ Return the number of OaiRecord by registry id.
+        """Return the number of OaiRecord by registry id.
 
         Args:
             registry_id: The registry id.
@@ -116,7 +116,7 @@ class OaiRecord(AbstractData):
 
     @staticmethod
     def delete_all_by_registry_id(registry_id):
-        """ Delete all OaiRecord of a registry.
+        """Delete all OaiRecord of a registry.
 
         Args:
             registry_id: The registry id.
@@ -126,7 +126,7 @@ class OaiRecord(AbstractData):
 
     @staticmethod
     def execute_full_text_query(text, list_metadata_format_id):
-        """ Execute full text query on OaiRecord data collection.
+        """Execute full text query on OaiRecord data collection.
 
         Args:
             text: Keywords.

@@ -28,7 +28,7 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def get_all_by_registry_id(registry_id, order_by_field=None):
-        """ Return a list of OaiHarvesterMetadataFormat by registry id. Possibility to order_by the list
+        """Return a list of OaiHarvesterMetadataFormat by registry id. Possibility to order_by the list
 
         Args:
             registry_id: The registry id.
@@ -44,7 +44,7 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def get_all_by_list_registry_ids(list_registry_ids, order_by_field=None):
-        """ Return a list of OaiHarvesterMetadataFormat by a list of registry ids. Possibility to order_by the list
+        """Return a list of OaiHarvesterMetadataFormat by a list of registry ids. Possibility to order_by the list
 
         Args:
             list_registry_ids: List of registry ids.
@@ -77,7 +77,7 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def get_by_metadata_prefix_and_registry_id(metadata_prefix, registry_id):
-        """ Return an OaiHarvesterMetadataFormat by metadata_prefix and registry id.
+        """Return an OaiHarvesterMetadataFormat by metadata_prefix and registry id.
 
         Args:
             metadata_prefix: The metadata prefix.
@@ -102,7 +102,7 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def delete_all_by_registry_id(registry_id):
-        """ Delete all OaiHarvesterMetadataFormat used by a registry.
+        """Delete all OaiHarvesterMetadataFormat used by a registry.
 
         Args:
             registry_id: The registry id.
@@ -112,7 +112,7 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def update_for_all_harvest_by_registry_id(registry_id, harvest):
-        """ Update the harvest for all OaiHarvesterMetadataFormat used by the registry.
+        """Update the harvest for all OaiHarvesterMetadataFormat used by the registry.
 
         Args:
             registry_id: The registry id.
@@ -125,7 +125,7 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
 
     @staticmethod
     def update_for_all_harvest_by_list_ids(list_oai_metadata_format_ids, harvest):
-        """ Update the harvest for all OaiHarvesterMetadataFormat by a list of ids.
+        """Update the harvest for all OaiHarvesterMetadataFormat by a list of ids.
 
         Args:
             list_oai_metadata_format_ids: List of OaiHarvesterMetadataFormat ids.

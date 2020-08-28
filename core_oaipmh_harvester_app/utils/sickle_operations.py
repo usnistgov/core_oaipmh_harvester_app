@@ -12,7 +12,7 @@ from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
 def _sickle_init(url):
-    """ Initialize Sickle object. Allows for proper HTTPS handling, similar to
+    """Initialize Sickle object. Allows for proper HTTPS handling, similar to
     core_main_app request_utils.
 
     Args:
@@ -25,7 +25,7 @@ def _sickle_init(url):
 
 
 def sickle_identify(url):
-    """ Performs an Oai-Pmh identity request.
+    """Performs an Oai-Pmh identity request.
 
     Args:
         url: URL of the Data Provider.
@@ -48,7 +48,7 @@ def sickle_identify(url):
 
 
 def sickle_list_sets(url):
-    """ Performs an Oai-Pmh listSet request.
+    """Performs an Oai-Pmh listSet request.
 
     Args:
         url: URL of the Data Provider.
@@ -74,7 +74,7 @@ def sickle_list_sets(url):
 
 
 def sickle_list_metadata_formats(url):
-    """ Performs an Oai-Pmh listMetadataFormat request.
+    """Performs an Oai-Pmh listMetadataFormat request.
 
     Args:
         url: URL of the Data Provider.
@@ -103,7 +103,7 @@ def sickle_list_metadata_formats(url):
 
 
 def get_record_elt(xml_elt, metadata_prefix):
-    """ Init a Record sickle object from a representative xml string.
+    """Init a Record sickle object from a representative xml string.
     Args:
         xml_elt: XML string to convert toward Record sickle object.
         metadata_prefix: Metadata Prefix

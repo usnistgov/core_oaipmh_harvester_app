@@ -21,7 +21,7 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
     sub_document_root = "dict_content"
 
     def get(self, request):
-        """ Execute query on OaiRecord and return results
+        """Execute query on OaiRecord and return results
 
         Args:
 
@@ -39,12 +39,12 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
         return self.execute_query()
 
     def post(self, request):
-        """ Execute query on OaiRecord and return results
+        """Execute query on OaiRecord and return results
 
         Warning:
-        
+
             Need to backslash double quotes in JSON payload
-        
+
         Parameters:
 
             {"query": "{\"$or\": [{\"image.owner\": \"Peter\"}, {\"image.owner.#text\":\"Peter\"}]}"}
@@ -66,8 +66,7 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
         return self.execute_query()
 
     def execute_query(self):
-        """ Compute and return query results
-        """
+        """Compute and return query results"""
         try:
             # get query and templates
             query = self.request.data.get("query", None)
@@ -90,7 +89,7 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def build_query(self, query, templates, registries):
-        """ Build the raw query.
+        """Build the raw query.
 
         Args:
 
@@ -112,8 +111,8 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
             registries = json.loads(registries)
 
         # if registries, check if activated
-        list_activated_registry = oai_registry_api.get_all_activated_registry().values_list(
-            "id"
+        list_activated_registry = (
+            oai_registry_api.get_all_activated_registry().values_list("id")
         )
         if len(registries) > 0:
             activated_registries = [
@@ -128,8 +127,10 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
             # get list of template ids
             list_template_ids = [template["id"] for template in templates]
             # get all metadata formats used by the registries
-            list_metadata_format = oai_harvester_metadata_format_api.get_all_by_list_registry_ids(
-                activated_registries
+            list_metadata_format = (
+                oai_harvester_metadata_format_api.get_all_by_list_registry_ids(
+                    activated_registries
+                )
             )
             # Filter metadata formats that use the given templates
             list_metadata_formats_id = [
@@ -148,7 +149,7 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
         return query_builder.get_raw_query()
 
     def execute_raw_query(self, raw_query, order_by_field):
-        """ Execute the raw query in database
+        """Execute the raw query in database
 
         Args:
 
@@ -163,7 +164,7 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
 
     @abstractmethod
     def build_response(self, data_list):
-        """ Build the paginated response
+        """Build the paginated response
 
         Args:
 
@@ -177,7 +178,7 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
 
     @abstractmethod
     def get_registries(self):
-        """ Get a list of registry ids. Should return empty list if not found. JSON format
+        """Get a list of registry ids. Should return empty list if not found. JSON format
 
         Returns:
 

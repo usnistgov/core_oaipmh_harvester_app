@@ -8,7 +8,7 @@ from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
 
 
 def upsert(oai_harvester_set):
-    """ Create or update an OaiHarvesterSet.
+    """Create or update an OaiHarvesterSet.
 
     Args:
         oai_harvester_set: OaiHarvesterSet to create or update.
@@ -20,7 +20,7 @@ def upsert(oai_harvester_set):
 
 
 def delete(oai_harvester_set):
-    """ Delete an OaiHarvesterSet.
+    """Delete an OaiHarvesterSet.
 
     Args:
         oai_harvester_set: OaiHarvesterSet to delete.
@@ -30,7 +30,7 @@ def delete(oai_harvester_set):
 
 
 def get_by_id(oai_harvester_set_id):
-    """ Get an OaiHarvesterSet by its id.
+    """Get an OaiHarvesterSet by its id.
 
     Args:
         oai_harvester_set_id: The OaiHarvesterSet id.
@@ -42,7 +42,7 @@ def get_by_id(oai_harvester_set_id):
 
 
 def get_by_set_spec_and_registry_id(set_spec, registry_id):
-    """ Get an OaiHarvesterSet by its set_spec and registry_id.
+    """Get an OaiHarvesterSet by its set_spec and registry_id.
 
     Args:
         set_spec: The set spec.
@@ -58,7 +58,7 @@ def get_by_set_spec_and_registry_id(set_spec, registry_id):
 
 
 def get_all():
-    """ Get all OaiHarvesterSet.
+    """Get all OaiHarvesterSet.
 
     Returns:
         List of OaiHarvesterSet.
@@ -68,7 +68,7 @@ def get_all():
 
 
 def get_all_by_registry_id(registry_id, order_by_field=None):
-    """ Get all OaiHarvesterSet used by a registry.
+    """Get all OaiHarvesterSet used by a registry.
 
     Args:
         registry_id: The registry id.
@@ -84,7 +84,7 @@ def get_all_by_registry_id(registry_id, order_by_field=None):
 
 
 def get_all_by_list_registry_ids(list_registry_ids, order_by_field=None):
-    """ Return a list of OaiHarvesterSet by a list of registry ids. Possibility to order_by the list
+    """Return a list of OaiHarvesterSet by a list of registry ids. Possibility to order_by the list
 
     Args:
         list_registry_ids: List of registry ids.
@@ -100,7 +100,7 @@ def get_all_by_list_registry_ids(list_registry_ids, order_by_field=None):
 
 
 def get_all_to_harvest_by_registry_id(registry_id, order_by_field=None):
-    """ List all OaiHarvesterSet to harvest used by a registry
+    """List all OaiHarvesterSet to harvest used by a registry
 
     Args:
         registry_id: The registry id.
@@ -116,7 +116,7 @@ def get_all_to_harvest_by_registry_id(registry_id, order_by_field=None):
 
 
 def delete_all_by_registry_id(registry_id):
-    """ Delete all OaiHarvesterSet used by a registry.
+    """Delete all OaiHarvesterSet used by a registry.
 
     Args:
         registry_id: The registry id.
@@ -126,7 +126,7 @@ def delete_all_by_registry_id(registry_id):
 
 
 def update_for_all_harvest_by_registry_id(registry_id, harvest):
-    """ Update the harvest for all OaiHarvesterSet used by the registry.
+    """Update the harvest for all OaiHarvesterSet used by the registry.
 
     Args:
         registry_id: The registry id.
@@ -139,7 +139,7 @@ def update_for_all_harvest_by_registry_id(registry_id, harvest):
 
 
 def update_for_all_harvest_by_list_ids(list_oai_set_ids, harvest):
-    """ Update the harvest for all OaiHarvesterSet by a list of ids.
+    """Update the harvest for all OaiHarvesterSet by a list of ids.
 
     Args:
         list_oai_set_ids: List of OaiHarvesterSet ids.

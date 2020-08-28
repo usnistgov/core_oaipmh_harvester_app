@@ -24,7 +24,7 @@ class OaiRegistry(Document):
 
     @staticmethod
     def get_by_id(oai_registry_id):
-        """ Get an OaiRegistry by its id
+        """Get an OaiRegistry by its id
 
         Args:
             oai_registry_id: OaiRegistry id.
@@ -45,7 +45,7 @@ class OaiRegistry(Document):
 
     @staticmethod
     def get_by_name(oai_registry_name):
-        """ Get an OaiRegistry by its name.
+        """Get an OaiRegistry by its name.
 
         Args:
             oai_registry_name: OaiRegistry name.
@@ -66,7 +66,7 @@ class OaiRegistry(Document):
 
     @staticmethod
     def get_all():
-        """ Return all OaiRegistry
+        """Return all OaiRegistry
 
         Returns:
             List of OaiRegistry
@@ -76,7 +76,7 @@ class OaiRegistry(Document):
 
     @staticmethod
     def get_all_by_is_activated(is_activated, order_by_field=None):
-        """ Return all OaiRegistry by their is_activated field
+        """Return all OaiRegistry by their is_activated field
 
         Params:
             is_activated: True or False.
@@ -90,7 +90,7 @@ class OaiRegistry(Document):
 
     @staticmethod
     def check_registry_url_already_exists(oai_registry_url):
-        """ Check if an OaiRegistry with the given url already exists.
+        """Check if an OaiRegistry with the given url already exists.
 
         Params:
             oai_registry_url: URL to check.

@@ -142,17 +142,17 @@ class TestOaiIdentifyDelete(TestCase):
 
 
 def _create_oai_identify():
-    """ Get an OaiIdentify object.
+    """Get an OaiIdentify object.
 
-        Returns:
-            OaiIdentify instance.
+    Returns:
+        OaiIdentify instance.
 
     """
     return OaiIdentify()
 
 
 def _create_mock_oai_identify():
-    """ Mock an OaiIdentify.
+    """Mock an OaiIdentify.
 
     Returns:
         OaiIdentify mock.

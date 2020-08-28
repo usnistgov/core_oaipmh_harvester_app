@@ -14,7 +14,7 @@ DUMP_OAI_PMH_TEST_PATH = os.path.join(OAI_HARVESTER_ROOT, "utils", "data")
 
 class OaiPmhFixtures(FixtureInterface):
     """
-        Represent OaiPmh Integration Fixture
+    Represent OaiPmh Integration Fixture
     """
 
     url = "http://www.server.com"
@@ -117,8 +117,8 @@ class OaiPmhMock(object):
         ) as f:
             data = f.read()
         data_json = json.loads(data)
-        oai_identifier = transform_operations.transform_dict_identifier_to_oai_identifier(
-            data_json
+        oai_identifier = (
+            transform_operations.transform_dict_identifier_to_oai_identifier(data_json)
         )
         return oai_identifier
 

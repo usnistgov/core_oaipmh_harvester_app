@@ -393,7 +393,7 @@ class TestInitSchemaInfo(TestCase):
 
 
 def _create_oai_harvester_metadata_format():
-    """ Get an OaiHarvesterMetadataFormat object.
+    """Get an OaiHarvesterMetadataFormat object.
 
     Returns:
         OaiHarvesterMetadataFormat instance.
@@ -406,7 +406,7 @@ def _create_oai_harvester_metadata_format():
 
 
 def _create_mock_oai_harvester_metadata_format():
-    """ Mock an OaiHarvesterMetadataFormat.
+    """Mock an OaiHarvesterMetadataFormat.
 
     Returns:
         OaiHarvesterMetadataFormat mock.
@@ -419,7 +419,7 @@ def _create_mock_oai_harvester_metadata_format():
 
 
 def _set_oai_harvester_metadata_format_fields(oai_harvester_metadata_format):
-    """ Set OaiHarvesterMetadataFormat fields.
+    """Set OaiHarvesterMetadataFormat fields.
 
     Args:
         oai_harvester_metadata_format:

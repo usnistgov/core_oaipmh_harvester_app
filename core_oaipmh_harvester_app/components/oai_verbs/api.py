@@ -14,7 +14,7 @@ from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
 def identify(url):
-    """ Performs an Oai-Pmh identity request.
+    """Performs an Oai-Pmh identity request.
 
     Args:
         url: URL of the Data Provider.
@@ -28,7 +28,7 @@ def identify(url):
 
 
 def identify_as_object(url):
-    """ Performs an Oai-Pmh identity request.
+    """Performs an Oai-Pmh identity request.
 
     Args:
         url: URL of the Data Provider.
@@ -54,7 +54,7 @@ def identify_as_object(url):
 
 
 def list_metadata_formats(url):
-    """ Performs an Oai-Pmh listMetadataFormat request.
+    """Performs an Oai-Pmh listMetadataFormat request.
 
     Args:
         url: URL of the Data Provider.
@@ -68,7 +68,7 @@ def list_metadata_formats(url):
 
 
 def list_metadata_formats_as_object(url):
-    """ Performs an Oai-Pmh listMetadataFormat request.
+    """Performs an Oai-Pmh listMetadataFormat request.
 
     Args:
         url: URL of the Data Provider.
@@ -95,7 +95,7 @@ def list_metadata_formats_as_object(url):
 
 
 def list_sets(url):
-    """ Performs an Oai-Pmh listSet request.
+    """Performs an Oai-Pmh listSet request.
 
     Args:
         url: URL of the Data Provider.
@@ -109,7 +109,7 @@ def list_sets(url):
 
 
 def list_sets_as_object(url):
-    """ Performs an Oai-Pmh listSet request.
+    """Performs an Oai-Pmh listSet request.
 
     Args:
         url: URL of the Data Provider.
@@ -140,7 +140,7 @@ def list_records(
     from_date=None,
     until_date=None,
 ):
-    """ Performs an Oai-Pmh ListRecords request.
+    """Performs an Oai-Pmh ListRecords request.
     Args:
         url: URL of the Data Provider.
         metadata_prefix: Metadata Prefix to use for the request.
@@ -205,7 +205,7 @@ def list_records(
 
 
 def get_data(url):
-    """ Performs the Oai-Pmh request.
+    """Performs the Oai-Pmh request.
     Args:
         url: URL with Oai-Pmh request
 

@@ -7,7 +7,7 @@ from core_main_app.settings import DATA_SORTING_FIELDS
 
 
 def upsert(oai_record):
-    """ Create or update an OaiRecord.
+    """Create or update an OaiRecord.
 
     Args:
         oai_record: OaiRecord to create or update.
@@ -49,7 +49,7 @@ def get_by_identifier_and_metadata_format(identifier, harvester_metadata_format)
 
 
 def get_all():
-    """ Return all OaiRecord.
+    """Return all OaiRecord.
 
     Returns: List of OaiRecord.
 
@@ -58,7 +58,7 @@ def get_all():
 
 
 def get_all_by_registry_id(registry_id, order_by_field=DATA_SORTING_FIELDS):
-    """ Return a list of OaiRecord by registry id. Possibility to order_by the list.
+    """Return a list of OaiRecord by registry id. Possibility to order_by the list.
 
     Args:
         registry_id: The registry id.
@@ -72,7 +72,7 @@ def get_all_by_registry_id(registry_id, order_by_field=DATA_SORTING_FIELDS):
 
 
 def get_count_by_registry_id(registry_id):
-    """ Return the number of OaiRecord by registry id.
+    """Return the number of OaiRecord by registry id.
 
     Args:
         registry_id: The registry id.
@@ -85,7 +85,7 @@ def get_count_by_registry_id(registry_id):
 
 
 def delete_all_by_registry_id(registry_id):
-    """ Delete all OaiRecord of a registry
+    """Delete all OaiRecord of a registry
 
     Args:
         registry_id: The registry id.
@@ -95,7 +95,7 @@ def delete_all_by_registry_id(registry_id):
 
 
 def delete(oai_record):
-    """ Delete an OaiHarvesterMetadataFormat.
+    """Delete an OaiHarvesterMetadataFormat.
 
     Args:
         oai_record: OaiRecord to delete.
@@ -105,7 +105,7 @@ def delete(oai_record):
 
 
 def execute_full_text_query(text, list_metadata_format_id):
-    """ Execute full text query on OaiRecord data collection.
+    """Execute full text query on OaiRecord data collection.
 
     Args:
         text: Keywords.

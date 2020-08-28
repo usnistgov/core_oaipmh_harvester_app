@@ -378,10 +378,10 @@ class TestHarvestRegistry(TestCase):
 
 
 def _create_mock_oai_registry():
-    """ Mock an OaiRegistry.
+    """Mock an OaiRegistry.
 
-        Returns:
-            OaiRegistry mock.
+    Returns:
+        OaiRegistry mock.
 
     """
     mock_oai_registry = Mock(spec=OaiRegistry)
@@ -391,13 +391,13 @@ def _create_mock_oai_registry():
 
 
 def _set_oai_registry_fields(oai_registry):
-    """ Set OaiRegistry fields.
+    """Set OaiRegistry fields.
 
-        Args:
-            oai_registry:
+    Args:
+        oai_registry:
 
-        Returns:
-            OaiRegistry with assigned fields.
+    Returns:
+        OaiRegistry with assigned fields.
 
     """
     oai_registry.name = "Registry"

@@ -28,7 +28,7 @@ class RegistryList(APIView):
         api_permission_required(rights.oai_pmh_content_type, rights.oai_pmh_access)
     )
     def get(self, request):
-        """ Get all Registries (Data provider)
+        """Get all Registries (Data provider)
 
         Args:
 
@@ -52,7 +52,7 @@ class RegistryList(APIView):
 
     @method_decorator(api_staff_member_required())
     def post(self, request):
-        """ Create a Registry (Data provider)
+        """Create a Registry (Data provider)
 
         Parameters:
 
@@ -103,7 +103,7 @@ class RegistryDetail(APIView):
         api_permission_required(rights.oai_pmh_content_type, rights.oai_pmh_access)
     )
     def get(self, request, registry_id):
-        """ Retrieve a Registry (Data provider)
+        """Retrieve a Registry (Data provider)
 
         Args:
 
@@ -137,7 +137,7 @@ class RegistryDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     def delete(self, request, registry_id):
-        """ Delete a Registry (Data provider)
+        """Delete a Registry (Data provider)
 
         Args:
 
@@ -171,12 +171,12 @@ class RegistryDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
-        """ Update oai-pmh configuration for a given registry (Data provider)
+        """Update oai-pmh configuration for a given registry (Data provider)
 
         Parameters:
 
             {
-                "harvest_rate" : "value", 
+                "harvest_rate" : "value",
                 "harvest" : "True or False"
             }
 
@@ -229,7 +229,7 @@ class RegistryDetail(APIView):
 class ActivateRegistry(APIView):
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
-        """ Activate a given registry (Data provider)
+        """Activate a given registry (Data provider)
 
         Args:
 
@@ -269,7 +269,7 @@ class ActivateRegistry(APIView):
 class DeactivateRegistry(APIView):
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
-        """ Deactivate a given registry (Data provider)
+        """Deactivate a given registry (Data provider)
 
         Args:
 
@@ -309,7 +309,7 @@ class DeactivateRegistry(APIView):
 class InfoRegistry(APIView):
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
-        """ Update oai-pmh information for a given registry (Data provider)
+        """Update oai-pmh information for a given registry (Data provider)
 
         Args:
 
@@ -346,7 +346,7 @@ class InfoRegistry(APIView):
 class Harvest(APIView):
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
-        """ Harvest a given registry (Data provider)
+        """Harvest a given registry (Data provider)
 
         Args:
 
@@ -385,7 +385,7 @@ class Harvest(APIView):
 
     @method_decorator(api_staff_member_required())
     def put(self, request, registry_id):
-        """ Edit the harvesting configuration of a registry (Data Provider)
+        """Edit the harvesting configuration of a registry (Data Provider)
             Configure metadata_formats and sets to harvest
 
         Parameters:

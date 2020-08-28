@@ -245,7 +245,7 @@ class TestOaiSetUpdateForAllByListIds(TestCase):
 
 
 def _create_oai_harvester_set():
-    """ Get an OaiHarvesterSet object.
+    """Get an OaiHarvesterSet object.
 
     Returns:
         OaiHarvesterSet instance.
@@ -258,7 +258,7 @@ def _create_oai_harvester_set():
 
 
 def _create_mock_oai_harvester_set():
-    """ Mock an OaiHarvesterSet.
+    """Mock an OaiHarvesterSet.
 
     Returns:
         OaiHarvesterSet mock.
@@ -271,7 +271,7 @@ def _create_mock_oai_harvester_set():
 
 
 def _set_oai_harvester_set_fields(oai_harvester_set):
-    """ Set OaiHarvesterSet fields.
+    """Set OaiHarvesterSet fields.
 
     Args:
         oai_harvester_set:

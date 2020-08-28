@@ -14,8 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 def init_harvest():
-    """ Init harvest process.
-    """
+    """Init harvest process."""
     # Revoke all scheduled tasks
     _revoke_all_scheduled_tasks()
 
@@ -31,8 +30,7 @@ def init_harvest():
 
 @shared_task(name="watch_registry_harvest_task")
 def watch_registry_harvest_task():
-    """ Check each WATCH_REGISTRY_HARVEST_RATE seconds if new registries need to be harvested.
-    """
+    """Check each WATCH_REGISTRY_HARVEST_RATE seconds if new registries need to be harvested."""
     try:
         logger.info("START watching registries.")
         registries = oai_registry_api.get_all_activated_registry()
@@ -60,7 +58,7 @@ def watch_registry_harvest_task():
 
 @shared_task(name="harvest_task")
 def harvest_task(registry_id):
-    """ Manage the harvest process of the given registry. Check if the harvest should continue.
+    """Manage the harvest process of the given registry. Check if the harvest should continue.
     Args:
         registry_id: Registry id.
 
@@ -80,7 +78,7 @@ def harvest_task(registry_id):
 
 
 def _harvest_registry(registry):
-    """ Harvest the given registry and schedule the next run based on the registry configuration.
+    """Harvest the given registry and schedule the next run based on the registry configuration.
     1st: Update the registry information (Name, metadata formats, sets ..).
     2nd: Harvest records.
 
@@ -106,7 +104,7 @@ def _harvest_registry(registry):
 
 
 def _stop_harvest_registry(registry):
-    """ Stop the harvest process for the given registry.
+    """Stop the harvest process for the given registry.
     Args:
         registry: Registry to stop harvest process.
 
@@ -125,8 +123,7 @@ def _stop_harvest_registry(registry):
 
 
 def _revoke_all_scheduled_tasks():
-    """ Revoke all OAI-PMH scheduled tasks. Avoid having duplicate tasks when the server reboot.
-    """
+    """Revoke all OAI-PMH scheduled tasks. Avoid having duplicate tasks when the server reboot."""
     try:
         logger.info("START revoking OAI-PMH scheduled tasks.")
         if current_app.control.inspect().scheduled() is not None:
@@ -150,7 +147,7 @@ def _revoke_all_scheduled_tasks():
 
 
 def _get_all_oai_tasks_full_name():
-    """ Get all OAI-PMH tasks name.
+    """Get all OAI-PMH tasks name.
 
     Returns:
         List of OAI-PMH tasks name.

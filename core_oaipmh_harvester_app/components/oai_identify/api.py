@@ -8,7 +8,7 @@ from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
 
 
 def upsert(oai_identify):
-    """ Create or update an OaiIdentify.
+    """Create or update an OaiIdentify.
     Args:
         oai_identify: OaiIdentify to create or update.
 
@@ -26,7 +26,7 @@ def upsert(oai_identify):
 
 
 def get_by_registry_id(registry_id):
-    """ Get an OaiIdentify by its registry_id.
+    """Get an OaiIdentify by its registry_id.
 
     Args:
         registry_id:  The registry id.
@@ -39,7 +39,7 @@ def get_by_registry_id(registry_id):
 
 
 def delete(oai_identify):
-    """ Delete an OaiIdentify
+    """Delete an OaiIdentify
 
     Args:
         oai_identify: OaiIdentify to delete

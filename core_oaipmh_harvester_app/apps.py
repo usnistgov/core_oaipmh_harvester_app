@@ -10,13 +10,12 @@ from core_oaipmh_harvester_app.tasks import init_harvest
 
 
 class HarvesterAppConfig(AppConfig):
-    """ Core application settings
-    """
+    """Core application settings"""
 
     name = "core_oaipmh_harvester_app"
 
     def ready(self):
-        """ Run when the app is ready
+        """Run when the app is ready
 
         Returns:
 

@@ -18,7 +18,7 @@ VERBS = (
 
 class AddRegistryForm(forms.Form):
     """
-        A registry form
+    A registry form
     """
 
     name = forms.CharField(widget=forms.HiddenInput(), required=False)
@@ -82,7 +82,7 @@ class FormDataModelChoiceFieldSet(forms.ModelMultipleChoiceField):
 
 class EditHarvestRegistryForm(DocumentForm):
     """
-        A EditHarvestRegistryForm form
+    A EditHarvestRegistryForm form
     """
 
     metadata_formats = FormDataModelChoiceFieldMF(
@@ -112,8 +112,7 @@ class EditHarvestRegistryForm(DocumentForm):
 
 
 class RequestForm(forms.Form):
-    """ Request builder form
-    """
+    """Request builder form"""
 
     # Widget attributes
     default_attributes = {"class": "form-control"}
