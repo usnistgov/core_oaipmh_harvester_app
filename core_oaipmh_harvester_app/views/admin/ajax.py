@@ -189,7 +189,9 @@ def view_registry(request):
                 registry_id
             ),
             "sets": oai_set_api.get_all_by_registry_id(registry_id),
-            "nb_records": oai_record_api.get_count_by_registry_id(registry_id),
+            "nb_records": oai_record_api.get_count_by_registry_id(
+                registry_id, request.user
+            ),
         }
         return HttpResponse(
             json.dumps({"template": template.render(context)}),

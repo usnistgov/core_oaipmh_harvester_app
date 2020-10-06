@@ -2,10 +2,12 @@ import datetime
 from unittest.case import TestCase
 
 from bson.objectid import ObjectId
+from django.contrib.auth.models import User
 from mock.mock import Mock, patch
 
 import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
 from core_main_app.commons import exceptions
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -16,47 +18,17 @@ from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 
-class TestOaiRecordUpsert(TestCase):
-    def setUp(self):
-        self.oai_record = _create_oai_record()
-
-    @patch.object(OaiRecord, "save")
-    @patch.object(OaiRecord, "convert_to_file")
-    def test_upsert_oai_record_return_object(self, mock_convert_file, mock_save):
-        # Arrange
-        mock_save.return_value = self.oai_record
-        mock_convert_file.return_value = None
-
-        # Act
-        result = oai_record_api.upsert(self.oai_record)
-
-        # Assert
-        self.assertIsInstance(result, OaiRecord)
-
-    @patch.object(OaiRecord, "save")
-    @patch.object(OaiRecord, "convert_to_file")
-    def test_upsert_oai_harvester_raises_exception_if_save_failed(
-        self, mock_convert_file, mock_save
-    ):
-        # Arrange
-        mock_save.side_effect = Exception()
-        mock_convert_file.return_value = None
-
-        # Act + Assert
-        with self.assertRaises(Exception):
-            oai_record_api.upsert(self.oai_record)
-
-
 class TestOaiRecordGetById(TestCase):
     @patch.object(OaiRecord, "get_by_id")
     def test_get_by_id_return_object(self, mock_get_by_id):
         # Arrange
         mock_oai_record = _create_mock_oai_record()
+        mock_user = create_mock_user("1", is_anonymous=False)
 
         mock_get_by_id.return_value = mock_oai_record
 
         # Act
-        result = oai_record_api.get_by_id(mock_get_by_id.id)
+        result = oai_record_api.get_by_id(mock_get_by_id.id, mock_user)
 
         # Assert
         self.assertIsInstance(result, OaiRecord)
@@ -65,23 +37,25 @@ class TestOaiRecordGetById(TestCase):
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
         # Arrange
         mock_absent_id = ObjectId()
+        mock_user = create_mock_user("1", is_anonymous=False)
 
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error.")
 
         # Act + Assert
         with self.assertRaises(exceptions.DoesNotExist):
-            oai_record_api.get_by_id(mock_absent_id)
+            oai_record_api.get_by_id(mock_absent_id, mock_user)
 
     @patch.object(OaiRecord, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
         # Arrange
         mock_absent_id = ObjectId()
+        mock_user = create_mock_user("1", is_anonymous=False)
 
         mock_get_by_id.side_effect = exceptions.ModelError("Error.")
 
         # Act + Assert
         with self.assertRaises(exceptions.ModelError):
-            oai_record_api.get_by_id(mock_absent_id)
+            oai_record_api.get_by_id(mock_absent_id, mock_user)
 
 
 class TestOaiRecordGetAllByRegistryId(TestCase):
@@ -103,11 +77,12 @@ class TestOaiRecordGetCountByRegistryId(TestCase):
     def test_get_count_by_registry_id_return_number(self, mock_get):
         # Arrange
         mock_registry_id = ObjectId()
+        mock_user = create_mock_user("1", is_anonymous=False)
 
         mock_get.return_value = 2
 
         # Act
-        result = oai_record_api.get_count_by_registry_id(mock_registry_id)
+        result = oai_record_api.get_count_by_registry_id(mock_registry_id, mock_user)
 
         # Assert
         self.assertEquals(result, 2)
@@ -130,10 +105,14 @@ class TestOaiRecordDelete(TestCase):
 class TestOaiRecordExecuteFullTextQuery(TestCase):
     @patch.object(OaiRecord, "execute_full_text_query")
     def test_oai_record_execute_full_text_query_return_collection(self, mock_execute):
+        mock_user = create_mock_user("1", is_anonymous=False)
+
         _generic_get_all_test(
             self,
             mock_execute,
-            oai_record_api.execute_full_text_query("", [ObjectId(), ObjectId()]),
+            oai_record_api.execute_full_text_query(
+                "", [ObjectId(), ObjectId()], mock_user
+            ),
         )
 
 

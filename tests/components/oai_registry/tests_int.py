@@ -10,6 +10,7 @@ from core_main_app.commons import exceptions
 from core_main_app.utils.integration_tests.integration_base_test_case import (
     MongoIntegrationBaseTestCase,
 )
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
     api as oai_harvester_metadata_format_api,
@@ -29,6 +30,7 @@ from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
+from core_oaipmh_harvester_app.system import api as oai_harvester_system_api
 from tests.components.oai_registry.fixtures.fixtures import OaiPmhFixtures
 from tests.components.oai_registry.fixtures.fixtures import OaiPmhMock
 
@@ -530,6 +532,7 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         identifier = "fake_identifier"
         oai_record.identifier = identifier
         mock_convert_file.return_value = None
+        mock_user = create_mock_user("1", is_anonymous=False)
 
         # Act
         oai_registry_api._upsert_record_for_registry(
@@ -537,7 +540,7 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         )
 
         # Assert
-        record_in_database = oai_record_api.get_by_id(oai_record.id)
+        record_in_database = oai_record_api.get_by_id(oai_record.id, mock_user)
         self.assertEquals(record_in_database.identifier, identifier)
         self.assertEquals(record_in_database.harvester_metadata_format, metadata_format)
 
@@ -557,8 +560,10 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         )
 
         # Assert
-        record_in_database = oai_record_api.get_by_identifier_and_metadata_format(
-            oai_record.identifier, metadata_format
+        record_in_database = (
+            oai_harvester_system_api.get_oai_record_by_identifier_and_metadata_format(
+                oai_record.identifier, metadata_format
+            )
         )
 
         self.assertEquals(record_in_database, oai_record)

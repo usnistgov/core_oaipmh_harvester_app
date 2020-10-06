@@ -20,11 +20,10 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set impo
 from core_oaipmh_harvester_app.components.oai_harvester_set import (
     api as oai_harvester_set_api,
 )
-from core_oaipmh_harvester_app.components.oai_identify import api as api_oai_identify
 from core_oaipmh_harvester_app.components.oai_identify import api as oai_identify_api
-from core_oaipmh_harvester_app.components.oai_record import api as oai_record_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
+from core_oaipmh_harvester_app.system import api as oai_harvester_system_api
 from core_oaipmh_harvester_app.utils import transform_operations
 
 logger = logging.getLogger(__name__)
@@ -373,7 +372,7 @@ def _upsert_identify_for_registry(identify, registry):
         pass
 
     identify.registry = registry
-    api_oai_identify.upsert(identify)
+    oai_identify_api.upsert(identify)
 
 
 def _upsert_metadata_format_for_registry(metadata_format, registry):
@@ -604,8 +603,10 @@ def _upsert_record_for_registry(record, metadata_format, registry):
 
     """
     try:
-        record_db = oai_record_api.get_by_identifier_and_metadata_format(
-            record.identifier, metadata_format
+        record_db = (
+            oai_harvester_system_api.get_oai_record_by_identifier_and_metadata_format(
+                record.identifier, metadata_format
+            )
         )
         # No xml_content means that the record has no metadata (Deleted). Do no change the
         # xml_content already in database
@@ -619,7 +620,7 @@ def _upsert_record_for_registry(record, metadata_format, registry):
     record.harvester_metadata_format = metadata_format
     record.registry = registry
 
-    oai_record_api.upsert(record)
+    oai_harvester_system_api.upsert_oai_record(record)
 
 
 def _handle_deleted_set(registry_id, sets_response):

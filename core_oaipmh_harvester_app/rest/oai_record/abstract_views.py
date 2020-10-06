@@ -160,7 +160,9 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
 
             Results of the query
         """
-        return oai_record_api.execute_query(raw_query, order_by_field)
+        return oai_record_api.execute_query(
+            raw_query, self.request.user, order_by_field
+        )
 
     @abstractmethod
     def build_response(self, data_list):
