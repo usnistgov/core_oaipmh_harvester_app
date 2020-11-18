@@ -7,7 +7,7 @@ from celery import current_app
 from celery import shared_task
 
 from core_main_app.commons.exceptions import DoesNotExist
-from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
+from core_main_app.utils.requests_utils.access_control import SYSTEM_REQUEST
 from core_oaipmh_harvester_app.settings import WATCH_REGISTRY_HARVEST_RATE
 
 logger = logging.getLogger(__name__)
@@ -15,6 +15,10 @@ logger = logging.getLogger(__name__)
 
 def init_harvest():
     """Init harvest process."""
+    from core_oaipmh_harvester_app.components.oai_registry import (
+        api as oai_registry_api,
+    )
+
     # Revoke all scheduled tasks
     _revoke_all_scheduled_tasks()
 
@@ -31,6 +35,10 @@ def init_harvest():
 @shared_task(name="watch_registry_harvest_task")
 def watch_registry_harvest_task():
     """Check each WATCH_REGISTRY_HARVEST_RATE seconds if new registries need to be harvested."""
+    from core_oaipmh_harvester_app.components.oai_registry import (
+        api as oai_registry_api,
+    )
+
     try:
         logger.info("START watching registries.")
         registries = oai_registry_api.get_all_activated_registry()
@@ -63,6 +71,10 @@ def harvest_task(registry_id):
         registry_id: Registry id.
 
     """
+    from core_oaipmh_harvester_app.components.oai_registry import (
+        api as oai_registry_api,
+    )
+
     try:
         registry = oai_registry_api.get_by_id(registry_id)
         # Check if the registry is activated and has to be harvested.
@@ -86,10 +98,14 @@ def _harvest_registry(registry):
         registry: Registry to harvest.
 
     """
+    from core_oaipmh_harvester_app.components.oai_registry import (
+        api as oai_registry_api,
+    )
+
     try:
         logger.info("START harvesting registry: {0}".format(registry.name))
         if not registry.is_updating:
-            oai_registry_api.update_registry_info(registry)
+            oai_registry_api.update_registry_info(registry, request=SYSTEM_REQUEST)
         if not registry.is_harvesting:
             oai_registry_api.harvest_registry(registry)
         logger.info("FINISH harvesting registry: {0}".format(registry.name))
@@ -109,6 +125,10 @@ def _stop_harvest_registry(registry):
         registry: Registry to stop harvest process.
 
     """
+    from core_oaipmh_harvester_app.components.oai_registry import (
+        api as oai_registry_api,
+    )
+
     try:
         registry.is_queued = False
         oai_registry_api.upsert(registry)

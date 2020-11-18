@@ -43,7 +43,9 @@ class RegistryList(APIView):
         """
         try:
             registry = oai_registry_api.get_all()
-            serializer = serializers.RegistrySerializer(registry, many=True)
+            serializer = serializers.RegistrySerializer(
+                registry, many=True, context={"request": request}
+            )
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -77,7 +79,9 @@ class RegistryList(APIView):
         """
         try:
             # Build serializer
-            serializer = serializers.RegistrySerializer(data=request.data)
+            serializer = serializers.RegistrySerializer(
+                data=request.data, context={"request": request}
+            )
             # Validate data
             serializer.is_valid(True)
             # Save data
@@ -121,7 +125,9 @@ class RegistryDetail(APIView):
         """
         try:
             registry = oai_registry_api.get_by_id(registry_id)
-            serializer = serializers.RegistrySerializer(registry)
+            serializer = serializers.RegistrySerializer(
+                registry, context={"request": request}
+            )
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except exceptions.DoesNotExist:
@@ -327,7 +333,7 @@ class InfoRegistry(APIView):
         """
         try:
             registry = oai_registry_api.get_by_id(registry_id)
-            registry = oai_registry_api.update_registry_info(registry)
+            registry = oai_registry_api.update_registry_info(registry, request=request)
             content = OaiPmhMessage.get_message_labelled(
                 "Registry {0} information updated with success.".format(registry.name)
             )

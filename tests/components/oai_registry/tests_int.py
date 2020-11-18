@@ -11,6 +11,7 @@ from core_main_app.utils.integration_tests.integration_base_test_case import (
     MongoIntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
+from core_main_app.utils.tests_tools.RequestMock import create_mock_request
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
     api as oai_harvester_metadata_format_api,
@@ -62,6 +63,8 @@ class TestAddRegistry(MongoIntegrationBaseTestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_identify.return_value = OaiPmhMock.mock_oai_identify(), status.HTTP_200_OK
         mock_metadata_formats.return_value = (
             OaiPmhMock.mock_oai_metadata_format(),
@@ -74,7 +77,10 @@ class TestAddRegistry(MongoIntegrationBaseTestCase):
 
         # Act
         result = oai_registry_api.add_registry_by_url(
-            self.fixture.url, self.fixture.harvest_rate, self.fixture.harvest
+            self.fixture.url,
+            self.fixture.harvest_rate,
+            self.fixture.harvest,
+            request=mock_request,
         )
 
         # Assert
@@ -98,6 +104,8 @@ class TestAddRegistryNotAvailable(MongoIntegrationBaseTestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_identify.return_value = (
             {
                 "message": "An error occurred when attempting to identify "
@@ -110,7 +118,10 @@ class TestAddRegistryNotAvailable(MongoIntegrationBaseTestCase):
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException):
             oai_registry_api.add_registry_by_url(
-                self.fixture.url, self.fixture.harvest_rate, self.fixture.harvest
+                self.fixture.url,
+                self.fixture.harvest_rate,
+                self.fixture.harvest,
+                request=mock_request,
             )
 
 
@@ -139,6 +150,8 @@ class TestAddRegistryNoSetsNoMetadataFormats(MongoIntegrationBaseTestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_identify.return_value = OaiPmhMock.mock_oai_identify(), status.HTTP_200_OK
         mock_metadata_formats.return_value = [], status.HTTP_200_OK
         mock_sets.return_value = [], status.HTTP_200_OK
@@ -148,7 +161,10 @@ class TestAddRegistryNoSetsNoMetadataFormats(MongoIntegrationBaseTestCase):
 
         # Act
         result = oai_registry_api.add_registry_by_url(
-            self.fixture.url, self.fixture.harvest_rate, self.fixture.harvest
+            self.fixture.url,
+            self.fixture.harvest_rate,
+            self.fixture.harvest,
+            request=mock_request,
         )
 
         # Assert
@@ -180,6 +196,8 @@ class TestAddRegistryIdentify(MongoIntegrationBaseTestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         identify = OaiPmhMock.mock_oai_identify()
         mock_identify.return_value = identify, status.HTTP_200_OK
         mock_metadata_formats.return_value = [], status.HTTP_200_OK
@@ -190,7 +208,10 @@ class TestAddRegistryIdentify(MongoIntegrationBaseTestCase):
 
         # Act
         result = oai_registry_api.add_registry_by_url(
-            self.fixture.url, self.fixture.harvest_rate, self.fixture.harvest
+            self.fixture.url,
+            self.fixture.harvest_rate,
+            self.fixture.harvest,
+            request=mock_request,
         )
 
         # Assert
@@ -222,6 +243,8 @@ class TestAddRegistrySets(MongoIntegrationBaseTestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_identify.return_value = OaiPmhMock.mock_oai_identify(), status.HTTP_200_OK
         mock_metadata_formats.return_value = [], status.HTTP_200_OK
         list_sets = OaiPmhMock.mock_oai_set()
@@ -232,7 +255,10 @@ class TestAddRegistrySets(MongoIntegrationBaseTestCase):
 
         # Act
         result = oai_registry_api.add_registry_by_url(
-            self.fixture.url, self.fixture.harvest_rate, self.fixture.harvest
+            self.fixture.url,
+            self.fixture.harvest_rate,
+            self.fixture.harvest,
+            request=mock_request,
         )
 
         # Assert
@@ -264,6 +290,8 @@ class TestAddRegistryMetadataFormats(MongoIntegrationBaseTestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_identify.return_value = OaiPmhMock.mock_oai_identify(), status.HTTP_200_OK
         list_metadata_formats = OaiPmhMock.mock_oai_metadata_format()
         mock_metadata_formats.return_value = list_metadata_formats, status.HTTP_200_OK
@@ -274,7 +302,10 @@ class TestAddRegistryMetadataFormats(MongoIntegrationBaseTestCase):
 
         # Act
         result = oai_registry_api.add_registry_by_url(
-            self.fixture.url, self.fixture.harvest_rate, self.fixture.harvest
+            self.fixture.url,
+            self.fixture.harvest_rate,
+            self.fixture.harvest,
+            request=mock_request,
         )
 
         # Assert
@@ -295,10 +326,16 @@ class TestAddRegistryConstraints(MongoIntegrationBaseTestCase):
 
     def test_add_registry_raises_exception_if_url_already_exists(self):
         """Test add registry with existing URL"""
+        # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPINotUniqueError):
             oai_registry_api.add_registry_by_url(
-                self.fixture.url, self.fixture.harvest_rate, self.fixture.harvest
+                self.fixture.url,
+                self.fixture.harvest_rate,
+                self.fixture.harvest,
+                request=mock_request,
             )
 
 
@@ -321,6 +358,8 @@ class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
         self, mock_identify, mock_metadata_formats, mock_sets, mock_get
     ):
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         identify = OaiPmhMock.mock_oai_identify(version=2)
         mock_identify.return_value = identify, status.HTTP_200_OK
         first_metadata_format = OaiPmhMock.mock_oai_metadata_format(version=2)
@@ -332,7 +371,9 @@ class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
         mock_get.return_value.text = text
 
         # Act
-        result = oai_registry_api.update_registry_info(self.fixture.registry)
+        result = oai_registry_api.update_registry_info(
+            self.fixture.registry, request=mock_request
+        )
 
         # Assert
         _assert_identify(self, identify, result.id)
@@ -409,6 +450,8 @@ class TestUpsertMetadataFormatForRegistry(MongoIntegrationBaseTestCase):
         self.fixture.insert_registry()
 
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         text = "<test>Hello</test>"
         mock_get.return_value.status_code = status.HTTP_200_OK
         mock_get.return_value.text = text
@@ -418,7 +461,7 @@ class TestUpsertMetadataFormatForRegistry(MongoIntegrationBaseTestCase):
 
         # Act
         oai_registry_api._upsert_metadata_format_for_registry(
-            metadata_format, self.fixture.registry
+            metadata_format, self.fixture.registry, request=mock_request
         )
 
         # Assert
@@ -439,6 +482,8 @@ class TestUpsertMetadataFormatForRegistry(MongoIntegrationBaseTestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         text = "<test>Hello</test>"
         mock_get.return_value.status_code = status.HTTP_200_OK
         mock_get.return_value.text = text
@@ -447,7 +492,7 @@ class TestUpsertMetadataFormatForRegistry(MongoIntegrationBaseTestCase):
 
         # Act
         oai_registry_api._upsert_metadata_format_for_registry(
-            oai_harvester_metadata_format, self.fixture.registry
+            oai_harvester_metadata_format, self.fixture.registry, request=mock_request
         )
 
         # Assert

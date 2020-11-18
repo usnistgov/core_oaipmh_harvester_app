@@ -117,13 +117,14 @@ def delete(oai_registry):
     oai_registry.delete()
 
 
-def add_registry_by_url(url, harvest_rate, harvest):
+def add_registry_by_url(url, harvest_rate, harvest, request=None):
     """Adds a registry in database. Takes care of all surrounding objects. Uses OAI-PMH verbs to gather information.
 
     Args:
         url: Url of the registry to add.
         harvest_rate: Harvest rate. Use to harvest data every harvest_rate seconds.
         harvest: True or False.
+        request:
 
     Returns:
         The OaiRegistry instance.
@@ -153,7 +154,9 @@ def add_registry_by_url(url, harvest_rate, harvest):
         for set_ in sets_response:
             _upsert_set_for_registry(set_, registry)
         for metadata_format in metadata_formats_response:
-            _upsert_metadata_format_for_registry(metadata_format, registry)
+            _upsert_metadata_format_for_registry(
+                metadata_format, registry, request=request
+            )
 
         return registry
     except Exception as e:
@@ -166,11 +169,12 @@ def add_registry_by_url(url, harvest_rate, harvest):
         )
 
 
-def update_registry_info(registry):
+def update_registry_info(registry, request=None):
     """Updates information of a registry in database by its id.
 
     Args:
         registry: OaiRegistry to update.
+        request:
 
     Returns:
         The OaiRegistry instance.
@@ -190,7 +194,9 @@ def update_registry_info(registry):
         for set_ in sets_response:
             _upsert_set_for_registry(set_, registry)
         for metadata_format in metadata_formats_response:
-            _upsert_metadata_format_for_registry(metadata_format, registry)
+            _upsert_metadata_format_for_registry(
+                metadata_format, registry, request=request
+            )
         # Check if we have some deleted set
         _handle_deleted_set(registry.id, sets_response)
         # Check if we have some deleted metadata format
@@ -375,12 +381,13 @@ def _upsert_identify_for_registry(identify, registry):
     oai_identify_api.upsert(identify)
 
 
-def _upsert_metadata_format_for_registry(metadata_format, registry):
+def _upsert_metadata_format_for_registry(metadata_format, registry, request=None):
     """Adds or updates an OaiHarvesterMetadataFormat object for a registry.
 
     Args:
         metadata_format: OaiHarvesterMetadataFormat instance.
         registry: OaiRegistry instance.
+        request:
 
     """
     try:
@@ -401,7 +408,7 @@ def _upsert_metadata_format_for_registry(metadata_format, registry):
 
     try:
         metadata_format_to_save = oai_harvester_metadata_format_api.init_schema_info(
-            metadata_format_to_save
+            metadata_format_to_save, request=request
         )
         oai_harvester_metadata_format_api.upsert(metadata_format_to_save)
     except exceptions.ApiError as e:

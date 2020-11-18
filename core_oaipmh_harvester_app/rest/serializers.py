@@ -28,7 +28,9 @@ class RegistrySerializer(DocumentSerializer):
         )
 
     def create(self, validated_data):
-        return oai_registry_api.add_registry_by_url(**validated_data)
+        return oai_registry_api.add_registry_by_url(
+            **validated_data, request=self.context["request"]
+        )
 
 
 class UpdateRegistrySerializer(BasicSerializer):

@@ -10,6 +10,8 @@ import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as
 from core_main_app.commons import exceptions
 from core_main_app.components.template import api as api_template
 from core_main_app.components.template.models import Template
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
+from core_main_app.utils.tests_tools.RequestMock import create_mock_request
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -283,10 +285,12 @@ class TestOaiHarvesterMetadataFormatUpdateForAllByListIds(TestCase):
 
 
 class TestInitSchemaInfo(TestCase):
-    @patch.object(api_template, "get_all_by_hash")
+    @patch.object(api_template, "get_all_accessible_by_hash")
     @patch.object(requests, "get")
     def test_init_schema_info_return_object(self, mock_get, mock_get_all_by_hash):
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_oai_harvester_metadata_format = (
             _create_mock_oai_harvester_metadata_format()
         )
@@ -297,18 +301,20 @@ class TestInitSchemaInfo(TestCase):
 
         # Act
         result = harvester_metadata_format_api.init_schema_info(
-            mock_oai_harvester_metadata_format
+            mock_oai_harvester_metadata_format, request=mock_request
         )
 
         # Assert
         self.assertIsInstance(result, OaiHarvesterMetadataFormat)
 
-    @patch.object(api_template, "get_all_by_hash")
+    @patch.object(api_template, "get_all_accessible_by_hash")
     @patch.object(requests, "get")
     def test_init_schema_info_return_object_with_xml_schema(
         self, mock_get, mock_get_all_by_hash
     ):
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         text = "<test>Hello</test>"
         mock_oai_harvester_metadata_format = (
             _create_mock_oai_harvester_metadata_format()
@@ -320,19 +326,21 @@ class TestInitSchemaInfo(TestCase):
 
         # Act
         result = harvester_metadata_format_api.init_schema_info(
-            mock_oai_harvester_metadata_format
+            mock_oai_harvester_metadata_format, request=mock_request
         )
 
         # Assert
         self.assertEquals(result.xml_schema, text)
 
     @patch.object(harvester_metadata_format_api, "get_hash")
-    @patch.object(api_template, "get_all_by_hash")
+    @patch.object(api_template, "get_all_accessible_by_hash")
     @patch.object(requests, "get")
     def test_init_schema_info_return_object_with_hash(
         self, mock_get, mock_get_all_by_hash, mock_get_hash
     ):
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_oai_harvester_metadata_format = (
             _create_mock_oai_harvester_metadata_format()
         )
@@ -345,18 +353,20 @@ class TestInitSchemaInfo(TestCase):
 
         # Act
         result = harvester_metadata_format_api.init_schema_info(
-            mock_oai_harvester_metadata_format
+            mock_oai_harvester_metadata_format, request=mock_request
         )
 
         # Assert
         self.assertEquals(result.hash, hash_)
 
-    @patch.object(api_template, "get_all_by_hash")
+    @patch.object(api_template, "get_all_accessible_by_hash")
     @patch.object(requests, "get")
     def test_init_schema_info_return_object_with_template(
         self, mock_get, mock_get_all_by_hash
     ):
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_oai_harvester_metadata_format = (
             _create_mock_oai_harvester_metadata_format()
         )
@@ -368,7 +378,7 @@ class TestInitSchemaInfo(TestCase):
 
         # Act
         result = harvester_metadata_format_api.init_schema_info(
-            mock_oai_harvester_metadata_format
+            mock_oai_harvester_metadata_format, request=mock_request
         )
 
         # Assert
@@ -377,6 +387,8 @@ class TestInitSchemaInfo(TestCase):
     @patch.object(requests, "get")
     def test_init_schema_info_raises_api_error_if_bad_status_code(self, mock_get):
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_oai_harvester_metadata_format = (
             _create_mock_oai_harvester_metadata_format()
         )
@@ -388,7 +400,7 @@ class TestInitSchemaInfo(TestCase):
         # Act + Assert
         with self.assertRaises(Exception):
             harvester_metadata_format_api.init_schema_info(
-                mock_oai_harvester_metadata_format
+                mock_oai_harvester_metadata_format, request=mock_request
             )
 
 

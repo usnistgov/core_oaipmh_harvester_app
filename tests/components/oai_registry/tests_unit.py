@@ -10,6 +10,8 @@ from rest_framework.response import Response
 
 import core_oaipmh_harvester_app.components.oai_registry.api as registry_api
 from core_main_app.commons import exceptions
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
+from core_main_app.utils.tests_tools.RequestMock import create_mock_request
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
@@ -324,6 +326,8 @@ class TestAddRegistry(TestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_registry.return_value = False
         mock.return_value = (
             OaiPmhMessage.get_message_labelled(self.error_message % "identify"),
@@ -333,7 +337,7 @@ class TestAddRegistry(TestCase):
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
             oai_registry_api.add_registry_by_url(
-                self.url, self.harvest_rate, self.harvest
+                self.url, self.harvest_rate, self.harvest, request=mock_request
             )
 
         self.assertEqual(ex.exception.message, self.error_message % "identify")
@@ -361,6 +365,8 @@ class TestAddRegistry(TestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_registry.return_value = False
         mock_identify.return_value = [], status.HTTP_200_OK
         exception_message = "Bad identify"
@@ -369,7 +375,7 @@ class TestAddRegistry(TestCase):
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
             oai_registry_api.add_registry_by_url(
-                self.url, self.harvest_rate, self.harvest
+                self.url, self.harvest_rate, self.harvest, request=mock_request
             )
 
         self.assertTrue(exception_message in ex.exception.message)
@@ -392,6 +398,8 @@ class TestAddRegistry(TestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_identify.return_value = [], status.HTTP_200_OK
         mock_registry.return_value = False
         mock_sets.return_value = (
@@ -402,7 +410,7 @@ class TestAddRegistry(TestCase):
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
             oai_registry_api.add_registry_by_url(
-                self.url, self.harvest_rate, self.harvest
+                self.url, self.harvest_rate, self.harvest, request=mock_request
             )
 
         self.assertEqual(ex.exception.message, self.error_message % "sets")
@@ -431,6 +439,8 @@ class TestAddRegistry(TestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_registry.return_value = False
         mock_identify.return_value = OaiPmhMock.mock_oai_identify(), status.HTTP_200_OK
         mock_set.return_value = [], status.HTTP_200_OK
@@ -440,7 +450,7 @@ class TestAddRegistry(TestCase):
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
             oai_registry_api.add_registry_by_url(
-                self.url, self.harvest_rate, self.harvest
+                self.url, self.harvest_rate, self.harvest, request=mock_request
             )
 
         self.assertTrue(exception_message in ex.exception.message)
@@ -465,6 +475,8 @@ class TestAddRegistry(TestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_sets.return_value = [], status.HTTP_200_OK
         mock_identify.return_value = [], status.HTTP_200_OK
         mock_registry.return_value = False
@@ -476,7 +488,7 @@ class TestAddRegistry(TestCase):
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
             oai_registry_api.add_registry_by_url(
-                self.url, self.harvest_rate, self.harvest
+                self.url, self.harvest_rate, self.harvest, request=mock_request
             )
 
         self.assertEqual(ex.exception.message, self.error_message % "metadataFormats")
@@ -513,6 +525,8 @@ class TestAddRegistry(TestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_registry.return_value = False
         identify = OaiPmhMock.mock_oai_identify()
         mock_identify.return_value = identify, status.HTTP_200_OK
@@ -524,7 +538,7 @@ class TestAddRegistry(TestCase):
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
             oai_registry_api.add_registry_by_url(
-                self.url, self.harvest_rate, self.harvest
+                self.url, self.harvest_rate, self.harvest, request=mock_request
             )
 
         self.assertTrue(exception_message in ex.exception.message)
@@ -557,6 +571,8 @@ class TestUpdateRegistryInfo(TestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_oai_registry = _create_mock_oai_registry()
         mock_get.return_value = mock_oai_registry
         mock_registry.return_value = False
@@ -567,7 +583,9 @@ class TestUpdateRegistryInfo(TestCase):
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
-            oai_registry_api.update_registry_info(mock_oai_registry)
+            oai_registry_api.update_registry_info(
+                mock_oai_registry, request=mock_request
+            )
 
         self.assertEqual(ex.exception.message, self.error_message % "identify")
         self.assertEqual(
@@ -593,6 +611,8 @@ class TestUpdateRegistryInfo(TestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_oai_registry = _create_mock_oai_registry()
         mock_get.return_value = mock_oai_registry
         mock_identify.return_value = [], status.HTTP_200_OK
@@ -604,7 +624,9 @@ class TestUpdateRegistryInfo(TestCase):
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
-            oai_registry_api.update_registry_info(mock_oai_registry)
+            oai_registry_api.update_registry_info(
+                mock_oai_registry, request=mock_request
+            )
 
         self.assertEqual(ex.exception.message, self.error_message % "sets")
         self.assertEqual(
@@ -632,6 +654,8 @@ class TestUpdateRegistryInfo(TestCase):
 
         """
         # Arrange
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
         mock_oai_registry = _create_mock_oai_registry()
         mock_get.return_value = mock_oai_registry
         mock_sets.return_value = [], status.HTTP_200_OK
@@ -644,7 +668,9 @@ class TestUpdateRegistryInfo(TestCase):
 
         # Act + Assert
         with self.assertRaises(oai_pmh_exceptions.OAIAPILabelledException) as ex:
-            oai_registry_api.update_registry_info(mock_oai_registry)
+            oai_registry_api.update_registry_info(
+                mock_oai_registry, request=mock_request
+            )
 
         self.assertEqual(ex.exception.message, self.error_message % "metadataFormat")
         self.assertEqual(

@@ -158,11 +158,12 @@ def update_for_all_harvest_by_list_ids(list_oai_metadata_format_ids, harvest):
     )
 
 
-def init_schema_info(oai_harvester_metadata_format):
+def init_schema_info(oai_harvester_metadata_format, request=None):
     """Init schema information for an OaiHarvesterMetadataFormat.
 
     Args:
         oai_harvester_metadata_format: The OaiHarvesterMetadataFormat to init.
+        request:
 
     Returns:
         Init OaiHarvesterMetadataFormat.
@@ -179,7 +180,9 @@ def init_schema_info(oai_harvester_metadata_format):
                 "Impossible to hash the schema for the following "
                 "metadata format: {0}."
             )
-        list_template = api_template.get_all_by_hash(oai_harvester_metadata_format.hash)
+        list_template = api_template.get_all_accessible_by_hash(
+            oai_harvester_metadata_format.hash, request=request
+        )
         # FIXME: What to do if several templates with the same hash.
         if len(list_template) == 1:
             oai_harvester_metadata_format.template = list_template[0]
