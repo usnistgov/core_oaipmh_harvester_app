@@ -169,7 +169,14 @@ def init_schema_info(oai_harvester_metadata_format, request=None):
         Init OaiHarvesterMetadataFormat.
 
     """
-    http_response = send_get_request(oai_harvester_metadata_format.schema)
+    # TODO: refactor send request with cookies (same code in other apps)
+    try:
+        session_id = request.session.session_key
+    except:
+        session_id = None
+    http_response = send_get_request(
+        oai_harvester_metadata_format.schema, cookies={"sessionid": session_id}
+    )
     if http_response.status_code == status.HTTP_200_OK:
         string_xml = http_response.text
         oai_harvester_metadata_format.xml_schema = string_xml

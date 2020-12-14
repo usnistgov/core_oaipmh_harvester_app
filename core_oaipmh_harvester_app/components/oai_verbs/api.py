@@ -204,10 +204,11 @@ def list_records(
         )
 
 
-def get_data(url):
+def get_data(url, request=None):
     """Performs the Oai-Pmh request.
     Args:
         url: URL with Oai-Pmh request
+        request:
 
     Returns:
         Response.
@@ -222,7 +223,12 @@ def get_data(url):
             registry_url = str(url).split("?")[0]
             data, status_code = identify(registry_url)
             if status_code == status.HTTP_200_OK:
-                http_response = send_get_request(url)
+                # TODO: refactor send request with cookies (same code in other apps)
+                try:
+                    session_id = request.session.session_key
+                except:
+                    session_id = None
+                http_response = send_get_request(url, cookies={"sessionid": session_id})
                 if http_response.status_code == status.HTTP_200_OK:
                     return Response(http_response.text, status=status.HTTP_200_OK)
                 else:

@@ -444,7 +444,7 @@ def get_data(request):
     # Build the url
     url = url + "?" + encoded_args
     try:
-        xml_string = oai_verb_api.get_data(url).data
+        xml_string = oai_verb_api.get_data(url, request=request).data
         request.session["xmlStringOAIPMH"] = xml_string
         # loads XSLT
         xslt_path = finders.find(join("core_main_app", "common", "xsl", "xml2html.xsl"))
