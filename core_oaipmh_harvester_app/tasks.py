@@ -7,7 +7,6 @@ from celery import current_app
 from celery import shared_task
 
 from core_main_app.commons.exceptions import DoesNotExist
-from core_main_app.utils.requests_utils.access_control import SYSTEM_REQUEST
 from core_oaipmh_harvester_app.settings import WATCH_REGISTRY_HARVEST_RATE
 
 logger = logging.getLogger(__name__)
@@ -105,7 +104,7 @@ def _harvest_registry(registry):
     try:
         logger.info("START harvesting registry: {0}".format(registry.name))
         if not registry.is_updating:
-            oai_registry_api.update_registry_info(registry, request=SYSTEM_REQUEST)
+            oai_registry_api.update_registry_info(registry)
         if not registry.is_harvesting:
             oai_registry_api.harvest_registry(registry)
         logger.info("FINISH harvesting registry: {0}".format(registry.name))
