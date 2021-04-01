@@ -180,7 +180,11 @@ def update_registry_info(registry, request=None):
         The OaiRegistry instance.
 
     """
-    registry.isUpdating = True
+    # If registry is already updating, skip for now
+    if registry.is_updating:
+        return []
+
+    registry.is_updating = True
     upsert(registry)
     identify_response = _get_identify_as_object(registry.url)
     sets_response = _get_sets_as_object(registry.url)
@@ -201,12 +205,12 @@ def update_registry_info(registry, request=None):
         _handle_deleted_set(registry.id, sets_response)
         # Check if we have some deleted metadata format
         _handle_deleted_metadata_format(registry.id, metadata_formats_response)
-        registry.isUpdating = False
+        registry.is_updating = False
         upsert(registry)
 
         return registry
     except Exception as e:
-        registry.isUpdating = False
+        registry.is_updating = False
         upsert(registry)
         raise oai_pmh_exceptions.OAIAPILabelledException(
             message=str(e), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -222,6 +226,10 @@ def harvest_registry(registry):
         all_errors: List of errors.
 
     """
+    # If registry is already harvesting, skip for now
+    if registry.is_harvesting:
+        return []
+
     try:
         # We are harvesting
         registry.is_harvesting = True

@@ -33,7 +33,8 @@ def init_harvest():
 
 @shared_task(name="watch_registry_harvest_task")
 def watch_registry_harvest_task():
-    """Check each WATCH_REGISTRY_HARVEST_RATE seconds if new registries need to be harvested."""
+    """Check each WATCH_REGISTRY_HARVEST_RATE seconds if new registries need
+    to be harvested."""
     from core_oaipmh_harvester_app.components.oai_registry import (
         api as oai_registry_api,
     )
@@ -43,20 +44,20 @@ def watch_registry_harvest_task():
         registries = oai_registry_api.get_all_activated_registry()
         # We launch the background task for each registry
         for registry in registries:
-            # If we need to harvest and a task doesn't already exist for this registry.
+            # If we need to harvest and a task doesn't already exist for this
+            # registry.
             if registry.harvest and not registry.is_queued:
                 harvest_task.apply_async((str(registry.id),))
                 registry.is_queued = True
                 oai_registry_api.upsert(registry)
                 logger.info(
-                    "Registry {0} has been queued and will be harvested.".format(
-                        registry.name
-                    )
+                    f"Registry {registry.name} has been queued and will be "
+                    f"harvested."
                 )
         logger.info("FINISH watching registries.")
     except Exception as e:
         logger.error(
-            "ERROR : Error while watching new registries to harvest: {0}".format(str(e))
+            f"ERROR : Error while watching new registries to harvest: {str(e)}"
         )
     finally:
         # Periodic call every WATCH_REGISTRY_HARVEST_RATE seconds
@@ -65,10 +66,11 @@ def watch_registry_harvest_task():
 
 @shared_task(name="harvest_task")
 def harvest_task(registry_id):
-    """Manage the harvest process of the given registry. Check if the harvest should continue.
+    """Manage the harvest process of the given registry. Check if the harvest
+    should continue.
+
     Args:
         registry_id: Registry id.
-
     """
     from core_oaipmh_harvester_app.components.oai_registry import (
         api as oai_registry_api,
@@ -79,12 +81,12 @@ def harvest_task(registry_id):
         # Check if the registry is activated and has to be harvested.
         if registry.is_activated and registry.harvest:
             _harvest_registry(registry)
-        else:
+        else:  # Registry should not be harvested
             _stop_harvest_registry(registry)
     except DoesNotExist:
         logger.error(
-            "ERROR: Registry {0} does not exist anymore. "
-            "Harvesting stopped.".format(registry_id)
+            f"ERROR: Registry {registry_id} does not exist anymore. "
+            "Harvesting stopped."
         )
 
 
@@ -102,16 +104,16 @@ def _harvest_registry(registry):
     )
 
     try:
-        logger.info("START harvesting registry: {0}".format(registry.name))
-        if not registry.is_updating:
+        logger.info(f"START harvesting registry: {registry.name}")
+        if not registry.is_updating and not registry.is_harvesting:
             oai_registry_api.update_registry_info(registry)
-        if not registry.is_harvesting:
             oai_registry_api.harvest_registry(registry)
-        logger.info("FINISH harvesting registry: {0}".format(registry.name))
+        else:
+            logger.warning(f"Registry {registry.name} is busy. Skipping harvesting...")
+        logger.info(f"FINISH harvesting registry: {registry.name}")
     except Exception as e:
         logger.error(
-            "ERROR : Impossible to harvest the registry {0}: "
-            "{1}.".format(registry.name, str(e))
+            f"ERROR : Impossible to harvest registry {registry.name}: {str(e)}."
         )
     finally:
         # Harvest again in harvest_rate seconds.
@@ -131,18 +133,17 @@ def _stop_harvest_registry(registry):
     try:
         registry.is_queued = False
         oai_registry_api.upsert(registry)
-        logger.info(
-            "Harvesting for Registry {0} has been deactivated.".format(registry.name)
-        )
+        logger.info(f"Harvesting for Registry {registry.name} has been deactivated.")
     except Exception as e:
         logger.error(
-            "ERROR : Error while stopping the harvest process for the registry {0}: "
-            "{1}.".format(registry.name, str(e))
+            f"ERROR : Error while stopping the harvest process for the registry "
+            f"{registry.name}: {str(e)}."
         )
 
 
 def _revoke_all_scheduled_tasks():
-    """Revoke all OAI-PMH scheduled tasks. Avoid having duplicate tasks when the server reboot."""
+    """Revoke all OAI-PMH scheduled tasks. Avoid having duplicate tasks when the
+    server reboot."""
     try:
         logger.info("START revoking OAI-PMH scheduled tasks.")
         if current_app.control.inspect().scheduled() is not None:
@@ -160,9 +161,7 @@ def _revoke_all_scheduled_tasks():
             logger.warning("Impossible to retrieve scheduled tasks. Is Celery started?")
         logger.info("FINISH revoking OAI-PMH scheduled tasks.")
     except Exception as e:
-        logger.error(
-            "ERROR : Error while revoking the scheduled tasks: {0}".format(str(e))
-        )
+        logger.error(f"ERROR : Error while revoking the scheduled tasks: {str(e)}")
 
 
 def _get_all_oai_tasks_full_name():
