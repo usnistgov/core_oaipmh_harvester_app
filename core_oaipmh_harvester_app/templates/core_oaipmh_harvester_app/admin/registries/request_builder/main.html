@@ -8,11 +8,11 @@
 {% block box_body %}
     <div class="alert alert-warning" id="banner_submit_wait"
          style="display: none">
-        <h4><i class='fa fa-circle-notch fa-spin'></i>&nbsp;&nbsp;Please wait ...</h4>
+        <h4><i class='fas fa-circle-notch fa-spin'></i>&nbsp;&nbsp;Please wait ...</h4>
     </div>
     <div class="alert alert-error" id="banner_build_errors"
          style="display: none">
-        <h4><i class="fa fa-exclamation-circle fa-1x"></i> Error</h4>
+        <h4><i class="fas fa-exclamation-circle fa-1x"></i> Error</h4>
         <div id="build_errors">
         </div>
     </div>
@@ -61,7 +61,7 @@
                     <div class="input-group">
                         <span class="m-1"
                               onclick="$('#{{data.request_form.from_date.id_for_label}}').focus();">
-                            <i class="fa fa-calendar"></i>
+                            <i class="fas fa-calendar"></i>
                         </span>
                         {{data.request_form.from_date}}
                     </div>
@@ -75,7 +75,7 @@
                     <div class="input-group">
                         <span class="m-1"
                               onclick="$('#{{data.request_form.until_date.id_for_label}}').focus();">
-                            <i class="fa fa-calendar"></i>
+                            <i class="fas fa-calendar"></i>
                         </span>
                         {{data.request_form.until_date}}
                     </div>
@@ -94,12 +94,12 @@
         <div>
             <button class="btn btn-primary" id="submit-btn"
                     onclick="checkSubmit()">
-                <i class="fa fa-paper-plane"></i> Submit
+                <i class="fas fa-paper-plane"></i> Submit
             </button>
             <button id="download-xml" class="btn btn-secondary"
                     style="display: none"
                     onclick="location.href='{% url 'admin:core_oaipmh_harvester_app_download_xml_build_req' %}';">
-                <i class="fa fa-download"></i> Download XML
+                <i class="fas fa-download"></i> Download XML
             </button>
         </div>
     {% else %}
