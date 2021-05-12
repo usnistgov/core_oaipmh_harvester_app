@@ -41,13 +41,9 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
     def post(self, request):
         """Execute query on OaiRecord and return results
 
-        Warning:
-
-            Need to backslash double quotes in JSON payload
-
         Parameters:
 
-            {"query": "{\"$or\": [{\"image.owner\": \"Peter\"}, {\"image.owner.#text\":\"Peter\"}]}"}
+            {"query": {"$or": [{"image.owner": "Peter"}, {"image.owner.#text":"Peter"}]}}
             {"query": "Keyword1 Keyword2", "registries": "[\"5aa00a074697f6d6ac21946e\"]"}
 
         Args:
