@@ -1,8 +1,5 @@
-from builtins import str
 from unittest.case import TestCase
-
-from bson.objectid import ObjectId
-from mock.mock import Mock, patch
+from unittest.mock import Mock, patch
 
 import core_oaipmh_harvester_app.components.oai_identify.api as oai_identify_api
 from core_main_app.commons import exceptions
@@ -107,7 +104,7 @@ class TestOaiIdentifyGetByRegistryId(TestCase):
         self, mock_get
     ):
         # Arrange
-        mock_absent_registry_id = str(ObjectId())
+        mock_absent_registry_id = 1
 
         mock_get.side_effect = exceptions.DoesNotExist("Error.")
 
@@ -118,7 +115,7 @@ class TestOaiIdentifyGetByRegistryId(TestCase):
     @patch.object(OaiIdentify, "get_by_registry_id")
     def test_get_by_registry_id_raises_exception_if_internal_error(self, mock_get):
         # Arrange
-        mock_absent_registry_id = str(ObjectId())
+        mock_absent_registry_id = 1
 
         mock_get.side_effect = exceptions.ModelError("Error.")
 

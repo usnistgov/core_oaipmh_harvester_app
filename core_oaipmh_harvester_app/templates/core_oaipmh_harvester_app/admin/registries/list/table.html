@@ -65,9 +65,9 @@
                     <i class="fas fa-eye"></i> View
                 </a>
                 {% if registry.is_activated %}
-                    {% url 'admin:core_oaipmh_harvester_app_edit_registry' registry.id as edit_url %}
+                    {% url 'core-admin:core_oaipmh_harvester_app_edit_registry' registry.id as edit_url %}
                     {% include 'core_main_app/common/buttons/edit.html' %}
-                    {% url 'admin:core_oaipmh_harvester_app_edit_harvest_registry' registry.id as edit_harvest_url %}
+                    {% url 'core-admin:core_oaipmh_harvester_app_edit_harvest_registry' registry.id as edit_harvest_url %}
                     {% include 'core_main_app/common/buttons/edit.html' with edit_url=edit_harvest_url label='Edit Harvest' %}
                     <a class="btn btn-danger deactivate-registry-btn" href="#">
                         <i class="fas fa-ban"></i> Deactivate

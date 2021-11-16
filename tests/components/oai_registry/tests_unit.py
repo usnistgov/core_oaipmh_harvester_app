@@ -2,9 +2,8 @@
 """
 import datetime
 from unittest.case import TestCase
+from unittest.mock import Mock, patch
 
-from bson.objectid import ObjectId
-from mock.mock import Mock, patch
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -26,7 +25,6 @@ from core_oaipmh_harvester_app.components.oai_harvester_set import (
 from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
-from core_oaipmh_harvester_app.utils import transform_operations
 from tests.components.oai_registry.fixtures.fixtures import OaiPmhMock
 
 
@@ -67,7 +65,7 @@ class TestOaiRegistryGetById(TestCase):
 
         """
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = 1
 
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -86,7 +84,7 @@ class TestOaiRegistryGetById(TestCase):
 
         """
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = 1
 
         mock_get_by_id.side_effect = exceptions.ModelError("Error")
 
@@ -874,47 +872,6 @@ class TestHarvestRegistry(TestCase):
         metadata_format = Mock(spec=OaiHarvesterMetadataFormat())
         metadata_format.metadata_prefix = "oai_dummy"
         last_update = registry_all_sets = None
-
-        # Act
-        result = oai_registry_api._harvest_records(
-            registry, metadata_format, last_update, registry_all_sets
-        )
-
-        # Assert
-        self.assertEquals(result, expected_error)
-
-    @patch.object(transform_operations, "transform_dict_record_to_oai_record")
-    @patch.object(oai_verbs_api, "list_records")
-    def test_harvest_records_returns_errors_if_transform_raises(
-        self, mock_list_records, mock_transform_operations
-    ):
-        """
-
-        Args:
-            mock_list_records:
-            mock_transform_operations:
-
-        Returns:
-
-        """
-        # Arrange
-        resumption_token = None
-        content = []
-        status_code = status.HTTP_200_OK
-        mock_list_records.return_value = (
-            Response(content, status=status_code),
-            resumption_token,
-        )
-        error_message = "Error"
-        expected_error = [
-            {"status_code": status.HTTP_400_BAD_REQUEST, "error": error_message}
-        ]
-        registry = Mock(spec=OaiRegistry())
-        registry.url = "dummy_url"
-        metadata_format = Mock(spec=OaiHarvesterMetadataFormat())
-        metadata_format.metadata_prefix = "oai_dummy"
-        last_update = registry_all_sets = None
-        mock_transform_operations.side_effect = Exception(error_message)
 
         # Act
         result = oai_registry_api._harvest_records(

@@ -1,13 +1,17 @@
 import datetime
 from unittest.case import TestCase
-
-from bson.objectid import ObjectId
-from mock.mock import Mock, patch
+from unittest.mock import Mock, patch
 
 import core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set.api as harvester_metadata_format_set_api
 from core_main_app.commons import exceptions
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
+    OaiHarvesterMetadataFormat,
+)
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set.models import (
     OaiHarvesterMetadataFormatSet,
+)
+from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
+    OaiHarvesterSet,
 )
 
 
@@ -39,8 +43,8 @@ class TestOaiHarvesterMetadataFormatSetGetByMetadataAndSet(TestCase):
         self, get_by_metadata_format_and_set
     ):
         # Arrange
-        mock_absent_metadata_format = ObjectId()
-        mock_absent_set = ObjectId()
+        mock_absent_metadata_format = 1
+        mock_absent_set = 1
 
         get_by_metadata_format_and_set.side_effect = exceptions.DoesNotExist("Error.")
 
@@ -55,8 +59,8 @@ class TestOaiHarvesterMetadataFormatSetGetByMetadataAndSet(TestCase):
         self, get_by_metadata_format_and_set
     ):
         # Arrange
-        mock_absent_metadata_format = ObjectId()
-        mock_absent_set = ObjectId()
+        mock_absent_metadata_format = 1
+        mock_absent_set = 1
 
         get_by_metadata_format_and_set.side_effect = exceptions.ModelError("Error.")
 
@@ -183,8 +187,10 @@ def _set_oai_harvester_metadata_format_set_fields(oai_harvester_metadata_format_
         OaiHarvesterMetadataFormatSet with assigned fields.
 
     """
-    oai_harvester_metadata_format_set.harvester_metadata_format = "test"
-    oai_harvester_metadata_format_set.harvester_set = "http://test.com/test.xsd"
+    oai_harvester_metadata_format_set.harvester_metadata_format = (
+        OaiHarvesterMetadataFormat()
+    )
+    oai_harvester_metadata_format_set.harvester_set = OaiHarvesterSet()
     oai_harvester_metadata_format_set.last_update = datetime.datetime.now()
 
     return oai_harvester_metadata_format_set

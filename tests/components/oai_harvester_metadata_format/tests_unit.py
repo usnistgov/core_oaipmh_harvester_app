@@ -1,9 +1,8 @@
 import datetime
 from unittest.case import TestCase
+from unittest.mock import Mock, patch
 
 import requests
-from bson.objectid import ObjectId
-from mock.mock import Mock, patch
 from rest_framework import status
 
 import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as harvester_metadata_format_api
@@ -37,7 +36,7 @@ class TestOaiHarvesterMetadataFormatGetById(TestCase):
     @patch.object(OaiHarvesterMetadataFormat, "get_by_id")
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = 1
 
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error.")
 
@@ -48,7 +47,7 @@ class TestOaiHarvesterMetadataFormatGetById(TestCase):
     @patch.object(OaiHarvesterMetadataFormat, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = 1
 
         mock_get_by_id.side_effect = exceptions.ModelError("Error.")
 
@@ -82,7 +81,7 @@ class TestOaiHarvesterMetadataFormatGetByMetadataPrefixAndRegistryId(TestCase):
     ):
         # Arrange
         mock_absent_metadata_prefix = "oai_test"
-        mock_absent_registry_id = str(ObjectId())
+        mock_absent_registry_id = str(1)
 
         mock_get.side_effect = exceptions.DoesNotExist("Error.")
 
@@ -98,7 +97,7 @@ class TestOaiHarvesterMetadataFormatGetByMetadataPrefixAndRegistryId(TestCase):
     ):
         # Arrange
         mock_absent_metadata_prefix = "oai_test"
-        mock_absent_registry_id = str(ObjectId())
+        mock_absent_registry_id = str(1)
 
         mock_get.side_effect = exceptions.ModelError("Error.")
 
@@ -225,7 +224,7 @@ class TestOaiHarvesterMetadataFormatDeleteAllByRegistryId(TestCase):
         self, mock_delete_all
     ):
         # Arrange
-        mock_absent_registry = str(ObjectId())
+        mock_absent_registry = str(1)
 
         mock_delete_all.side_effect = Exception()
 
@@ -256,7 +255,7 @@ class TestOaiHarvesterMetadataFormatUpdateForAllByRegistryId(TestCase):
         self, mock_update_all
     ):
         # Arrange
-        mock_absent_registry = str(ObjectId())
+        mock_absent_registry = str(1)
 
         mock_update_all.side_effect = Exception()
 
@@ -273,7 +272,7 @@ class TestOaiHarvesterMetadataFormatUpdateForAllByListIds(TestCase):
         self, mock_update_all
     ):
         # Arrange
-        mock_absent_list_ids = [str(ObjectId()), str(ObjectId())]
+        mock_absent_list_ids = [str(1), str(1)]
 
         mock_update_all.side_effect = Exception()
 

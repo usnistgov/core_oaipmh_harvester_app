@@ -1,8 +1,6 @@
 from builtins import str
 from unittest.case import TestCase
-
-from bson.objectid import ObjectId
-from mock.mock import Mock, patch
+from unittest.mock import Mock, patch
 
 import core_oaipmh_harvester_app.components.oai_harvester_set.api as harvester_set_api
 from core_main_app.commons import exceptions
@@ -17,7 +15,7 @@ class TestOaiHarvesterSetGetById(TestCase):
     def test_get_by_id_return_object(self, mock_get_by_id):
         # Arrange
         mock_oai_harvester_set = _create_mock_oai_harvester_set()
-        mock_oai_harvester_set.id = ObjectId()
+        mock_oai_harvester_set.id = 1
 
         mock_get_by_id.return_value = mock_oai_harvester_set
 
@@ -30,7 +28,7 @@ class TestOaiHarvesterSetGetById(TestCase):
     @patch.object(OaiHarvesterSet, "get_by_id")
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = 1
 
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error.")
 
@@ -41,7 +39,7 @@ class TestOaiHarvesterSetGetById(TestCase):
     @patch.object(OaiHarvesterSet, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = 1
 
         mock_get_by_id.side_effect = exceptions.ModelError("Error.")
 
@@ -71,8 +69,8 @@ class TestOaiHarvesterSetGetBySetSpecAndRegistryId(TestCase):
         self, mock_get
     ):
         # Arrange
-        mock_absent_set_spec = ObjectId()
-        mock_absent_registry_id = ObjectId()
+        mock_absent_set_spec = 1
+        mock_absent_registry_id = 1
 
         mock_get.side_effect = exceptions.DoesNotExist("Error.")
 
@@ -87,8 +85,8 @@ class TestOaiHarvesterSetGetBySetSpecAndRegistryId(TestCase):
         self, mock_get
     ):
         # Arrange
-        mock_absent_set_spec = ObjectId()
-        mock_absent_registry_id = ObjectId()
+        mock_absent_set_spec = 1
+        mock_absent_registry_id = 1
 
         mock_get.side_effect = exceptions.ModelError("Error.")
 
@@ -187,7 +185,7 @@ class TestOaiHarvesterSetDeleteAllByRegistryId(TestCase):
         self, mock_delete_all
     ):
         # Arrange
-        mock_absent_registry_id = ObjectId()
+        mock_absent_registry_id = 1
 
         mock_delete_all.side_effect = Exception()
 
@@ -216,7 +214,7 @@ class TestOaiHarvesterSetUpdateForAllByRegistryId(TestCase):
         self, mock_update_all
     ):
         # Arrange
-        mock_absent_registry_id = ObjectId()
+        mock_absent_registry_id = 1
 
         mock_update_all.side_effect = Exception()
 
@@ -233,7 +231,7 @@ class TestOaiSetUpdateForAllByListIds(TestCase):
         self, mock_update_all
     ):
         # Arrange
-        mock_absent_list_ids = [str(ObjectId()), str(ObjectId())]
+        mock_absent_list_ids = [str(1), str(1)]
 
         mock_update_all.side_effect = Exception()
 

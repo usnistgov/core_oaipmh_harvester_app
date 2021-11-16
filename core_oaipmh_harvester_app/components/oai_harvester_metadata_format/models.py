@@ -1,10 +1,8 @@
 """
 OaiHarvesterMetadataFormat model
 """
-
-from django_mongoengine import fields
-from mongoengine import errors as mongoengine_errors
-from mongoengine.queryset.base import NULLIFY, CASCADE
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
@@ -17,14 +15,29 @@ from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 class OaiHarvesterMetadataFormat(OaiMetadataFormat):
     """Represents a metadata format for Oai-Pmh Harvester"""
 
-    raw = fields.DictField()
-    template = fields.ReferenceField(Template, reverse_delete_rule=NULLIFY, blank=True)
-    registry = fields.ReferenceField(
-        OaiRegistry, reverse_delete_rule=CASCADE, unique_with="metadata_prefix"
+    raw = models.JSONField()
+    template = models.ForeignKey(
+        Template, on_delete=models.SET_NULL, blank=True, null=True
     )
-    hash = fields.StringField(blank=True)
-    harvest = fields.BooleanField(default=False)
-    last_update = fields.DateTimeField(blank=True)
+    registry = models.ForeignKey(OaiRegistry, on_delete=models.CASCADE)
+    hash = models.CharField(blank=False, max_length=200)
+    harvest = models.BooleanField(default=False)
+    last_update = models.DateTimeField(blank=True, null=True)
+
+    # TODO: unique together with inherited field (metadata_prefix) gives migration error
+    # class Meta:
+    #     unique_together = ("registry", "metadata_prefix")
+
+    @staticmethod
+    def get_by_id(oai_harvester_metadata_format_id):
+        try:
+            return OaiHarvesterMetadataFormat.objects.get(
+                pk=oai_harvester_metadata_format_id
+            )
+        except ObjectDoesNotExist as e:
+            raise exceptions.DoesNotExist(str(e))
+        except Exception as e:
+            raise exceptions.ModelError(str(e))
 
     @staticmethod
     def get_all_by_registry_id(registry_id, order_by_field=None):
@@ -38,9 +51,12 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
             List of OaiHarvesterMetadataFormat
 
         """
-        return OaiHarvesterMetadataFormat.objects(registry=str(registry_id)).order_by(
-            order_by_field
-        )
+        queryset = OaiHarvesterMetadataFormat.objects.filter(registry=str(registry_id))
+
+        if order_by_field is not None:
+            queryset.order_by(order_by_field)
+
+        return queryset
 
     @staticmethod
     def get_all_by_list_registry_ids(list_registry_ids, order_by_field=None):
@@ -54,9 +70,14 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
             List of OaiHarvesterMetadataFormat.
 
         """
-        return OaiHarvesterMetadataFormat.objects(
+        queryset = OaiHarvesterMetadataFormat.objects.filter(
             registry__in=list_registry_ids
-        ).order_by(order_by_field)
+        )
+
+        if order_by_field is not None:
+            queryset.order_by(order_by_field)
+
+        return queryset
 
     @staticmethod
     def get_all_by_registry_id_and_harvest(registry_id, harvest, order_by_field=None):
@@ -71,9 +92,14 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
             List of OaiHarvesterMetadataFormat.
 
         """
-        return OaiHarvesterMetadataFormat.objects(
+        queryset = OaiHarvesterMetadataFormat.objects.filter(
             registry=str(registry_id), harvest=harvest
-        ).order_by(order_by_field)
+        )
+
+        if order_by_field is not None:
+            queryset.order_by(order_by_field)
+
+        return queryset
 
     @staticmethod
     def get_by_metadata_prefix_and_registry_id(metadata_prefix, registry_id):
@@ -92,10 +118,10 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
 
         """
         try:
-            return OaiHarvesterMetadataFormat.objects().get(
+            return OaiHarvesterMetadataFormat.objects.get(
                 metadata_prefix=metadata_prefix, registry=str(registry_id)
             )
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
             raise exceptions.ModelError(str(e))

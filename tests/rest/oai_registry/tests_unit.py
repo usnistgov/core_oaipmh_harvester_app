@@ -2,9 +2,8 @@
 """
 import datetime
 from unittest.case import TestCase
+from unittest.mock import patch, Mock
 
-from bson.objectid import ObjectId
-from mock.mock import patch, Mock
 from rest_framework import status
 
 from core_main_app.commons import exceptions
@@ -25,7 +24,7 @@ class TestSelectRegistry(TestCase):
     def setUp(self):
         super(TestSelectRegistry, self).setUp()
         self.data = {}
-        self.param = {"registry_id": ObjectId()}
+        self.param = {"registry_id": 1}
 
     def test_select_registry_unauthorized(self):
         # Arrange
@@ -126,7 +125,7 @@ class TestUpdateRegistryInfo(TestCase):
     def setUp(self):
         super(TestUpdateRegistryInfo, self).setUp()
         self.data = {}
-        self.param = {"registry_id": ObjectId()}
+        self.param = {"registry_id": 1}
 
     def test_update_registry_info_unauthorized(self):
         # Act
@@ -160,7 +159,7 @@ class TestUpdateRegistryConf(TestCase):
         super(TestUpdateRegistryConf, self).setUp()
         self.data = {"harvest_rate": 4000, "harvest": False}
         self.bad_data = {"harvest": False}
-        self.param = {"registry_id": str(ObjectId())}
+        self.param = {"registry_id": 1}
 
     def test_update_registry_info_unauthorized(self):
         # Act
@@ -211,7 +210,7 @@ class TestDeactivateRegistry(TestCase):
     def setUp(self):
         super(TestDeactivateRegistry, self).setUp()
         self.data = {}
-        self.param = {"registry_id": ObjectId()}
+        self.param = {"registry_id": 1}
 
     def test_deactivate_registry_unauthorized(self):
         # Act
@@ -245,7 +244,7 @@ class TestActivateRegistry(TestCase):
     def setUp(self):
         super(TestActivateRegistry, self).setUp()
         self.data = {}
-        self.param = {"registry_id": ObjectId()}
+        self.param = {"registry_id": 1}
 
     def test_activate_registry_unauthorized(self):
         # Act
@@ -280,7 +279,7 @@ class TestDeleteRegistry(TestCase):
     def setUp(self):
         super(TestDeleteRegistry, self).setUp()
         self.data = {}
-        self.param = {"registry_id": str(ObjectId())}
+        self.param = {"registry_id": 1}
 
     def test_delete_registry_unauthorized(self):
         # Act
@@ -314,7 +313,7 @@ class TestDeleteRegistry(TestCase):
 class TestHarvestRegistry(TestCase):
     def setUp(self):
         super(TestHarvestRegistry, self).setUp()
-        self.param = {"registry_id": str(ObjectId())}
+        self.param = {"registry_id": 1}
 
     @patch.object(OaiRegistry, "get_by_id")
     @patch.object(oai_registry_api, "_harvest_by_metadata_formats")

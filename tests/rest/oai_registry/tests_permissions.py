@@ -1,9 +1,9 @@
 """ Permissions Test for OAI Registry Rest API
 """
-from bson.objectid import ObjectId
+from unittest.mock import patch, Mock
+
 from django.db.models.query import QuerySet
 from django.test import SimpleTestCase
-from mock.mock import patch, Mock
 from rest_framework import status
 
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
@@ -27,7 +27,7 @@ class TestGetRegistry(SimpleTestCase):
     def setUp(self):
         super(TestGetRegistry, self).setUp()
         self.data = {}
-        self.param = {"registry_id": ObjectId()}
+        self.param = {"registry_id": 1}
 
     def test_anonymous_returns_http_403(self):
         # Act
@@ -76,7 +76,7 @@ class TestDeleteRegistry(SimpleTestCase):
     def setUp(self):
         super(TestDeleteRegistry, self).setUp()
         self.data = {}
-        self.param = {"registry_id": ObjectId()}
+        self.param = {"registry_id": 1}
 
     def test_anonymous_returns_http_403(self):
         # Act

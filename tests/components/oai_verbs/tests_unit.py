@@ -1,9 +1,9 @@
 """ Unit Test oai_verbs
 """
 from unittest.case import TestCase
+from unittest.mock import patch
 
 import requests
-from mock.mock import patch
 from rest_framework import status
 
 import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verbs_api

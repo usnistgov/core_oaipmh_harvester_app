@@ -1,7 +1,5 @@
 """OAI-PMH Query builder class
 """
-from bson.objectid import ObjectId
-
 from core_main_app.utils.query.mongo.query_builder import QueryBuilder
 
 
@@ -18,14 +16,7 @@ class OaiPmhQueryBuilder(QueryBuilder):
 
         """
         self.criteria.append(
-            {
-                "harvester_metadata_format": {
-                    "$in": [
-                        ObjectId(metadata_format_id)
-                        for metadata_format_id in list_metadata_format_ids
-                    ]
-                }
-            }
+            {"harvester_metadata_format": {"$in": list_metadata_format_ids}}
         )
 
     def add_not_deleted_criteria(self):
@@ -42,10 +33,4 @@ class OaiPmhQueryBuilder(QueryBuilder):
         Returns:
 
         """
-        self.criteria.append(
-            {
-                "registry": {
-                    "$in": [ObjectId(registry_id) for registry_id in list_registry_ids]
-                }
-            }
-        )
+        self.criteria.append({"registry": {"$in": list_registry_ids}})

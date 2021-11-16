@@ -18,17 +18,17 @@ def init_harvest():
         api as oai_registry_api,
     )
 
-    # Revoke all scheduled tasks
-    _revoke_all_scheduled_tasks()
+    try:
+        # Init all registry is_queued to False in case of a server reboot after an issue.
+        registries = oai_registry_api.get_all_activated_registry()
+        for registry in registries:
+            registry.is_queued = False
+            oai_registry_api.upsert(registry)
 
-    # Init all registry is_queued to False in case of a server reboot after an issue.
-    registries = oai_registry_api.get_all_activated_registry()
-    for registry in registries:
-        registry.is_queued = False
-        oai_registry_api.upsert(registry)
-
-    # Watch Registries
-    watch_registry_harvest_task.apply_async()
+        # Watch Registries
+        watch_registry_harvest_task.apply_async()
+    except Exception as exc:
+        logger.error(f"Impossible to start harvesting data: {str(exc)}")
 
 
 @shared_task(name="watch_registry_harvest_task")
@@ -141,9 +141,16 @@ def _stop_harvest_registry(registry):
         )
 
 
-def _revoke_all_scheduled_tasks():
+def revoke_all_scheduled_tasks():
     """Revoke all OAI-PMH scheduled tasks. Avoid having duplicate tasks when the
     server reboot."""
+    if not current_app.backend.is_async:
+        logger.warning(
+            "Task 'revoke_all_scheduled_tasks' has been disabled since broker has no async "
+            "capabilities"
+        )
+        return
+
     try:
         logger.info("START revoking OAI-PMH scheduled tasks.")
         if current_app.control.inspect().scheduled() is not None:

@@ -1,9 +1,8 @@
 """
 OaiRecord model
 """
-from django_mongoengine import fields
-from mongoengine import errors as mongoengine_errors
-from mongoengine.queryset.base import PULL, CASCADE
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
 from core_main_app.commons import exceptions
 from core_main_app.components.abstract_data.models import AbstractData
@@ -22,15 +21,13 @@ class OaiRecord(AbstractData):
     A record object
     """
 
-    identifier = fields.StringField()
-    deleted = fields.BooleanField()
-    harvester_sets = fields.ListField(
-        fields.ReferenceField(OaiHarvesterSet, reverse_delete_rule=PULL), blank=True
+    identifier = models.CharField(blank=False, max_length=200)
+    deleted = models.BooleanField()
+    harvester_sets = models.ManyToManyField(OaiHarvesterSet, blank=True, null=True)
+    harvester_metadata_format = models.ForeignKey(
+        OaiHarvesterMetadataFormat, on_delete=models.CASCADE
     )
-    harvester_metadata_format = fields.ReferenceField(
-        OaiHarvesterMetadataFormat, reverse_delete_rule=CASCADE
-    )
-    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE)
+    registry = models.ForeignKey(OaiRegistry, on_delete=models.CASCADE)
 
     @staticmethod
     def get_by_id(oai_record_id):
@@ -47,8 +44,8 @@ class OaiRecord(AbstractData):
 
         """
         try:
-            return OaiRecord.objects().get(pk=str(oai_record_id))
-        except mongoengine_errors.DoesNotExist as e:
+            return OaiRecord.objects.get(pk=str(oai_record_id))
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
             raise exceptions.ModelError(str(e))
@@ -69,11 +66,11 @@ class OaiRecord(AbstractData):
 
         """
         try:
-            return OaiRecord.objects().get(
+            return OaiRecord.objects.get(
                 identifier=identifier,
                 harvester_metadata_format=harvester_metadata_format,
             )
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
             raise exceptions.ModelError(str(e))
@@ -85,7 +82,7 @@ class OaiRecord(AbstractData):
         Returns: List of OaiRecord.
 
         """
-        return OaiRecord.objects().all()
+        return OaiRecord.objects.all()
 
     @staticmethod
     def get_all_by_registry_id(registry_id, order_by_field):
@@ -99,7 +96,9 @@ class OaiRecord(AbstractData):
             List of OaiRecord.
 
         """
-        return OaiRecord.objects(registry=str(registry_id)).order_by(*order_by_field)
+        return OaiRecord.objects.filter(registry=str(registry_id)).order_by(
+            *[field.replace("+", "") for field in order_by_field]
+        )
 
     @staticmethod
     def get_count_by_registry_id(registry_id):
@@ -112,7 +111,7 @@ class OaiRecord(AbstractData):
             Number of OaiRecord (int).
 
         """
-        return OaiRecord.objects(registry=str(registry_id)).count()
+        return OaiRecord.objects.filter(registry=str(registry_id)).count()
 
     @staticmethod
     def delete_all_by_registry_id(registry_id):
@@ -156,7 +155,12 @@ class OaiRecord(AbstractData):
             Results of the query.
 
         """
-        return OaiRecord.objects(__raw__=query).order_by(*order_by_field)
+        queryset = OaiRecord.objects.filter(query)
+
+        if order_by_field:
+            queryset.order_by(*[field.replace("+", "") for field in order_by_field])
+
+        return queryset.all()
 
     @staticmethod
     def aggregate(pipeline):

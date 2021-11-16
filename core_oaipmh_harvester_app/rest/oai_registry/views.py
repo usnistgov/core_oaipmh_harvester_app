@@ -428,9 +428,9 @@ class Harvest(APIView):
             # Get metadata formats ids and sets ids related to the registry.
             registry_metadata_formats = oai_metadata_format_api.get_all_by_registry_id(
                 registry_id
-            ).values_list("id")
+            ).values_list("id", flat=True)
             registry_sets = oai_set_api.get_all_by_registry_id(registry_id).values_list(
-                "id"
+                "id", flat=True
             )
             # Set all metadata_formats to false (Do not harvest)
             oai_metadata_format_api.update_for_all_harvest_by_list_ids(

@@ -15,7 +15,8 @@ def upsert_oai_record(oai_record):
     """
     # Set the title with the OAI identifier.
     oai_record.title = oai_record.identifier
-    return oai_record.convert_and_save()
+    oai_record.convert_and_save()
+    return oai_record
 
 
 def get_oai_record_by_identifier_and_metadata_format(

@@ -5,10 +5,30 @@ from django.contrib import admin
 from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import re_path
 
+from core_main_app.admin import core_admin_site
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
+    OaiHarvesterMetadataFormat,
+)
+from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set.models import (
+    OaiHarvesterMetadataFormatSet,
+)
+from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
+    OaiHarvesterSet,
+)
+from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
+from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
+from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.views.admin import (
     views as admin_views,
     ajax as admin_ajax,
 )
+
+admin.site.register(OaiHarvesterMetadataFormat)
+admin.site.register(OaiHarvesterMetadataFormatSet)
+admin.site.register(OaiHarvesterSet)
+admin.site.register(OaiIdentify)
+admin.site.register(OaiRecord)
+admin.site.register(OaiRegistry)
 
 admin_urls = [
     re_path(
@@ -103,5 +123,5 @@ admin_urls = [
     ),
 ]
 
-urls = admin.site.get_urls()
-admin.site.get_urls = lambda: admin_urls + urls
+urls = core_admin_site.get_urls()
+core_admin_site.get_urls = lambda: admin_urls + urls

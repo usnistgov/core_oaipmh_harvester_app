@@ -21,10 +21,10 @@ from core_oaipmh_harvester_app.components.oai_harvester_set import (
     api as oai_harvester_set_api,
 )
 from core_oaipmh_harvester_app.components.oai_identify import api as oai_identify_api
+from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
 from core_oaipmh_harvester_app.system import api as oai_harvester_system_api
-from core_oaipmh_harvester_app.utils import transform_operations
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,8 @@ def upsert(oai_registry):
     Returns: The OaiRegistry instance.
 
     """
-    return oai_registry.save()
+    oai_registry.save()
+    return oai_registry
 
 
 def get_by_id(oai_registry_id):
@@ -91,7 +92,7 @@ def get_all_activated_registry(order_by_field=None):
 
     """
     return OaiRegistry.get_all_by_is_activated(
-        is_activated=True, order_by_field=order_by_field
+        is_activated=True, order_by_field=order_by_field if order_by_field else []
     )
 
 
@@ -149,7 +150,7 @@ def add_registry_by_url(url, harvest_rate, harvest, request=None):
             identify_response.repository_name,
             identify_response.description,
         )
-        registry = upsert(registry)
+        upsert(registry)
         _upsert_identify_for_registry(identify_response, registry)
         for set_ in sets_response:
             _upsert_set_for_registry(set_, registry)
@@ -161,7 +162,7 @@ def add_registry_by_url(url, harvest_rate, harvest, request=None):
         return registry
     except Exception as e:
         # Manual Rollback
-        if registry is not None:
+        if registry.pk is not None:
             registry.delete()
 
         raise oai_pmh_exceptions.OAIAPILabelledException(
@@ -582,14 +583,10 @@ def _harvest_records(
 
         if http_response.status_code == status.HTTP_200_OK:
             try:
-                list_oai_record = (
-                    transform_operations.transform_dict_record_to_oai_record(
-                        http_response.data, registry_all_sets
+                for record in http_response.data:
+                    _upsert_record_for_registry(
+                        record, metadata_format, registry, registry_all_sets
                     )
-                )
-
-                for oai_record in list_oai_record:
-                    _upsert_record_for_registry(oai_record, metadata_format, registry)
             except Exception as e:
                 errors.append(
                     {"status_code": status.HTTP_400_BAD_REQUEST, "error": str(e)}
@@ -608,7 +605,7 @@ def _harvest_records(
     return errors
 
 
-def _upsert_record_for_registry(record, metadata_format, registry):
+def _upsert_record_for_registry(record, metadata_format, registry, registry_sets):
     """Adds or updates an OaiRecord object for a registry.
 
     Args:
@@ -618,24 +615,47 @@ def _upsert_record_for_registry(record, metadata_format, registry):
 
     """
     try:
-        record_db = (
+        record["pk"] = None
+        record["xml_content"] = (
+            str(record["metadata"]) if record["metadata"] is not None else None
+        )
+
+        saved_record = (
             oai_harvester_system_api.get_oai_record_by_identifier_and_metadata_format(
-                record.identifier, metadata_format
+                record["identifier"], metadata_format
             )
         )
-        # No xml_content means that the record has no metadata (Deleted). Do no change the
-        # xml_content already in database
-        if record.xml_content is None:
-            record.xml_content = record_db.xml_content
 
-        record.id = record_db.id
+        # No xml_content means that the record has been deleted remotely. Do not change
+        # the xml_content already in DB.
+        if record["xml_content"] is None:
+            record["xml_content"] = saved_record.xml_content
+
+        record["pk"] = saved_record.pk
     except exceptions.DoesNotExist:
         pass
 
-    record.harvester_metadata_format = metadata_format
-    record.registry = registry
+    oai_record = OaiRecord(
+        identifier=record["identifier"],
+        last_modification_date=UTCdatetime.utc_datetime_iso8601_to_datetime(
+            record["datestamp"]
+        ),
+        deleted=record["deleted"],
+        xml_content=record["xml_content"],
+        registry=registry,
+        harvester_metadata_format=metadata_format,
+    )
 
-    oai_harvester_system_api.upsert_oai_record(record)
+    if record["pk"] is not None:
+        oai_record.pk = record["pk"]
+
+    oai_harvester_system_api.upsert_oai_record(oai_record)
+
+    oai_record.harvester_sets.set(
+        [x for x in registry_sets if x.set_spec in record["sets"]]
+    )
+
+    return oai_record
 
 
 def _handle_deleted_set(registry_id, sets_response):

@@ -44,7 +44,7 @@ def get_by_id(oai_harvester_metadata_format_id):
 
     """
     return OaiHarvesterMetadataFormat.get_by_id(
-        oai_metadata_format_id=oai_harvester_metadata_format_id
+        oai_harvester_metadata_format_id=oai_harvester_metadata_format_id
     )
 
 

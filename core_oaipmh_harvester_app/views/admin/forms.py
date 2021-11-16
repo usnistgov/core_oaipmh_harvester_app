@@ -3,7 +3,6 @@ from django.core.validators import MinValueValidator
 
 import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
-from django_mongoengine.forms import DocumentForm
 
 VERBS = (
     ("0", "Pick one"),
@@ -50,7 +49,7 @@ class AddRegistryForm(forms.Form):
     )
 
 
-class EditRegistryForm(DocumentForm):
+class EditRegistryForm(forms.ModelForm):
     harvest_rate = forms.IntegerField(
         label="Harvest Rate (seconds)",
         validators=[MinValueValidator(0)],
@@ -64,7 +63,7 @@ class EditRegistryForm(DocumentForm):
     )
 
     class Meta(object):
-        document = OaiRegistry
+        model = OaiRegistry
         fields = ["harvest_rate", "harvest"]
 
 
@@ -80,7 +79,7 @@ class FormDataModelChoiceFieldSet(forms.ModelMultipleChoiceField):
         return obj.set_name
 
 
-class EditHarvestRegistryForm(DocumentForm):
+class EditHarvestRegistryForm(forms.ModelForm):
     """
     A EditHarvestRegistryForm form
     """
@@ -99,7 +98,7 @@ class EditHarvestRegistryForm(DocumentForm):
     )
 
     class Meta(object):
-        document = OaiRegistry
+        model = OaiRegistry
         fields = ["metadata_formats", "sets"]
 
     def __init__(self, *args, **kwargs):

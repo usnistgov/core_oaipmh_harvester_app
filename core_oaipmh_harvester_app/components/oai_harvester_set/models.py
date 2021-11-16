@@ -1,10 +1,8 @@
 """
 OaiHarvesterSet model
 """
-
-from django_mongoengine import fields
-from mongoengine import errors as mongoengine_errors
-from mongoengine.queryset.base import CASCADE
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
 from core_main_app.commons import exceptions
 from core_oaipmh_common_app.components.oai_set.models import OaiSet
@@ -14,11 +12,12 @@ from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 class OaiHarvesterSet(OaiSet):
     """Represents a set for Oai-Pmh Harvester"""
 
-    raw = fields.DictField()
-    registry = fields.ReferenceField(
-        OaiRegistry, reverse_delete_rule=CASCADE, unique_with="set_spec"
-    )
-    harvest = fields.BooleanField(blank=True)
+    raw = models.JSONField()
+    registry = models.ForeignKey(OaiRegistry, on_delete=models.CASCADE)
+    harvest = models.BooleanField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ("registry", "set_spec")
 
     @staticmethod
     def get_all_by_registry_id(registry_id, order_by_field=None):
@@ -32,9 +31,12 @@ class OaiHarvesterSet(OaiSet):
             List of OaiHarvesterSet.
 
         """
-        return OaiHarvesterSet.objects(registry=str(registry_id)).order_by(
-            order_by_field
-        )
+        queryset = OaiHarvesterSet.objects.filter(registry=str(registry_id))
+
+        if order_by_field is not None:
+            queryset.order_by(order_by_field)
+
+        return queryset
 
     @staticmethod
     def get_all_by_registry_id_and_harvest(registry_id, harvest, order_by_field=None):
@@ -49,9 +51,14 @@ class OaiHarvesterSet(OaiSet):
             List of OaiHarvesterSet.
 
         """
-        return OaiHarvesterSet.objects(
+        queryset = OaiHarvesterSet.objects.filter(
             registry=str(registry_id), harvest=harvest
-        ).order_by(order_by_field)
+        )
+
+        if order_by_field is not None:
+            queryset.order_by(order_by_field)
+
+        return queryset
 
     @staticmethod
     def get_by_set_spec_and_registry_id(set_spec, registry_id):
@@ -69,10 +76,10 @@ class OaiHarvesterSet(OaiSet):
 
         """
         try:
-            return OaiHarvesterSet.objects().get(
+            return OaiHarvesterSet.objects.get(
                 set_spec=set_spec, registry=str(registry_id)
             )
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
             raise exceptions.ModelError(str(e))

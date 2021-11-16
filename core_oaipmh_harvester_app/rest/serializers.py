@@ -2,8 +2,7 @@
     Serializers used throughout the Rest API
 """
 
-from rest_framework.serializers import CharField, IntegerField, BooleanField, ListField
-from rest_framework_mongoengine.serializers import DocumentSerializer
+from rest_framework import serializers
 
 from core_main_app.commons.serializers import BasicSerializer
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
@@ -11,7 +10,7 @@ from core_oaipmh_harvester_app.components.oai_registry import api as oai_registr
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 
-class RegistrySerializer(DocumentSerializer):
+class RegistrySerializer(serializers.ModelSerializer):
     class Meta(object):
         model = OaiRegistry
         fields = "__all__"
@@ -41,19 +40,21 @@ class UpdateRegistrySerializer(BasicSerializer):
         instance.harvest = validated_data.get("harvest", instance.harvest)
         return oai_registry_api.upsert(instance)
 
-    harvest_rate = IntegerField(required=True)
-    harvest = BooleanField(required=True)
+    harvest_rate = serializers.IntegerField(required=True)
+    harvest = serializers.BooleanField(required=True)
 
 
 class HarvestSerializer(BasicSerializer):
-    metadata_formats = ListField(child=CharField(), required=False)
-    sets = ListField(child=CharField(), required=False)
+    metadata_formats = serializers.ListField(
+        child=serializers.CharField(), required=False
+    )
+    sets = serializers.ListField(child=serializers.CharField(), required=False)
 
 
-class OaiRecordSerializer(DocumentSerializer):
+class OaiRecordSerializer(serializers.ModelSerializer):
     """OaiRecord serializer"""
 
-    xml_content = CharField()
+    xml_content = serializers.CharField()
 
     class Meta(object):
         """Meta"""

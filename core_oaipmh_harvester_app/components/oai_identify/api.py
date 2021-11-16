@@ -22,7 +22,8 @@ def upsert(oai_identify):
         except exceptions.XMLError:
             oai_identify.raw = {}
 
-    return oai_identify.save()
+    oai_identify.save()
+    return oai_identify
 
 
 def get_by_registry_id(registry_id):

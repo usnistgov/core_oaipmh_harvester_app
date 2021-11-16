@@ -16,7 +16,8 @@ def upsert(oai_harvester_set):
     Returns: OaiHarvesterSet instance.
 
     """
-    return oai_harvester_set.save()
+    oai_harvester_set.save()
+    return oai_harvester_set
 
 
 def delete(oai_harvester_set):

@@ -1,8 +1,9 @@
 """ Int Test Rest OaiRegistry
 """
 
+from unittest.mock import patch
+
 import requests
-from mock.mock import patch
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import (

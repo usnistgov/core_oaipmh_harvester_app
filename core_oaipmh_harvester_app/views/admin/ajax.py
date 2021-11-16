@@ -17,6 +17,7 @@ from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
 from django.urls import reverse_lazy
 from django.utils import formats
+from django.utils.html import escape
 from rest_framework import status
 
 import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as oai_metadata_format_api
@@ -34,7 +35,6 @@ from core_oaipmh_harvester_app.views.admin.forms import (
     EditHarvestRegistryForm,
 )
 from xml_utils.xsd_tree.xsd_tree import XSDTree
-from django.utils.html import escape
 
 logger = logging.getLogger(__name__)
 
@@ -158,8 +158,8 @@ def check_registry(request):
 
 class EditRegistryView(EditObjectModalView):
     form_class = EditRegistryForm
-    document = OaiRegistry
-    success_url = reverse_lazy("admin:core_oaipmh_harvester_app_registries")
+    model = OaiRegistry
+    success_url = reverse_lazy("core-admin:core_oaipmh_harvester_app_registries")
     success_message = "Data provider edited with success."
 
     def _save(self, form):
@@ -208,8 +208,8 @@ def view_registry(request):
 class EditHarvestRegistryView(EditObjectModalView):
     template_name = "core_oaipmh_harvester_app/admin/registries/list/modals/edit_harvest_registry_form.html"
     form_class = EditHarvestRegistryForm
-    document = OaiRegistry
-    success_url = reverse_lazy("admin:core_oaipmh_harvester_app_registries")
+    model = OaiRegistry
+    success_url = reverse_lazy("core-admin:core_oaipmh_harvester_app_registries")
     success_message = "Data provider edited with success."
     metadata_formats = None
     sets = None
@@ -222,17 +222,22 @@ class EditHarvestRegistryView(EditObjectModalView):
             sets = form.cleaned_data.get("sets", [])
             oai_metadata_format_api.update_for_all_harvest_by_list_ids(
                 oai_metadata_format_api.get_all_by_registry_id(registry_id).values_list(
-                    "id"
+                    "id", flat=True
                 ),
                 False,
             )
             oai_metadata_format_api.update_for_all_harvest_by_list_ids(
-                metadata_formats.values_list("id"), True
+                metadata_formats.values_list("id", flat=True), True
             )
             oai_set_api.update_for_all_harvest_by_list_ids(
-                oai_set_api.get_all_by_registry_id(registry_id).values_list("id"), False
+                oai_set_api.get_all_by_registry_id(registry_id).values_list(
+                    "id", flat=True
+                ),
+                False,
             )
-            oai_set_api.update_for_all_harvest_by_list_ids(sets.values_list("id"), True)
+            oai_set_api.update_for_all_harvest_by_list_ids(
+                sets.values_list("id", flat=True), True
+            )
         except Exception as e:
             form.add_error(None, str(e))
 

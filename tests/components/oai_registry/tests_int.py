@@ -1,9 +1,9 @@
 """ Int Test OaiRegistry
 """
 
+from unittest.mock import patch
+
 import requests
-from bson.objectid import ObjectId
-from mock.mock import patch
 from rest_framework import status
 
 from core_main_app.commons import exceptions
@@ -414,7 +414,7 @@ class TestUpsertIdentifyForRegistry(MongoIntegrationBaseTestCase):
         """Test upsert create"""
         # Arrange
         oai_identify = OaiPmhMock.mock_oai_identify()
-        self.fixture.insert_registry(insert_related_collections=False)
+        self.fixture.insert_registry(insert_related_collections=True)
 
         # Act
         oai_registry_api._upsert_identify_for_registry(
@@ -540,7 +540,7 @@ class TestUpsertSetForRegistry(MongoIntegrationBaseTestCase):
         """Test upsert create"""
         # Arrange
         oai_harvester_set = OaiPmhMock.mock_oai_first_set()
-        self.fixture.insert_registry(insert_related_collections=False)
+        self.fixture.insert_registry(insert_related_collections=True)
 
         # Act
         oai_registry_api._upsert_identify_for_registry(
@@ -572,20 +572,19 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         self.fixture.insert_registry()
 
         # Arrange
-        oai_record = self.fixture.oai_records[0]
+        oai_record = OaiPmhMock.mock_oai_first_record(as_json=True)
         metadata_format = self.fixture.oai_metadata_formats[0]
         identifier = "fake_identifier"
-        oai_record.identifier = identifier
+        oai_record["identifier"] = identifier
         mock_convert_file.return_value = None
         mock_user = create_mock_user("1", is_anonymous=False)
 
         # Act
-        oai_registry_api._upsert_record_for_registry(
-            oai_record, metadata_format, self.fixture.registry
+        record_in_database = oai_registry_api._upsert_record_for_registry(
+            oai_record, metadata_format, self.fixture.registry, []
         )
 
         # Assert
-        record_in_database = oai_record_api.get_by_id(oai_record.id, mock_user)
         self.assertEquals(record_in_database.identifier, identifier)
         self.assertEquals(record_in_database.harvester_metadata_format, metadata_format)
 
@@ -593,25 +592,27 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
     def test_upsert_creates_if_does_not_exist(self, mock_convert_file):
         """Test upsert create"""
         # Arrange
-        oai_record = OaiPmhMock.mock_oai_first_record()
-        metadata_format = OaiHarvesterMetadataFormat()
-        metadata_format.id = ObjectId()
+        oai_record = OaiPmhMock.mock_oai_first_record(as_json=True)
         self.fixture.insert_registry(insert_related_collections=False)
+        metadata_format = OaiHarvesterMetadataFormat(
+            raw={}, registry=self.fixture.registry
+        )
+        metadata_format.save()
         mock_convert_file.return_value = None
 
         # Act
-        oai_registry_api._upsert_record_for_registry(
-            oai_record, metadata_format, self.fixture.registry
+        saved_record = oai_registry_api._upsert_record_for_registry(
+            oai_record, metadata_format, self.fixture.registry, []
         )
 
         # Assert
         record_in_database = (
             oai_harvester_system_api.get_oai_record_by_identifier_and_metadata_format(
-                oai_record.identifier, metadata_format
+                oai_record["identifier"], metadata_format
             )
         )
 
-        self.assertEquals(record_in_database, oai_record)
+        self.assertEquals(record_in_database, saved_record)
 
 
 class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
@@ -795,14 +796,14 @@ class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
         metadata_format_in_database = oai_harvester_metadata_format_api.get_by_id(
             metadata_format.id
         )
-        self.assertNotEquals(metadata_format_in_database.last_update, None)
+        self.assertIsNotNone(metadata_format_in_database.last_update)
         # Metadata Format + Set date
         oai_h_mf_set = (
             oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(
                 metadata_format, set_
             )
         )
-        self.assertNotEquals(oai_h_mf_set.last_update, None)
+        self.assertIsNotNone(oai_h_mf_set.last_update)
 
 
 class TestHarvestRegistry(MongoIntegrationBaseTestCase):

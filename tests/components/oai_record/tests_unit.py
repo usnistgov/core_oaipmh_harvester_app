@@ -1,18 +1,12 @@
 import datetime
 from unittest.case import TestCase
-
-from bson.objectid import ObjectId
-from django.contrib.auth.models import User
-from mock.mock import Mock, patch
+from unittest.mock import Mock, patch
 
 import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
 from core_main_app.commons import exceptions
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
-)
-from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
-    OaiHarvesterSet,
 )
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
@@ -36,7 +30,7 @@ class TestOaiRecordGetById(TestCase):
     @patch.object(OaiRecord, "get_by_id")
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = 1
         mock_user = create_mock_user("1", is_anonymous=False)
 
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error.")
@@ -48,7 +42,7 @@ class TestOaiRecordGetById(TestCase):
     @patch.object(OaiRecord, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
         # Arrange
-        mock_absent_id = ObjectId()
+        mock_absent_id = 1
         mock_user = create_mock_user("1", is_anonymous=False)
 
         mock_get_by_id.side_effect = exceptions.ModelError("Error.")
@@ -62,7 +56,7 @@ class TestOaiRecordGetAllByRegistryId(TestCase):
     @patch.object(OaiRecord, "get_all_by_registry_id")
     def test_get_all_by_registry_id_return_object(self, mock_get_all):
         _generic_get_all_test(
-            self, mock_get_all, oai_record_api.get_all_by_registry_id(ObjectId())
+            self, mock_get_all, oai_record_api.get_all_by_registry_id(1)
         )
 
 
@@ -76,7 +70,7 @@ class TestOaiRecordGetCountByRegistryId(TestCase):
     @patch.object(OaiRecord, "get_count_by_registry_id")
     def test_get_count_by_registry_id_return_number(self, mock_get):
         # Arrange
-        mock_registry_id = ObjectId()
+        mock_registry_id = 1
         mock_user = create_mock_user("1", is_anonymous=False)
 
         mock_get.return_value = 2
@@ -110,9 +104,7 @@ class TestOaiRecordExecuteFullTextQuery(TestCase):
         _generic_get_all_test(
             self,
             mock_execute,
-            oai_record_api.execute_full_text_query(
-                "", [ObjectId(), ObjectId()], mock_user
-            ),
+            oai_record_api.execute_full_text_query("", [1, 1], mock_user),
         )
 
 
@@ -169,7 +161,7 @@ def _set_oai_record_fields(oai_record):
     oai_record.identifier = "oai:test/id.0006"
     oai_record.last_modification_date = datetime.datetime.now()
     oai_record.deleted = False
-    oai_record.harvester_sets = [OaiHarvesterSet(), OaiHarvesterSet()]
+    # oai_record.harvester_sets = [OaiHarvesterSet(), OaiHarvesterSet()]
     oai_record.harvester_metadata_format = OaiHarvesterMetadataFormat()
     oai_record.registry = OaiRegistry()
     oai_record.xml_content = "<test><message>Hello</message></test>"

@@ -3,12 +3,12 @@
 import json
 from abc import ABCMeta, abstractmethod
 
-from bson.objectid import ObjectId
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
+import core_main_app.components.data.api as data_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
     api as oai_harvester_metadata_format_api,
 )
@@ -68,13 +68,16 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
             query = self.request.data.get("query", None)
             templates = self.request.data.get("templates", "[]")
             registries = self.get_registries()
-            order_by_field = self.request.data.get("order_by_field", "").split(",")
+            order_by_field = self.request.data.get("order_by_field", None)
+
+            if order_by_field:
+                order_by_field = order_by_field.split(",")
 
             if query is not None:
                 # prepare query
                 raw_query = self.build_query(query, templates, registries)
                 # execute query
-                data_list = self.execute_raw_query(raw_query, order_by_field)
+                data_list = self.execute_json_query(raw_query, order_by_field)
                 # build and return response
                 return self.build_response(data_list)
             else:
@@ -107,14 +110,14 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
             registries = json.loads(registries)
 
         # if registries, check if activated
-        list_activated_registry = (
-            oai_registry_api.get_all_activated_registry().values_list("id")
+        list_activated_registry = list(
+            oai_registry_api.get_all_activated_registry().values_list("id", flat=True)
         )
         if len(registries) > 0:
             activated_registries = [
-                str(id_)
-                for id_ in registries
-                if ObjectId(id_) in list_activated_registry
+                activated_registy_id
+                for activated_registy_id in registries
+                if activated_registy_id in list_activated_registry
             ]
         else:
             activated_registries = list_activated_registry
@@ -144,7 +147,7 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
         # create a raw query
         return query_builder.get_raw_query()
 
-    def execute_raw_query(self, raw_query, order_by_field):
+    def execute_json_query(self, raw_query, order_by_field):
         """Execute the raw query in database
 
         Args:
@@ -156,7 +159,7 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
 
             Results of the query
         """
-        return oai_record_api.execute_query(
+        return oai_record_api.execute_json_query(
             raw_query, self.request.user, order_by_field
         )
 
