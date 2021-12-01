@@ -23,7 +23,7 @@ class OaiRecord(AbstractData):
 
     identifier = models.CharField(blank=False, max_length=200)
     deleted = models.BooleanField()
-    harvester_sets = models.ManyToManyField(OaiHarvesterSet, blank=True, null=True)
+    harvester_sets = models.ManyToManyField(OaiHarvesterSet, blank=True)
     harvester_metadata_format = models.ForeignKey(
         OaiHarvesterMetadataFormat, on_delete=models.CASCADE
     )

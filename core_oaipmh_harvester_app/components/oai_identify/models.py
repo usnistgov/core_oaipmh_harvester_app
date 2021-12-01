@@ -25,7 +25,7 @@ class OaiIdentify(models.Model):
     sample_identifier = models.CharField(blank=True, null=True, max_length=200)
     scheme = models.CharField(blank=True, null=True, max_length=200)
     raw = models.JSONField(blank=True, null=True)
-    registry = models.ForeignKey(OaiRegistry, on_delete=models.CASCADE, unique=True)
+    registry = models.OneToOneField(OaiRegistry, on_delete=models.CASCADE, unique=True)
 
     @staticmethod
     def get_by_registry_id(registry_id):

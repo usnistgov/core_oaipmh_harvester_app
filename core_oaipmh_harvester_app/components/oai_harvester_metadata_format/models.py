@@ -24,9 +24,8 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
     harvest = models.BooleanField(default=False)
     last_update = models.DateTimeField(blank=True, null=True)
 
-    # TODO: unique together with inherited field (metadata_prefix) gives migration error
-    # class Meta:
-    #     unique_together = ("registry", "metadata_prefix")
+    class Meta:
+        unique_together = ("registry", "metadata_prefix")
 
     @staticmethod
     def get_by_id(oai_harvester_metadata_format_id):
