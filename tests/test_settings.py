@@ -44,6 +44,7 @@ TEMPLATES = [
 OAI_HARVESTER_ROOT = dirname(realpath(__file__))
 
 SSL_CERTIFICATES_DIR = True
+CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 MOCK_DATABASE_NAME = "db_mock"
 MOCK_DATABASE_HOST = "mongomock://localhost"
