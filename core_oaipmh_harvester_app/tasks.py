@@ -179,3 +179,40 @@ def _get_all_oai_tasks_full_name():
 
     """
     return [watch_registry_harvest_task.__name__, harvest_task.__name__]
+
+
+@shared_task
+def index_mongo_oai_record(oai_record_id):
+    """Index OaiRecord in MongoDB"""
+    try:
+        from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
+
+        oai_record = OaiRecord.objects.get(pk=oai_record_id)
+        try:
+            from core_oaipmh_harvester_app.components.mongo.models import MongoOaiRecord
+
+            mongo_oai_record = MongoOaiRecord.init_mongo_oai_record(oai_record)
+            mongo_oai_record.save()
+        except Exception as e:
+            logger.error(
+                f"ERROR : An error occurred while indexing oai record : {str(e)}"
+            )
+    except Exception as e:
+        logger.error(f"ERROR : An error occurred while indexing oai record : {str(e)}")
+
+
+@shared_task
+def delete_mongo_oai_record(oai_record_id):
+    """Delete Oai Record in MongoDB"""
+    try:
+        try:
+            from core_oaipmh_harvester_app.components.mongo.models import MongoOaiRecord
+
+            mongo_oai_record = MongoOaiRecord.objects.get(id=oai_record_id)
+            mongo_oai_record.delete()
+        except Exception as e:
+            logger.error(
+                f"ERROR : An error occurred while deleting oai record : {str(e)}"
+            )
+    except Exception as e:
+        logger.error(f"ERROR : An error occurred while deleting oai record : {str(e)}")

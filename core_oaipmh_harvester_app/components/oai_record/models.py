@@ -1,12 +1,12 @@
 """
 OaiRecord model
 """
+from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from core_main_app.commons import exceptions
 from core_main_app.components.abstract_data.models import AbstractData
-from core_main_app.utils.databases.pymongo_database import get_full_text_query
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -28,6 +28,11 @@ class OaiRecord(AbstractData):
         OaiHarvesterMetadataFormat, on_delete=models.CASCADE
     )
     registry = models.ForeignKey(OaiRegistry, on_delete=models.CASCADE)
+
+    class Meta:
+        indexes = [
+            GinIndex(fields=["vector_column"]),
+        ]
 
     @staticmethod
     def get_by_id(oai_record_id):
@@ -124,26 +129,6 @@ class OaiRecord(AbstractData):
         OaiRecord.get_all_by_registry_id(registry_id, []).delete()
 
     @staticmethod
-    def execute_full_text_query(text, list_metadata_format_id):
-        """Execute full text query on OaiRecord data collection.
-
-        Args:
-            text: Keywords.
-            list_metadata_format_id: List of metadata format id to search on.
-
-        Returns: List of OaiRecord.
-
-        """
-        full_text_query = get_full_text_query(text)
-        # only no deleted records, add harvester_metadata_format criteria
-        full_text_query.update(
-            {"deleted": False},
-            {"harvester_metadata_format__id": {"$in": list_metadata_format_id}},
-        )
-
-        return OaiRecord.objects.find(full_text_query)
-
-    @staticmethod
     def execute_query(query, order_by_field):
         """Executes a query on the OaiRecord collection.
 
@@ -161,15 +146,3 @@ class OaiRecord(AbstractData):
             queryset.order_by(*[field.replace("+", "") for field in order_by_field])
 
         return queryset.all()
-
-    @staticmethod
-    def aggregate(pipeline):
-        """Execute an aggregate on the Data collection.
-
-        Args:
-            pipeline:
-
-        Returns:
-
-        """
-        return OaiRecord.objects.aggregate(*pipeline)

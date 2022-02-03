@@ -96,18 +96,6 @@ class TestOaiRecordDelete(TestCase):
             oai_record_api.delete(oai_record)
 
 
-class TestOaiRecordExecuteFullTextQuery(TestCase):
-    @patch.object(OaiRecord, "execute_full_text_query")
-    def test_oai_record_execute_full_text_query_return_collection(self, mock_execute):
-        mock_user = create_mock_user("1", is_anonymous=False)
-
-        _generic_get_all_test(
-            self,
-            mock_execute,
-            oai_record_api.execute_full_text_query("", [1, 1], mock_user),
-        )
-
-
 def _generic_get_all_test(self, mock_get_all, act_function):
     # Arrange
     mock_oai_record1 = _create_mock_oai_record()

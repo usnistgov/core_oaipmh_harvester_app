@@ -3,11 +3,14 @@ OaiRecord API
 """
 from core_main_app.access_control import api as main_access_control_api
 from core_main_app.access_control.decorators import access_control
-from core_main_app.settings import DATA_SORTING_FIELDS
+from core_main_app.settings import DATA_SORTING_FIELDS, MONGODB_INDEXING
 from core_main_app.utils.query.mongo.prepare import (
     convert_to_django,
 )
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
+
+if MONGODB_INDEXING:
+    from core_oaipmh_harvester_app.components.mongo.api import execute_mongo_query
 
 
 @access_control(main_access_control_api.can_anonymous_access_public_data)
@@ -82,20 +85,6 @@ def delete(oai_record):
 
 
 @access_control(main_access_control_api.can_anonymous_access_public_data)
-def execute_full_text_query(text, list_metadata_format_id, user):
-    """Execute full text query on OaiRecord data collection.
-
-    Args:
-        text: Keywords.
-        list_metadata_format_id: List of metadata format id to search on.
-
-    Returns: List of OaiRecord.
-
-    """
-    return OaiRecord.execute_full_text_query(text, list_metadata_format_id)
-
-
-@access_control(main_access_control_api.can_anonymous_access_public_data)
 def execute_query(query, user, order_by_field=DATA_SORTING_FIELDS):
     """Executes a query on the OaiRecord collection.
 
@@ -111,6 +100,7 @@ def execute_query(query, user, order_by_field=DATA_SORTING_FIELDS):
     return OaiRecord.execute_query(query, order_by_field)
 
 
+@access_control(main_access_control_api.can_anonymous_access_public_data)
 def execute_json_query(json_query, user, order_by_field=DATA_SORTING_FIELDS):
     """Converts JSON query to ORM syntax and call execute query.
 
@@ -122,20 +112,9 @@ def execute_json_query(json_query, user, order_by_field=DATA_SORTING_FIELDS):
     Returns:
 
     """
+    if MONGODB_INDEXING:
+        return execute_mongo_query(json_query, user, order_by_field)
     # convert JSON query to Django syntax
     query = convert_to_django(query_dict=json_query)
     # execute query and return results
     return execute_query(query, user, order_by_field)
-
-
-@access_control(main_access_control_api.can_anonymous_access_public_data)
-def aggregate(pipeline, user):
-    """Execute an aggregate on the OaiRecord collection.
-
-    Args:
-        pipeline:
-
-    Returns:
-
-    """
-    return OaiRecord.aggregate(pipeline)
