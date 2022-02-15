@@ -59,3 +59,4 @@ OAI_HARVESTER_ROOT = dirname(realpath(__file__))
 SSL_CERTIFICATES_DIR = True
 
 USE_TZ = True
+CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
