@@ -7,6 +7,7 @@ from django.db import models
 
 from core_main_app.commons import exceptions
 from core_main_app.components.abstract_data.models import AbstractData
+from core_main_app.settings import MONGODB_INDEXING
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -33,6 +34,18 @@ class OaiRecord(AbstractData):
         indexes = [
             GinIndex(fields=["vector_column"]),
         ]
+
+    def get_dict_content(self):
+        """Get dict_content from object or from MongoDB
+
+        Returns:
+
+        """
+        if MONGODB_INDEXING:
+            from core_oaipmh_harvester_app.components.mongo.models import MongoOaiRecord
+
+            return MongoOaiRecord.objects.get(pk=self.id).dict_content
+        return self.dict_content
 
     @staticmethod
     def get_by_id(oai_record_id):
