@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 try:
     if MONGODB_INDEXING:
+        from bson import ObjectId
         from mongoengine import Document, DoesNotExist
         from mongoengine import fields as mongo_fields
         from core_main_app.utils.databases.mongo.pymongo_database import init_text_index
@@ -111,6 +112,7 @@ try:
                 except DoesNotExist:
                     # create new mongo oai_record otherwise
                     mongo_oai_record = MongoOaiRecord()
+                    mongo_oai_record.mongo_id = ObjectId()
 
                 mongo_oai_record.data_id = oai_record.id
                 mongo_oai_record.title = oai_record.title
