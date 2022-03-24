@@ -21,6 +21,10 @@ class OaiRegistry(models.Model):
     is_activated = models.BooleanField(default=True)
     is_queued = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name = "Oai registry"
+        verbose_name_plural = "Oai registries"
+
     @staticmethod
     def get_by_id(oai_registry_id):
         """Get an OaiRegistry by its id

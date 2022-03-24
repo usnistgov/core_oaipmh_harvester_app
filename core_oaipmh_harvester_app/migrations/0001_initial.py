@@ -80,6 +80,10 @@ class Migration(migrations.Migration):
                 ("is_activated", models.BooleanField(default=True)),
                 ("is_queued", models.BooleanField(default=False)),
             ],
+            options={
+                "verbose_name": "Oai registry",
+                "verbose_name_plural": "Oai registries",
+            },
         ),
         migrations.CreateModel(
             name="OaiRecord",
@@ -208,6 +212,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
+            options={
+                "verbose_name": "Oai identify",
+                "verbose_name_plural": "Oai identify",
+            },
         ),
         migrations.AddField(
             model_name="oaiharvesterset",

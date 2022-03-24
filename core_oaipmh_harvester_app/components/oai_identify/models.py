@@ -27,6 +27,10 @@ class OaiIdentify(models.Model):
     raw = models.JSONField(blank=True, null=True)
     registry = models.OneToOneField(OaiRegistry, on_delete=models.CASCADE, unique=True)
 
+    class Meta:
+        verbose_name = "Oai identify"
+        verbose_name_plural = "Oai identify"
+
     @staticmethod
     def get_by_registry_id(registry_id):
         """Return an OaiIdentify by its registry id.
