@@ -9,6 +9,8 @@ from core_main_app.settings import (
     MONGODB_INDEXING,
     SEARCHABLE_DATA_OCCURRENCES_LIMIT,
     MONGODB_ASYNC_SAVE,
+    XML_POST_PROCESSOR,
+    XML_FORCE_LIST,
 )
 from core_main_app.utils import xml as xml_utils
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
@@ -118,7 +120,8 @@ try:
                 mongo_oai_record.title = oai_record.title
                 mongo_oai_record.dict_content = xml_utils.raw_xml_to_dict(
                     oai_record.xml_content,
-                    xml_utils.post_processor,
+                    postprocessor=XML_POST_PROCESSOR,
+                    force_list=XML_FORCE_LIST,
                     list_limit=SEARCHABLE_DATA_OCCURRENCES_LIMIT,
                 )
                 mongo_oai_record.creation_date = oai_record.creation_date
