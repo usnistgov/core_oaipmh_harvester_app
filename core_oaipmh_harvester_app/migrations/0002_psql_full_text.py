@@ -31,14 +31,6 @@ class Migration(migrations.Migration):
         operations.append(
             migrations.RunSQL(
                 sql="""
-                  CREATE OR REPLACE FUNCTION update_dict_content_tsvector() RETURNS trigger AS $$
-                  BEGIN
-                    NEW."vector_column" :=
-                      to_tsvector('english', NEW.dict_content::jsonb);
-                    RETURN NEW;
-                  END;
-                  $$ LANGUAGE plpgsql;
-
                   CREATE TRIGGER oai_vector_column_trigger
                   BEFORE INSERT OR UPDATE OF dict_content, vector_column
                   ON core_oaipmh_harvester_app_oairecord
