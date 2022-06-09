@@ -120,6 +120,12 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
+                    "checksum",
+                    models.CharField(
+                        blank=True, default=None, max_length=512, null=True
+                    ),
+                ),
+                (
                     "creation_date",
                     models.DateTimeField(blank=True, default=None, null=True),
                 ),
