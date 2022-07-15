@@ -577,7 +577,6 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         identifier = "fake_identifier"
         oai_record["identifier"] = identifier
         mock_convert_file.return_value = None
-        mock_user = create_mock_user("1", is_anonymous=False)
 
         # Act
         record_in_database = oai_registry_api._upsert_record_for_registry(

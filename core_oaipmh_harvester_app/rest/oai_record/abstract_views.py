@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
-import core_main_app.components.data.api as data_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
     api as oai_harvester_metadata_format_api,
 )

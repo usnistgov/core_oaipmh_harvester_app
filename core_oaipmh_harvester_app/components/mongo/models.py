@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 try:
     if MONGODB_INDEXING:
         from bson import ObjectId
-        from mongoengine import Document, DoesNotExist
+        from mongoengine import DoesNotExist
         from mongoengine import fields as mongo_fields
         from core_main_app.utils.databases.mongo.pymongo_database import init_text_index
         from core_main_app.components.mongo.models import AbstractMongoData
@@ -192,7 +192,7 @@ try:
         post_save.connect(MongoOaiRecord.post_save_data, sender=OaiRecord)
         # connect sync method to OaiRecord post delete
         post_delete.connect(MongoOaiRecord.post_delete_data, sender=OaiRecord)
-except ImportError as e:
+except ImportError:
     raise CoreError(
         "Mongoengine needs to be installed when MongoDB indexing is enabled. "
         "Install required python packages (see requirements.mongo.txt) "
