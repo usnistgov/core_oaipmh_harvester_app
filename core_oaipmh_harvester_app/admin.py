@@ -6,6 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import re_path
 
 from core_main_app.admin import core_admin_site
+from core_main_app.utils.admin_site.view_only_admin import ViewOnlyAdmin
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -23,12 +24,12 @@ from core_oaipmh_harvester_app.views.admin import (
     ajax as admin_ajax,
 )
 
-admin.site.register(OaiHarvesterMetadataFormat)
-admin.site.register(OaiHarvesterMetadataFormatSet)
-admin.site.register(OaiHarvesterSet)
-admin.site.register(OaiIdentify)
-admin.site.register(OaiRecord)
-admin.site.register(OaiRegistry)
+admin.site.register(OaiHarvesterMetadataFormat, ViewOnlyAdmin)
+admin.site.register(OaiHarvesterMetadataFormatSet, ViewOnlyAdmin)
+admin.site.register(OaiHarvesterSet, ViewOnlyAdmin)
+admin.site.register(OaiIdentify, ViewOnlyAdmin)
+admin.site.register(OaiRecord, ViewOnlyAdmin)
+admin.site.register(OaiRegistry, ViewOnlyAdmin)
 
 admin_urls = [
     re_path(

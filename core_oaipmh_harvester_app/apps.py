@@ -11,6 +11,7 @@ class HarvesterAppConfig(AppConfig):
     """Core application settings"""
 
     name = "core_oaipmh_harvester_app"
+    verbose_name = "Core OAI-PMH Harvester App"
 
     def ready(self):
         """Run when the app is ready
