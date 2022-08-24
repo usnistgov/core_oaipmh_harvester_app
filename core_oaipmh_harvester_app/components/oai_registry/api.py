@@ -160,13 +160,13 @@ def add_registry_by_url(url, harvest_rate, harvest, request=None):
             )
 
         return registry
-    except Exception as e:
+    except Exception as exception:
         # Manual Rollback
         if registry.pk is not None:
             registry.delete()
 
         raise oai_pmh_exceptions.OAIAPILabelledException(
-            message=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR
+            message=str(exception), status_code=HTTP_500_INTERNAL_SERVER_ERROR
         )
 
 
@@ -210,11 +210,11 @@ def update_registry_info(registry, request=None):
         upsert(registry)
 
         return registry
-    except Exception as e:
+    except Exception as exception:
         registry.is_updating = False
         upsert(registry)
         raise oai_pmh_exceptions.OAIAPILabelledException(
-            message=str(e), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+            message=str(exception), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
 
@@ -275,11 +275,11 @@ def harvest_registry(registry):
         upsert(registry)
 
         return all_errors
-    except Exception as e:
+    except Exception as exception:
         registry.is_harvesting = False
         upsert(registry)
         raise oai_pmh_exceptions.OAIAPILabelledException(
-            message=str(e), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+            message=str(exception), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
 
@@ -316,7 +316,7 @@ def _get_sets_as_object(url):
         raise oai_pmh_exceptions.OAIAPILabelledException(
             message=sets_response[OaiPmhMessage.label], status_code=status_code
         )
-    elif status_code == status.HTTP_204_NO_CONTENT:
+    if status_code == status.HTTP_204_NO_CONTENT:
         sets_response = []
 
     return sets_response
@@ -341,7 +341,7 @@ def _get_metadata_formats_as_object(url):
             message=metadata_formats_response[OaiPmhMessage.label],
             status_code=status_code,
         )
-    elif status_code == status.HTTP_204_NO_CONTENT:
+    if status_code == status.HTTP_204_NO_CONTENT:
         metadata_formats_response = []
 
     return metadata_formats_response
@@ -420,12 +420,11 @@ def _upsert_metadata_format_for_registry(metadata_format, registry, request=None
             metadata_format_to_save, request=request
         )
         oai_harvester_metadata_format_api.upsert(metadata_format_to_save)
-    except exceptions.ApiError as e:
+    except exceptions.ApiError as exception:
         # Log exception. Do not save the metadata format.
         logger.warning(
-            "_upsert_metadata_format_for_registry threw an exception: {0}".format(
-                str(e)
-            )
+            "_upsert_metadata_format_for_registry threw an exception: %s",
+            str(exception),
         )
 
 
@@ -587,9 +586,12 @@ def _harvest_records(
                     _upsert_record_for_registry(
                         record, metadata_format, registry, registry_all_sets
                     )
-            except Exception as e:
+            except Exception as exception:
                 errors.append(
-                    {"status_code": status.HTTP_400_BAD_REQUEST, "error": str(e)}
+                    {
+                        "status_code": status.HTTP_400_BAD_REQUEST,
+                        "error": str(exception),
+                    }
                 )
         # Else, we get the status code with the error message provided by the http_response
         else:

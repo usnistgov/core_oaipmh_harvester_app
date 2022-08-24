@@ -31,6 +31,8 @@ class OaiRecord(AbstractData):
     registry = models.ForeignKey(OaiRegistry, on_delete=models.CASCADE)
 
     class Meta:
+        """Meta"""
+
         indexes = [
             GinIndex(fields=["vector_column"]),
         ]
@@ -63,10 +65,10 @@ class OaiRecord(AbstractData):
         """
         try:
             return OaiRecord.objects.get(pk=str(oai_record_id))
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_by_identifier_and_metadata_format(identifier, harvester_metadata_format):
@@ -88,10 +90,10 @@ class OaiRecord(AbstractData):
                 identifier=identifier,
                 harvester_metadata_format=harvester_metadata_format,
             )
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all():

@@ -20,21 +20,21 @@ from django.utils import formats
 from django.utils.html import escape
 from rest_framework import status
 
+from xml_utils.xsd_tree.xsd_tree import XSDTree
+from core_main_app.utils.xml import xsl_transform
+from core_main_app.views.common.ajax import EditObjectModalView
 import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as oai_metadata_format_api
 import core_oaipmh_harvester_app.components.oai_harvester_set.api as oai_set_api
 import core_oaipmh_harvester_app.components.oai_identify.api as oai_identify_api
 import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
 import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
 import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verb_api
-from core_main_app.utils.xml import xsl_transform
-from core_main_app.views.common.ajax import EditObjectModalView
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.views.admin.forms import (
     AddRegistryForm,
     EditRegistryForm,
     EditHarvestRegistryForm,
 )
-from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 logger = logging.getLogger(__name__)
 
@@ -63,9 +63,9 @@ def add_registry(request):
                 )
             else:
                 return HttpResponseBadRequest("Please enter a valid URL.")
-    except Exception as e:
+    except Exception as exception:
         return HttpResponseBadRequest(
-            escape(str(e)), content_type="application/javascript"
+            escape(str(exception)), content_type="application/javascript"
         )
 
     return HttpResponse(json.dumps({}), content_type="application/javascript")
@@ -84,9 +84,9 @@ def deactivate_registry(request):
         registry = oai_registry_api.get_by_id(request.GET["id"])
         registry.is_activated = False
         oai_registry_api.upsert(registry)
-    except Exception as e:
+    except Exception as exception:
         return HttpResponseBadRequest(
-            escape(str(e)), content_type="application/javascript"
+            escape(str(exception)), content_type="application/javascript"
         )
 
     return HttpResponse(json.dumps({}), content_type="application/javascript")
@@ -105,9 +105,9 @@ def activate_registry(request):
         registry = oai_registry_api.get_by_id(request.GET["id"])
         registry.is_activated = True
         oai_registry_api.upsert(registry)
-    except Exception as e:
+    except Exception as exception:
         return HttpResponseBadRequest(
-            escape(str(e)), content_type="application/javascript"
+            escape(str(exception)), content_type="application/javascript"
         )
 
     return HttpResponse(json.dumps({}), content_type="application/javascript")
@@ -125,9 +125,9 @@ def delete_registry(request):
     try:
         registry = oai_registry_api.get_by_id(request.GET["id"])
         oai_registry_api.delete(registry)
-    except Exception as e:
+    except Exception as exception:
         return HttpResponseBadRequest(
-            escape(str(e)), content_type="application/javascript"
+            escape(str(exception)), content_type="application/javascript"
         )
 
     return HttpResponse(json.dumps({}), content_type="application/javascript")
@@ -145,9 +145,9 @@ def check_registry(request):
     try:
         req, status_code = oai_verb_api.identify(request.GET["url"])
         is_available = status_code == status.HTTP_200_OK
-    except Exception as e:
+    except Exception as exception:
         return HttpResponseBadRequest(
-            escape(str(e)), content_type="application/javascript"
+            escape(str(exception)), content_type="application/javascript"
         )
 
     return HttpResponse(
@@ -157,6 +157,8 @@ def check_registry(request):
 
 
 class EditRegistryView(EditObjectModalView):
+    """Edit Registry View"""
+
     form_class = EditRegistryForm
     model = OaiRegistry
     success_url = reverse_lazy("core-admin:core_oaipmh_harvester_app_registries")
@@ -166,8 +168,8 @@ class EditRegistryView(EditObjectModalView):
         # Save treatment.
         try:
             oai_registry_api.upsert(self.object)
-        except Exception as e:
-            form.add_error(None, str(e))
+        except Exception as exception:
+            form.add_error(None, str(exception))
 
 
 @staff_member_required
@@ -199,13 +201,15 @@ def view_registry(request):
             json.dumps({"template": template.render(context)}),
             content_type="application/javascript",
         )
-    except Exception as e:
+    except Exception as exception:
         return HttpResponseBadRequest(
-            escape(str(e)), content_type="application/javascript"
+            escape(str(exception)), content_type="application/javascript"
         )
 
 
 class EditHarvestRegistryView(EditObjectModalView):
+    """Edit Harvest Registry View"""
+
     template_name = "core_oaipmh_harvester_app/admin/registries/list/modals/edit_harvest_registry_form.html"
     form_class = EditHarvestRegistryForm
     model = OaiRegistry
@@ -238,14 +242,14 @@ class EditHarvestRegistryView(EditObjectModalView):
             oai_set_api.update_for_all_harvest_by_list_ids(
                 sets.values_list("id", flat=True), True
             )
-        except Exception as e:
-            form.add_error(None, str(e))
+        except Exception as exception:
+            form.add_error(None, str(exception))
 
     def get_form_kwargs(self):
         """This method is what injects forms with their keyword
         arguments."""
         # grab the current set of form #kwargs
-        kwargs = super(EditHarvestRegistryView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         # Update the kwargs
         kwargs["metadata_formats"] = self.metadata_formats
         kwargs["sets"] = self.sets
@@ -253,7 +257,11 @@ class EditHarvestRegistryView(EditObjectModalView):
         return kwargs
 
     def get_initial(self):
-        initial = super(EditHarvestRegistryView, self).get_initial()
+        """get_initial
+
+        Returns:
+        """
+        initial = super().get_initial()
         self.metadata_formats = oai_metadata_format_api.get_all_by_registry_id(
             self.object.id
         )
@@ -280,9 +288,9 @@ def update_registry(request):
         oai_registry_api.update_registry_info(registry, request=request)
 
         return HttpResponse(json.dumps({}), content_type="application/javascript")
-    except Exception as e:
+    except Exception as exception:
         return HttpResponseBadRequest(
-            escape(str(e)), content_type="application/javascript"
+            escape(str(exception)), content_type="application/javascript"
         )
 
 
@@ -307,10 +315,10 @@ def check_update_registry(request):
                         last_update = formats.date_format(
                             registry.last_update, "DATETIME_FORMAT"
                         )
-                    except Exception as e:
+                    except Exception as exception:
                         logger.warning(
                             "check_update_registry threw an exception: {0}".format(
-                                str(e)
+                                str(exception)
                             )
                         )
 
@@ -326,9 +334,9 @@ def check_update_registry(request):
             return HttpResponse(
                 json.dumps(update_info), content_type="application/javascript"
             )
-        except Exception as e:
+        except Exception as exception:
             return HttpResponseBadRequest(
-                escape(str(e)), content_type="application/javascript"
+                escape(str(exception)), content_type="application/javascript"
             )
 
 
@@ -346,9 +354,9 @@ def harvest_registry(request):
         oai_registry_api.harvest_registry(registry)
 
         return HttpResponse(json.dumps({}), content_type="application/javascript")
-    except Exception as e:
+    except Exception as exception:
         return HttpResponseBadRequest(
-            escape(str(e)), content_type="application/javascript"
+            escape(str(exception)), content_type="application/javascript"
         )
 
 
@@ -460,9 +468,9 @@ def get_data(request):
         content = {"message": xml_to_html_string}
 
         return HttpResponse(json.dumps(content), content_type="application/javascript")
-    except Exception as e:
+    except Exception as exception:
         return HttpResponseBadRequest(
-            escape(str(e)), content_type="application/javascript"
+            escape(str(exception)), content_type="application/javascript"
         )
 
 
@@ -476,27 +484,27 @@ def download_xml_build_req(request):
         XML file to download.
 
     """
-    if "xmlStringOAIPMH" in request.session:
-        # We retrieve the XML file in session
-        xml_string = request.session["xmlStringOAIPMH"]
-        try:
-            xml_tree = XSDTree.build_tree(xml_string)
-            xml_string_encoded = XSDTree.tostring(xml_tree, pretty=True)
-        except:
-            xml_string_encoded = xml_string
-        # Get the date to append it to the file title
-        i = datetime.datetime.now()
-        title = "OAI_PMH_BUILD_REQ_%s_.xml" % i.isoformat()
-        file_obj = StringIO(xml_string_encoded)
-        # Return the XML file
-        response = HttpResponse(FileWrapper(file_obj), content_type="application/xml")
-        response["Content-Disposition"] = "attachment; filename=" + title
-
-        return response
-    else:
+    if "xmlStringOAIPMH" not in request.session:
         return HttpResponseBadRequest(
             "An error occurred. Please reload the page and try again."
         )
+
+    # We retrieve the XML file in session
+    xml_string = request.session["xmlStringOAIPMH"]
+    try:
+        xml_tree = XSDTree.build_tree(xml_string)
+        xml_string_encoded = XSDTree.tostring(xml_tree, pretty=True)
+    except:
+        xml_string_encoded = xml_string
+    # Get the date to append it to the file title
+    i = datetime.datetime.now()
+    title = "OAI_PMH_BUILD_REQ_%s_.xml" % i.isoformat()
+    file_obj = StringIO(xml_string_encoded)
+    # Return the XML file
+    response = HttpResponse(FileWrapper(file_obj), content_type="application/xml")
+    response["Content-Disposition"] = "attachment; filename=" + title
+
+    return response
 
 
 def _read_file_content(file_path):

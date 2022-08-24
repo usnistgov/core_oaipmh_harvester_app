@@ -28,6 +28,8 @@ class OaiIdentify(models.Model):
     registry = models.OneToOneField(OaiRegistry, on_delete=models.CASCADE, unique=True)
 
     class Meta:
+        """Meta"""
+
         verbose_name = "Oai identify"
         verbose_name_plural = "Oai identify"
 
@@ -48,7 +50,7 @@ class OaiIdentify(models.Model):
         """
         try:
             return OaiIdentify.objects.get(registry=str(registry_id))
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))

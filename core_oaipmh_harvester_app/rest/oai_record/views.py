@@ -15,6 +15,8 @@ from core_oaipmh_harvester_app.rest.serializers import OaiRecordSerializer
 
 
 class ExecuteQueryView(AbstractExecuteQueryView):
+    """Execute Query View"""
+
     def get_registries(self):
         """Get a list of registry ids. Should return empty list if not found. JSON format.
 
@@ -43,6 +45,8 @@ class ExecuteQueryView(AbstractExecuteQueryView):
 
 
 class ExecuteKeywordQueryView(ExecuteQueryView):
+    """Execute Keyword Query View"""
+
     def build_query(self, query, templates, options):
         """Build the raw query. Prepare the query for a keyword search.
         Args:
@@ -56,6 +60,4 @@ class ExecuteKeywordQueryView(ExecuteQueryView):
         """
         # build query builder
         query = json.dumps(get_full_text_query(query))
-        return super(ExecuteKeywordQueryView, self).build_query(
-            str(query), templates, options
-        )
+        return super().build_query(str(query), templates, options)

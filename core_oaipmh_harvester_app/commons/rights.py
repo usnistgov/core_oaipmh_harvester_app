@@ -1,11 +1,21 @@
+""" Rights
+"""
+
 # API Rights
-api_content_type = "api_oai_pmh"
-api_access = "api_oai_pmh_access"
+API_CONTENT_TYPE = "api_oai_pmh"
+API_ACCESS = "api_oai_pmh_access"
 
 # OAI PMH Rights
-oai_pmh_content_type = "oaipmh"
-oai_pmh_access = "oaipmh_access"
+OAI_PMH_CONTENT_TYPE = "oaipmh"
+OAI_PMH_ACCESS = "oaipmh_access"
 
 
 def get_description(right):
+    """get_description
+
+    Args:
+        right:
+
+    Returns:
+    """
     return "Can " + right.replace("_", " ")

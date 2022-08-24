@@ -17,6 +17,8 @@ class OaiHarvesterSet(OaiSet):
     harvest = models.BooleanField(blank=True, null=True)
 
     class Meta:
+        """Meta"""
+
         unique_together = ("registry", "set_spec")
 
     @staticmethod
@@ -79,10 +81,10 @@ class OaiHarvesterSet(OaiSet):
             return OaiHarvesterSet.objects.get(
                 set_spec=set_spec, registry=str(registry_id)
             )
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def delete_all_by_registry_id(registry_id):

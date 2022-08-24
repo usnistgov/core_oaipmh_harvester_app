@@ -25,6 +25,8 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
     last_update = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        """Meta"""
+
         unique_together = ("registry", "metadata_prefix")
 
     @staticmethod
@@ -33,10 +35,10 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
             return OaiHarvesterMetadataFormat.objects.get(
                 pk=oai_harvester_metadata_format_id
             )
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all_by_registry_id(registry_id, order_by_field=None):
@@ -120,10 +122,10 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
             return OaiHarvesterMetadataFormat.objects.get(
                 metadata_prefix=metadata_prefix, registry=str(registry_id)
             )
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def delete_all_by_registry_id(registry_id):

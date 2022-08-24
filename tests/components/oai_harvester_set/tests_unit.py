@@ -2,8 +2,8 @@ from builtins import str
 from unittest.case import TestCase
 from unittest.mock import Mock, patch
 
-import core_oaipmh_harvester_app.components.oai_harvester_set.api as harvester_set_api
 from core_main_app.commons import exceptions
+import core_oaipmh_harvester_app.components.oai_harvester_set.api as harvester_set_api
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
     OaiHarvesterSet,
 )
@@ -11,8 +11,12 @@ from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 
 class TestOaiHarvesterSetGetById(TestCase):
+    """Test Oai Harvester Set Get By Id"""
+
     @patch.object(OaiHarvesterSet, "get_by_id")
     def test_get_by_id_return_object(self, mock_get_by_id):
+        """test_get_by_id_return_object"""
+
         # Arrange
         mock_oai_harvester_set = _create_mock_oai_harvester_set()
         mock_oai_harvester_set.id = 1
@@ -27,6 +31,8 @@ class TestOaiHarvesterSetGetById(TestCase):
 
     @patch.object(OaiHarvesterSet, "get_by_id")
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
+        """test_get_by_id_raises_exception_if_object_does_not_exist"""
+
         # Arrange
         mock_absent_id = 1
 
@@ -38,6 +44,8 @@ class TestOaiHarvesterSetGetById(TestCase):
 
     @patch.object(OaiHarvesterSet, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
+        """test_get_by_id_raises_exception_if_internal_error"""
+
         # Arrange
         mock_absent_id = 1
 
@@ -49,8 +57,12 @@ class TestOaiHarvesterSetGetById(TestCase):
 
 
 class TestOaiHarvesterSetGetBySetSpecAndRegistryId(TestCase):
+    """Test Oai Harvester Set Get By Set Spec And Registry Id"""
+
     @patch.object(OaiHarvesterSet, "get_by_set_spec_and_registry_id")
     def test_get_by_set_spec_and_registry_id_return_object(self, mock_get):
+        """test_get_by_set_spec_and_registry_id_return_object"""
+
         # Arrange
         mock_oai_harvester_set = _create_mock_oai_harvester_set()
 
@@ -68,6 +80,8 @@ class TestOaiHarvesterSetGetBySetSpecAndRegistryId(TestCase):
     def test_get_by_set_spec_and_registry_id_raises_exception_if_object_does_not_exist(
         self, mock_get
     ):
+        """test_get_by_set_spec_and_registry_id_raises_exception_if_object_does_not_exist"""
+
         # Arrange
         mock_absent_set_spec = 1
         mock_absent_registry_id = 1
@@ -84,6 +98,8 @@ class TestOaiHarvesterSetGetBySetSpecAndRegistryId(TestCase):
     def test_get_by_set_spec_and_registry_id_raises_exception_if_internal_error(
         self, mock_get
     ):
+        """test_get_by_set_spec_and_registry_id_raises_exception_if_internal_error"""
+
         # Arrange
         mock_absent_set_spec = 1
         mock_absent_registry_id = 1
@@ -98,8 +114,12 @@ class TestOaiHarvesterSetGetBySetSpecAndRegistryId(TestCase):
 
 
 class TestOaiHarvesterSetGetAll(TestCase):
+    """Test Oai Harvester Set Get All"""
+
     @patch.object(OaiHarvesterSet, "get_all")
     def test_get_all_contains_only_oai_harvester_set(self, mock_get_all):
+        """test_get_all_contains_only_oai_harvester_set"""
+
         # Arrange
         mock_oai_harvester_set1 = _create_mock_oai_harvester_set()
         mock_oai_harvester_set2 = _create_mock_oai_harvester_set()
@@ -114,8 +134,12 @@ class TestOaiHarvesterSetGetAll(TestCase):
 
 
 class TestOaiHarvesterSetGetAllByRegistryId(TestCase):
+    """Test Oai Harvester Set Get All By Registry Id"""
+
     @patch.object(OaiHarvesterSet, "get_all_by_registry_id")
     def test_get_all_contains_only_oai_harvester_set(self, mock_get_all_by_registry_id):
+        """test_get_all_contains_only_oai_harvester_set"""
+
         # Arrange
         mock_oai_harvester_set1 = _create_mock_oai_harvester_set()
         mock_oai_harvester_set2 = _create_mock_oai_harvester_set()
@@ -135,10 +159,14 @@ class TestOaiHarvesterSetGetAllByRegistryId(TestCase):
 
 
 class TestOaiHarvesterSetGetAllToHarvestByRegistryId(TestCase):
+    """Test Oai Harvester Set Get All To Harvest By Registry Id"""
+
     @patch.object(OaiHarvesterSet, "get_all_by_registry_id_and_harvest")
     def test_get_all_contains_only_oai_harvester_set_to_harvest_by_registry_id(
         self, mock_get_all
     ):
+        """test_get_all_contains_only_oai_harvester_set_to_harvest_by_registry_id"""
+
         # Arrange
         mock_oai_harvester_set1 = _create_mock_oai_harvester_set()
         mock_oai_harvester_set2 = _create_mock_oai_harvester_set()
@@ -155,11 +183,17 @@ class TestOaiHarvesterSetGetAllToHarvestByRegistryId(TestCase):
 
 
 class TestOaiHarvestSetUpsert(TestCase):
+    """Test Oai Harvest Set Upsert"""
+
     def setUp(self):
+        """setUp"""
+
         self.oai_harvester_set = _create_oai_harvester_set()
 
     @patch.object(OaiHarvesterSet, "save")
     def test_upsert_oai_harvester_raises_exception_if_save_failed(self, mock_save):
+        """test_upsert_oai_harvester_raises_exception_if_save_failed"""
+
         # Arrange
         mock_save.side_effect = Exception()
 
@@ -169,6 +203,8 @@ class TestOaiHarvestSetUpsert(TestCase):
 
     @patch.object(OaiHarvesterSet, "save")
     def test_upsert_oai_harvester_return_object(self, mock_create):
+        """test_upsert_oai_harvester_return_object"""
+
         # Arrange
         mock_create.return_value = self.oai_harvester_set
 
@@ -180,10 +216,14 @@ class TestOaiHarvestSetUpsert(TestCase):
 
 
 class TestOaiHarvesterSetDeleteAllByRegistryId(TestCase):
+    """Test Oai Harvester Set Delete All By Registry Id"""
+
     @patch.object(OaiHarvesterSet, "delete_all_by_registry_id")
     def test_delete_all_by_registry_id_raises_exception_if_object_does_not_exist(
         self, mock_delete_all
     ):
+        """test_delete_all_by_registry_id_raises_exception_if_object_does_not_exist"""
+
         # Arrange
         mock_absent_registry_id = 1
 
@@ -195,10 +235,14 @@ class TestOaiHarvesterSetDeleteAllByRegistryId(TestCase):
 
 
 class TestOaiHarvesterSetDelete(TestCase):
+    """Test Oai Harvester Set Delete"""
+
     @patch.object(OaiHarvesterSet, "delete")
     def test_delete_oai_harvester_set_raises_exception_if_object_does_not_exist(
         self, mock_delete
     ):
+        """test_delete_oai_harvester_set_raises_exception_if_object_does_not_exist"""
+
         # Arrange
         oai_harvester_set = _create_oai_harvester_set()
         mock_delete.side_effect = Exception()
@@ -209,10 +253,14 @@ class TestOaiHarvesterSetDelete(TestCase):
 
 
 class TestOaiHarvesterSetUpdateForAllByRegistryId(TestCase):
+    """Test Oai Harvester Set Update For All By Registry Id"""
+
     @patch.object(OaiHarvesterSet, "update_for_all_harvest_by_registry_id")
     def test_update_for_all_harvest_by_registry_id_raises_exception_if_object_does_not_exist(
         self, mock_update_all
     ):
+        """test_update_for_all_harvest_by_registry_id_raises_exception_if_object_does_not_exist"""
+
         # Arrange
         mock_absent_registry_id = 1
 
@@ -226,10 +274,14 @@ class TestOaiHarvesterSetUpdateForAllByRegistryId(TestCase):
 
 
 class TestOaiSetUpdateForAllByListIds(TestCase):
+    """Test Oai Set Update For All By List Ids"""
+
     @patch.object(OaiHarvesterSet, "update_for_all_harvest_by_list_ids")
     def test_update_for_all_harvest_by_list_ids_raises_exception_if_object_does_not_exist(
         self, mock_update_all
     ):
+        """test_update_for_all_harvest_by_list_ids_raises_exception_if_object_does_not_exist"""
+
         # Arrange
         mock_absent_list_ids = [str(1), str(1)]
 

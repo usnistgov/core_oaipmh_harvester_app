@@ -6,8 +6,8 @@ from unittest.mock import patch
 import requests
 from rest_framework import status
 
-import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verbs_api
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
+import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verbs_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -20,6 +20,8 @@ from tests.test_settings import SSL_CERTIFICATES_DIR
 
 
 class TestIdentifyAsObject(TestCase):
+    """Test Identify As Object"""
+
     @patch.object(
         oai_verbs_api.transform_operations,
         "transform_dict_identifier_to_oai_identifier",
@@ -28,6 +30,8 @@ class TestIdentifyAsObject(TestCase):
     def test_identify_as_object_return_object_and_ok_status(
         self, mock_identify, mock_transform
     ):
+        """test_identify_as_object_return_object_and_ok_status"""
+
         # Arrange
         mock_identify.return_value = [], status.HTTP_200_OK
         mock_transform.return_value = OaiIdentify()
@@ -37,10 +41,12 @@ class TestIdentifyAsObject(TestCase):
 
         # Assert
         self.assertIsInstance(data, OaiIdentify)
-        self.assertEquals(status_code, status.HTTP_200_OK)
+        self.assertEqual(status_code, status.HTTP_200_OK)
 
 
 class TestListMetadataFormatsAsObject(TestCase):
+    """Test List Metadata Formats As Object"""
+
     @patch.object(
         oai_verbs_api.transform_operations,
         "transform_dict_metadata_format_to_oai_harvester_metadata_format",
@@ -49,6 +55,8 @@ class TestListMetadataFormatsAsObject(TestCase):
     def test_list_metadata_formats_as_object_return_object_and_ok_status(
         self, mock_metadata_format, mock_transform
     ):
+        """test_list_metadata_formats_as_object_return_object_and_ok_status"""
+
         # Arrange
         mock_metadata_format.return_value = [], status.HTTP_200_OK
         mock_transform.return_value = [
@@ -63,10 +71,12 @@ class TestListMetadataFormatsAsObject(TestCase):
         self.assertTrue(
             all(isinstance(item, OaiHarvesterMetadataFormat) for item in data)
         )
-        self.assertEquals(status_code, status.HTTP_200_OK)
+        self.assertEqual(status_code, status.HTTP_200_OK)
 
 
 class TestListSetsAsObject(TestCase):
+    """Test List Sets As Object"""
+
     @patch.object(
         oai_verbs_api.transform_operations, "transform_dict_set_to_oai_harvester_set"
     )
@@ -74,6 +84,8 @@ class TestListSetsAsObject(TestCase):
     def test_list_sets_as_object_return_object_and_ok_status(
         self, mock_set, mock_transform
     ):
+        """test_list_sets_as_object_return_object_and_ok_status"""
+
         # Arrange
         mock_set.return_value = [], status.HTTP_200_OK
         mock_transform.return_value = [OaiHarvesterSet(), OaiHarvesterSet()]
@@ -83,12 +95,16 @@ class TestListSetsAsObject(TestCase):
 
         # Assert
         self.assertTrue(all(isinstance(item, OaiHarvesterSet) for item in data))
-        self.assertEquals(status_code, status.HTTP_200_OK)
+        self.assertEqual(status_code, status.HTTP_200_OK)
 
 
 class TestListRecordsParameter(TestCase):
+    """TestListRecordsParameter"""
+
     def setUp(self):
-        super(TestListRecordsParameter, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.url = "http://dummy_url.com"
         self.metadata_prefix = "oai_prefix"
         self.set = "oai_set"
@@ -97,6 +113,8 @@ class TestListRecordsParameter(TestCase):
 
     @patch.object(requests, "get")
     def test_harvest_params(self, mock_get):
+        """test_harvest_params"""
+
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
         mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records()
@@ -124,6 +142,8 @@ class TestListRecordsParameter(TestCase):
 
     @patch.object(requests, "get")
     def test_harvest_params_with_resumption_token(self, mock_get):
+        """test_harvest_params_with_resumption_token"""
+
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
         mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records()
@@ -147,6 +167,8 @@ class TestListRecordsParameter(TestCase):
 
     @patch.object(requests, "get")
     def test_harvest_params_returns_error_if_not_200_OK(self, mock_get):
+        """test_harvest_params_returns_error_if_not_200_OK"""
+
         # Arrange
         error = "An error occurred while trying to get data from the server."
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -162,6 +184,8 @@ class TestListRecordsParameter(TestCase):
 
     @patch.object(requests, "get")
     def test_harvest_params_returns_error_if_404_not_found(self, mock_get):
+        """test_harvest_params_returns_error_if_404_not_found"""
+
         # Arrange
         error = "Impossible to get data from the server. Server not found"
         status_code = status.HTTP_404_NOT_FOUND
@@ -179,6 +203,8 @@ class TestListRecordsParameter(TestCase):
     def test_harvest_params_returns_serialized_data_and_resumption_token(
         self, mock_get
     ):
+        """test_harvest_params_returns_serialized_data_and_resumption_token"""
+
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
         mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records()

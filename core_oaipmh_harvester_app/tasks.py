@@ -28,7 +28,7 @@ def init_harvest():
         # Watch Registries
         watch_registry_harvest_task.apply_async()
     except Exception as exc:
-        logger.error(f"Impossible to start harvesting data: {str(exc)}")
+        logger.error("Impossible to start harvesting data: %s", str(exc))
 
 
 @shared_task(name="watch_registry_harvest_task")
@@ -55,9 +55,10 @@ def watch_registry_harvest_task():
                     f"harvested."
                 )
         logger.info("FINISH watching registries.")
-    except Exception as e:
+    except Exception as exception:
         logger.error(
-            f"ERROR : Error while watching new registries to harvest: {str(e)}"
+            f"ERROR : Error while watching new registries to harvest: %s",
+            str(exception),
         )
     finally:
         # Periodic call every WATCH_REGISTRY_HARVEST_RATE seconds
@@ -111,9 +112,10 @@ def _harvest_registry(registry):
         else:
             logger.warning(f"Registry {registry.name} is busy. Skipping harvesting...")
         logger.info(f"FINISH harvesting registry: {registry.name}")
-    except Exception as e:
+    except Exception as exception:
         logger.error(
-            f"ERROR : Impossible to harvest registry {registry.name}: {str(e)}."
+            f"ERROR : Impossible to harvest registry {registry.name}: %s",
+            str(exception),
         )
     finally:
         # Harvest again in harvest_rate seconds.
@@ -134,10 +136,11 @@ def _stop_harvest_registry(registry):
         registry.is_queued = False
         oai_registry_api.upsert(registry)
         logger.info(f"Harvesting for Registry {registry.name} has been deactivated.")
-    except Exception as e:
+    except Exception as exception:
         logger.error(
             f"ERROR : Error while stopping the harvest process for the registry "
-            f"{registry.name}: {str(e)}."
+            f"{registry.name}: %s",
+            str(exception),
         )
 
 
@@ -167,8 +170,10 @@ def revoke_all_scheduled_tasks():
         else:
             logger.warning("Impossible to retrieve scheduled tasks. Is Celery started?")
         logger.info("FINISH revoking OAI-PMH scheduled tasks.")
-    except Exception as e:
-        logger.error(f"ERROR : Error while revoking the scheduled tasks: {str(e)}")
+    except Exception as exception:
+        logger.error(
+            f"ERROR : Error while revoking the scheduled tasks: %s", str(exception)
+        )
 
 
 def _get_all_oai_tasks_full_name():
@@ -193,12 +198,15 @@ def index_mongo_oai_record(oai_record_id):
 
             mongo_oai_record = MongoOaiRecord.init_mongo_oai_record(oai_record)
             mongo_oai_record.save()
-        except Exception as e:
+        except Exception as exception:
             logger.error(
-                f"ERROR : An error occurred while indexing oai record : {str(e)}"
+                f"ERROR : An error occurred while indexing oai record : %s",
+                str(exception),
             )
-    except Exception as e:
-        logger.error(f"ERROR : An error occurred while indexing oai record : {str(e)}")
+    except Exception as exception:
+        logger.error(
+            f"ERROR : An error occurred while indexing oai record : %s", str(exception)
+        )
 
 
 @shared_task
@@ -210,9 +218,12 @@ def delete_mongo_oai_record(oai_record_id):
 
             mongo_oai_record = MongoOaiRecord.objects.get(id=oai_record_id)
             mongo_oai_record.delete()
-        except Exception as e:
+        except Exception as exception:
             logger.error(
-                f"ERROR : An error occurred while deleting oai record : {str(e)}"
+                f"ERROR : An error occurred while deleting oai record : %s",
+                str(exception),
             )
-    except Exception as e:
-        logger.error(f"ERROR : An error occurred while deleting oai record : {str(e)}")
+    except Exception as exception:
+        logger.error(
+            f"ERROR : An error occurred while deleting oai record : %s", str(exception)
+        )

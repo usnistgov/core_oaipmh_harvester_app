@@ -24,6 +24,8 @@ class OaiHarvesterMetadataFormatSet(models.Model):
     last_update = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        """Meta"""
+
         unique_together = ("harvester_metadata_format", "harvester_set")
 
     @staticmethod
@@ -45,10 +47,10 @@ class OaiHarvesterMetadataFormatSet(models.Model):
                 harvester_metadata_format=oai_harvester_metadata_format,
                 harvester_set=oai_harvester_set,
             )
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def upsert_last_update_by_metadata_format_and_set(
@@ -69,5 +71,5 @@ class OaiHarvesterMetadataFormatSet(models.Model):
                 harvester_set=harvester_set,
                 defaults={"last_update": last_update},
             )
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))

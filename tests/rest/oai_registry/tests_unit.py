@@ -21,12 +21,18 @@ from core_oaipmh_harvester_app.rest.oai_registry import views as rest_oai_regist
 
 
 class TestSelectRegistry(TestCase):
+    """Test Select Registry"""
+
     def setUp(self):
-        super(TestSelectRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {}
         self.param = {"registry_id": 1}
 
     def test_select_registry_unauthorized(self):
+        """test_select_registry_unauthorized"""
+
         # Arrange
         user = create_mock_user("1", has_perm=False)
 
@@ -43,6 +49,8 @@ class TestSelectRegistry(TestCase):
 
     @patch.object(OaiRegistry, "get_by_id")
     def test_select_registry_not_found(self, mock_get_by_name):
+        """test_select_registry_not_found"""
+
         # Arrange
         mock_get_by_name.side_effect = exceptions.DoesNotExist("Error")
 
@@ -59,11 +67,17 @@ class TestSelectRegistry(TestCase):
 
 
 class TestSelectAllRegistries(TestCase):
+    """Test Select All Registries"""
+
     def setUp(self):
-        super(TestSelectAllRegistries, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = None
 
     def test_select_registry_unauthorized(self):
+        """test_select_registry_unauthorized"""
+
         # Arrange
         user = create_mock_user("1", has_perm=False)
 
@@ -77,12 +91,18 @@ class TestSelectAllRegistries(TestCase):
 
 
 class TestAddRegistry(TestCase):
+    """TestAddRegistry"""
+
     def setUp(self):
-        super(TestAddRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {"url": "http://url.com", "harvest_rate": 3000, "harvest": True}
         self.bad_data = {}
 
     def test_add_registry_unauthorized(self):
+        """test_add_registry_unauthorized"""
+
         # Arrange
         user = create_mock_user("1", is_staff=False)
 
@@ -95,6 +115,8 @@ class TestAddRegistry(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_add_registry_serializer_invalid(self):
+        """test_add_registry_serializer_invalid"""
+
         # Act
         response = RequestMock.do_request_post(
             rest_oai_registry.RegistryList.as_view(),
@@ -107,6 +129,8 @@ class TestAddRegistry(TestCase):
 
     @patch.object(OaiRegistry, "check_registry_url_already_exists")
     def test_add_registry_raises_exception_if_url_already_exists(self, mock_check):
+        """test_add_registry_raises_exception_if_url_already_exists"""
+
         # Arrange
         mock_check.return_value = True
 
@@ -122,12 +146,18 @@ class TestAddRegistry(TestCase):
 
 
 class TestUpdateRegistryInfo(TestCase):
+    """Test Update Registry Info"""
+
     def setUp(self):
-        super(TestUpdateRegistryInfo, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {}
         self.param = {"registry_id": 1}
 
     def test_update_registry_info_unauthorized(self):
+        """test_update_registry_info_unauthorized"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.InfoRegistry.as_view(),
@@ -140,6 +170,8 @@ class TestUpdateRegistryInfo(TestCase):
 
     @patch.object(OaiRegistry, "get_by_id")
     def test_update_registry_info_not_found(self, mock_get_by_id):
+        """test_update_registry_info_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -155,13 +187,19 @@ class TestUpdateRegistryInfo(TestCase):
 
 
 class TestUpdateRegistryConf(TestCase):
+    """Test Update Registry Conf"""
+
     def setUp(self):
-        super(TestUpdateRegistryConf, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {"harvest_rate": 4000, "harvest": False}
         self.bad_data = {"harvest": False}
         self.param = {"registry_id": 1}
 
     def test_update_registry_info_unauthorized(self):
+        """test_update_registry_info_unauthorized"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.RegistryDetail.as_view(),
@@ -175,6 +213,8 @@ class TestUpdateRegistryConf(TestCase):
 
     @patch.object(OaiRegistry, "get_by_id")
     def test_update_registry_info_serializer_invalid(self, mock_get_by_id):
+        """test_update_registry_info_serializer_invalid"""
+
         # Arrange
         mock_registry = _create_mock_oai_registry()
         mock_get_by_id.return_value = mock_registry
@@ -191,6 +231,8 @@ class TestUpdateRegistryConf(TestCase):
 
     @patch.object(OaiRegistry, "get_by_id")
     def test_update_registry_info_not_found(self, mock_get_by_id):
+        """test_update_registry_info_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -207,12 +249,18 @@ class TestUpdateRegistryConf(TestCase):
 
 
 class TestDeactivateRegistry(TestCase):
+    """Test Deactivate Registry"""
+
     def setUp(self):
-        super(TestDeactivateRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {}
         self.param = {"registry_id": 1}
 
     def test_deactivate_registry_unauthorized(self):
+        """test_deactivate_registry_unauthorized"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.DeactivateRegistry.as_view(),
@@ -225,6 +273,8 @@ class TestDeactivateRegistry(TestCase):
 
     @patch.object(OaiRegistry, "get_by_id")
     def test_deactivate_registry_not_found(self, mock_get_by_id):
+        """test_deactivate_registry_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -241,12 +291,18 @@ class TestDeactivateRegistry(TestCase):
 
 
 class TestActivateRegistry(TestCase):
+    """Test Activate Registry"""
+
     def setUp(self):
-        super(TestActivateRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {}
         self.param = {"registry_id": 1}
 
     def test_activate_registry_unauthorized(self):
+        """test_activate_registry_unauthorized"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.ActivateRegistry.as_view(),
@@ -260,6 +316,8 @@ class TestActivateRegistry(TestCase):
 
     @patch.object(OaiRegistry, "get_by_id")
     def test_activate_registry_not_found(self, mock_get_by_id):
+        """test_activate_registry_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -276,12 +334,18 @@ class TestActivateRegistry(TestCase):
 
 
 class TestDeleteRegistry(TestCase):
+    """Test Delete Registry"""
+
     def setUp(self):
-        super(TestDeleteRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {}
         self.param = {"registry_id": 1}
 
     def test_delete_registry_unauthorized(self):
+        """test_delete_registry_unauthorized"""
+
         # Act
         response = RequestMock.do_request_delete(
             rest_oai_registry.RegistryDetail.as_view(),
@@ -295,6 +359,8 @@ class TestDeleteRegistry(TestCase):
 
     @patch.object(OaiRegistry, "get_by_id")
     def test_delete_registry_not_found(self, mock_get_by_id):
+        """test_delete_registry_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 
@@ -311,8 +377,12 @@ class TestDeleteRegistry(TestCase):
 
 
 class TestHarvestRegistry(TestCase):
+    """Test Harvest Registry"""
+
     def setUp(self):
-        super(TestHarvestRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.param = {"registry_id": 1}
 
     @patch.object(OaiRegistry, "get_by_id")
@@ -330,6 +400,8 @@ class TestHarvestRegistry(TestCase):
         mock_harvest_by_metadata_formats,
         mock_get_by_id,
     ):
+        """test_harvest_registry"""
+
         # Arrange
         mock_registry = _create_mock_oai_registry()
         mock_get_by_id.return_value = mock_registry
@@ -350,6 +422,8 @@ class TestHarvestRegistry(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_harvest_registry_unauthorized(self):
+        """test_harvest_registry_unauthorized"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.Harvest.as_view(),
@@ -361,7 +435,9 @@ class TestHarvestRegistry(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @patch.object(OaiRegistry, "get_by_id")
-    def test_havest_registry_not_found(self, mock_get_by_id):
+    def test_harvest_registry_not_found(self, mock_get_by_id):
+        """test_harvest_registry_not_found"""
+
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist("Error")
 

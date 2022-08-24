@@ -17,6 +17,8 @@ from core_oaipmh_harvester_app.utils.query.mongo.query_builder import OaiPmhQuer
 
 # FIXME: Could inherit AbstractExecuteQuery from core_main_app
 class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
+    """Abstract Execute Query View"""
+
     sub_document_root = "dict_content"
 
     def get(self, request):
@@ -72,16 +74,17 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
             if order_by_field:
                 order_by_field = order_by_field.split(",")
 
-            if query is not None:
-                # prepare query
-                raw_query = self.build_query(query, templates, registries)
-                # execute query
-                data_list = self.execute_json_query(raw_query, order_by_field)
-                # build and return response
-                return self.build_response(data_list)
-            else:
+            if query is None:
                 content = {"message": "Query should be passed in parameter."}
                 return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+            # prepare query
+            raw_query = self.build_query(query, templates, registries)
+            # execute query
+            data_list = self.execute_json_query(raw_query, order_by_field)
+            # build and return response
+            return self.build_response(data_list)
+
         except Exception as api_exception:
             content = {"message": str(api_exception)}
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -4,6 +4,7 @@ import logging
 
 from django.db.models.signals import post_save, post_delete
 
+from core_main_app.utils import xml as xml_utils
 from core_main_app.commons.exceptions import CoreError
 from core_main_app.settings import (
     MONGODB_INDEXING,
@@ -12,7 +13,6 @@ from core_main_app.settings import (
     XML_POST_PROCESSOR,
     XML_FORCE_LIST,
 )
-from core_main_app.utils import xml as xml_utils
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -34,6 +34,8 @@ try:
         from core_main_app.components.mongo.models import AbstractMongoData
 
         class MongoOaiRecord(AbstractMongoData):
+            """Mongo Oai Record"""
+
             identifier = mongo_fields.StringField()
             deleted = mongo_fields.BooleanField()
             _harvester_sets_ids = mongo_fields.ListField(db_field="harvester_sets")
@@ -45,6 +47,11 @@ try:
 
             @property
             def harvester_metadata_format(self):
+                """harvester_metadata_format
+
+                Returns:
+
+                """
                 return OaiHarvesterMetadataFormat.get_by_id(
                     self._harvester_metadata_format_id
                 )
@@ -183,8 +190,8 @@ try:
                         logger.warning(
                             f"Trying to delete {str(instance.id)} but document was not found."
                         )
-                    except Exception as e:
-                        logger.error(f"An unexpected error occurred: {str(e)}")
+                    except Exception as exception:
+                        logger.error(f"An unexpected error occurred: {str(exception)}")
 
         # Initialize text index
         init_text_index(MongoOaiRecord)

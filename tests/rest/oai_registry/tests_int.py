@@ -17,14 +17,20 @@ from tests.components.oai_registry.fixtures.fixtures import OaiPmhFixtures, OaiP
 
 
 class TestSelectRegistry(MongoIntegrationBaseTestCase):
+    """Test Select Registry"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestSelectRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.fixture.insert_registry()
         self.param = {"registry_id": self.fixture.registry.id}
 
     def test_select_registry_returns(self):
+        """test_select_registry_returns"""
+
         # Arrange
         user = create_mock_user("1", has_perm=True, is_staff=True)
 
@@ -38,13 +44,19 @@ class TestSelectRegistry(MongoIntegrationBaseTestCase):
 
 
 class TestSelectAllRegistries(MongoIntegrationBaseTestCase):
+    """Test Select All Registries"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestSelectAllRegistries, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = None
 
     def test_select_all_registries(self):
+        """test_select_all_registries"""
+
         # Arrange
         self.fixture.insert_registry()
         user = create_mock_user("1", has_perm=True, is_staff=True)
@@ -59,10 +71,14 @@ class TestSelectAllRegistries(MongoIntegrationBaseTestCase):
 
 
 class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
+    """Test Update Registry Info"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestUpdateRegistryInfo, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.fixture.insert_registry()
         self.param = {"registry_id": self.fixture.registry.id}
 
@@ -73,6 +89,8 @@ class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
     def test_update_registry_info(
         self, mock_identify, mock_metadata_formats, mock_sets, mock_get
     ):
+        """test_update_registry_info"""
+
         # Arrange
         identify = OaiPmhMock.mock_oai_identify(version=2)
         mock_identify.return_value = identify, status.HTTP_200_OK
@@ -96,10 +114,14 @@ class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
 
 
 class TestUpdateRegistryConf(MongoIntegrationBaseTestCase):
+    """Test Update Registry Conf"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestUpdateRegistryConf, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.fixture.insert_registry()
         self.param = {"registry_id": str(self.fixture.registry.id)}
         self.data = {
@@ -108,6 +130,8 @@ class TestUpdateRegistryConf(MongoIntegrationBaseTestCase):
         }
 
     def test_update_registry_info(self):
+        """test_update_registry_info"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.RegistryDetail.as_view(),
@@ -121,14 +145,20 @@ class TestUpdateRegistryConf(MongoIntegrationBaseTestCase):
 
 
 class TestActivateRegistry(MongoIntegrationBaseTestCase):
+    """Test Activate Registry"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestActivateRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.fixture.insert_registry()
         self.param = {"registry_id": self.fixture.registry.id}
 
     def test_activate_registry(self):
+        """test_activate_registry"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.ActivateRegistry.as_view(),
@@ -141,14 +171,20 @@ class TestActivateRegistry(MongoIntegrationBaseTestCase):
 
 
 class TestDeactivateRegistry(MongoIntegrationBaseTestCase):
+    """Test Deactivate Registry"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestDeactivateRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.fixture.insert_registry()
         self.param = {"registry_id": str(self.fixture.registry.id)}
 
     def test_deactivate_registry(self):
+        """test_deactivate_registry"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.DeactivateRegistry.as_view(),
@@ -161,14 +197,20 @@ class TestDeactivateRegistry(MongoIntegrationBaseTestCase):
 
 
 class TestDeleteRegistry(MongoIntegrationBaseTestCase):
+    """Test Delete Registry"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestDeleteRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.fixture.insert_registry()
         self.param = {"registry_id": str(self.fixture.registry.id)}
 
     def test_delete_registry(self):
+        """test_delete_registry"""
+
         # Act
         response = RequestMock.do_request_delete(
             rest_oai_registry.RegistryDetail.as_view(),

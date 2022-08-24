@@ -50,6 +50,8 @@ class AddRegistryForm(forms.Form):
 
 
 class EditRegistryForm(forms.ModelForm):
+    """Edit Registry Form"""
+
     harvest_rate = forms.IntegerField(
         label="Harvest Rate (seconds)",
         validators=[MinValueValidator(0)],
@@ -62,20 +64,40 @@ class EditRegistryForm(forms.ModelForm):
         widget=forms.CheckboxInput(),
     )
 
-    class Meta(object):
+    class Meta:
+        """Meta"""
+
         model = OaiRegistry
         fields = ["harvest_rate", "harvest"]
 
 
 class FormDataModelChoiceFieldMF(forms.ModelMultipleChoiceField):
+    """Form Data Model Choice Field MF"""
+
     # Used to return the prefix of the metadata format
     def label_from_instance(self, obj):
+        """label_from_instance
+        Args:
+            obj:
+
+        Returns:
+
+        """
         return obj.metadata_prefix
 
 
 class FormDataModelChoiceFieldSet(forms.ModelMultipleChoiceField):
+    """Form Data Model Choice Field Set"""
+
     # Used to return the name of the set
     def label_from_instance(self, obj):
+        """label_from_instance
+        Args:
+            obj:
+
+        Returns:
+
+        """
         return obj.set_name
 
 
@@ -97,7 +119,9 @@ class EditHarvestRegistryForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple(),
     )
 
-    class Meta(object):
+    class Meta:
+        """Meta"""
+
         model = OaiRegistry
         fields = ["metadata_formats", "sets"]
 
@@ -105,7 +129,7 @@ class EditHarvestRegistryForm(forms.ModelForm):
         if all(x in kwargs for x in ["metadata_formats", "sets"]):
             metadata_formats = kwargs.pop("metadata_formats")
             sets = kwargs.pop("sets")
-            super(EditHarvestRegistryForm, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
             self.fields["metadata_formats"].queryset = metadata_formats
             self.fields["sets"].queryset = sets
 
@@ -164,7 +188,7 @@ class RequestForm(forms.Form):
     )
 
     def __init__(self):
-        super(RequestForm, self).__init__()
+        super().__init__()
 
         default_fields = [("0", "Pick one")]
 

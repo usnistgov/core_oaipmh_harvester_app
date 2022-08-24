@@ -2,19 +2,24 @@ import datetime
 from unittest.case import TestCase
 from unittest.mock import Mock, patch
 
-import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
+
 from core_main_app.commons import exceptions
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
+import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 
 class TestOaiRecordGetById(TestCase):
+    """Test Oai Record Get By Id"""
+
     @patch.object(OaiRecord, "get_by_id")
     def test_get_by_id_return_object(self, mock_get_by_id):
+        """test_get_by_id_return_object"""
+
         # Arrange
         mock_oai_record = _create_mock_oai_record()
         mock_user = create_mock_user("1", is_anonymous=False)
@@ -29,6 +34,8 @@ class TestOaiRecordGetById(TestCase):
 
     @patch.object(OaiRecord, "get_by_id")
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
+        """test_get_by_id_raises_exception_if_object_does_not_exist"""
+
         # Arrange
         mock_absent_id = 1
         mock_user = create_mock_user("1", is_anonymous=False)
@@ -41,6 +48,8 @@ class TestOaiRecordGetById(TestCase):
 
     @patch.object(OaiRecord, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
+        """test_get_by_id_raises_exception_if_internal_error"""
+
         # Arrange
         mock_absent_id = 1
         mock_user = create_mock_user("1", is_anonymous=False)
@@ -53,22 +62,34 @@ class TestOaiRecordGetById(TestCase):
 
 
 class TestOaiRecordGetAllByRegistryId(TestCase):
+    """Test Oai Record Get All By Registry Id"""
+
     @patch.object(OaiRecord, "get_all_by_registry_id")
     def test_get_all_by_registry_id_return_object(self, mock_get_all):
+        """test_get_all_by_registry_id_return_object"""
+
         _generic_get_all_test(
             self, mock_get_all, oai_record_api.get_all_by_registry_id(1)
         )
 
 
 class TestOaiRecordGetAll(TestCase):
+    """Test Oai Record Get All"""
+
     @patch.object(OaiRecord, "get_all")
     def test_get_all_contains_only_oai_record(self, mock_get_all):
+        """test_get_all_contains_only_oai_record"""
+
         _generic_get_all_test(self, mock_get_all, oai_record_api.get_all())
 
 
 class TestOaiRecordGetCountByRegistryId(TestCase):
+    """Test Oai Record Get Count By Registry Id"""
+
     @patch.object(OaiRecord, "get_count_by_registry_id")
     def test_get_count_by_registry_id_return_number(self, mock_get):
+        """test_get_count_by_registry_id_return_number"""
+
         # Arrange
         mock_registry_id = 1
         mock_user = create_mock_user("1", is_anonymous=False)
@@ -79,14 +100,18 @@ class TestOaiRecordGetCountByRegistryId(TestCase):
         result = oai_record_api.get_count_by_registry_id(mock_registry_id, mock_user)
 
         # Assert
-        self.assertEquals(result, 2)
+        self.assertEqual(result, 2)
 
 
 class TestOaiRecordDelete(TestCase):
+    """Test Oai Record Delete"""
+
     @patch.object(OaiRecord, "delete")
     def test_delete_oai_record_raises_exception_if_object_does_not_exist(
         self, mock_delete
     ):
+        """test_delete_oai_record_raises_exception_if_object_does_not_exist"""
+
         # Arrange
         oai_record = _create_oai_record()
         mock_delete.side_effect = Exception()
@@ -97,6 +122,15 @@ class TestOaiRecordDelete(TestCase):
 
 
 def _generic_get_all_test(self, mock_get_all, act_function):
+    """_generic_get_all_test
+
+    Args:
+        mock_get_all:
+        act_function:
+
+    Returns:
+
+    """
     # Arrange
     mock_oai_record1 = _create_mock_oai_record()
     mock_oai_record2 = _create_mock_oai_record()

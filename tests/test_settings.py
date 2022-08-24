@@ -1,3 +1,6 @@
+""" Test settings
+"""
+
 from os.path import dirname, realpath
 
 SECRET_KEY = "fake-key"

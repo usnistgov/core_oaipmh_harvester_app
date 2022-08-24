@@ -15,7 +15,11 @@ from core_oaipmh_harvester_app.system import api as oai_harvester_system_api
 
 
 class TestOaiRecordUpsert(TestCase):
+    """Test Oai Record Upsert"""
+
     def test_upsert_oai_record_return_object(self):
+        """test_upsert_oai_record_return_object"""
+
         # Act
         result = oai_harvester_system_api.upsert_oai_record(MockOaiRecord())
 
@@ -23,12 +27,16 @@ class TestOaiRecordUpsert(TestCase):
         self.assertIsInstance(result, MockOaiRecord)
 
     def test_upsert_oai_harvester_raises_exception_if_save_failed(self):
+        """test_upsert_oai_harvester_raises_exception_if_save_failed"""
+
         # Act + Assert
         with self.assertRaises(Exception):
             oai_harvester_system_api.upsert_oai_record(MockOaiRecord(save_failed=True))
 
 
 class MockOaiRecord(Mock):
+    """Mock Oai Record"""
+
     identifier = "oai:test/id.0006"
     last_modification_date = datetime.datetime.now()
     deleted = False
@@ -42,6 +50,10 @@ class MockOaiRecord(Mock):
         self.save_failed = save_failed
 
     def convert_and_save(self):
+        """convert_and_save
+
+        Returns:
+        """
         if self.save_failed:
             raise Exception()
 

@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 from rest_framework import status
 from rest_framework.response import Response
 
-import core_oaipmh_harvester_app.components.oai_registry.api as registry_api
+
 from core_main_app.commons import exceptions
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import create_mock_request
@@ -16,6 +16,7 @@ from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
     api as oai_harvester_metadata_format_api,
 )
+import core_oaipmh_harvester_app.components.oai_registry.api as registry_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -35,7 +36,7 @@ class TestOaiRegistryGetById(TestCase):
 
     @patch.object(OaiRegistry, "get_by_id")
     def test_get_by_id_return_object(self, mock_get_by_id):
-        """
+        """test_get_by_id_return_object
 
         Args:
             mock_get_by_id:
@@ -56,7 +57,7 @@ class TestOaiRegistryGetById(TestCase):
 
     @patch.object(OaiRegistry, "get_by_id")
     def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
-        """
+        """test_get_by_id_raises_exception_if_object_does_not_exist
 
         Args:
             mock_get_by_id:
@@ -75,7 +76,7 @@ class TestOaiRegistryGetById(TestCase):
 
     @patch.object(OaiRegistry, "get_by_id")
     def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
-        """
+        """test_get_by_id_raises_exception_if_internal_error
 
         Args:
             mock_get_by_id:
@@ -100,7 +101,7 @@ class TestOaiRegistryGetByName(TestCase):
 
     @patch.object(OaiRegistry, "get_by_name")
     def test_get_by_name_return_object(self, mock_get_by_name):
-        """
+        """test_get_by_name_return_object
 
         Args:
             mock_get_by_name:
@@ -123,7 +124,7 @@ class TestOaiRegistryGetByName(TestCase):
     def test_get_by_name_raises_exception_if_object_does_not_exist(
         self, mock_get_by_name
     ):
-        """
+        """test_get_by_name_raises_exception_if_object_does_not_exist
 
         Args:
             mock_get_by_name:
@@ -142,7 +143,7 @@ class TestOaiRegistryGetByName(TestCase):
 
     @patch.object(OaiRegistry, "get_by_name")
     def test_get_by_name_raises_exception_if_internal_error(self, mock_get_by_name):
-        """
+        """test_get_by_name_raises_exception_if_internal_error
 
         Args:
             mock_get_by_name:
@@ -167,7 +168,7 @@ class TestOaiRegistryGetAll(TestCase):
 
     @patch.object(OaiRegistry, "get_all")
     def test_get_all_contains_only_oai_registry(self, mock_get_all):
-        """
+        """test_get_all_contains_only_oai_registry
 
         Args:
             mock_get_all:
@@ -181,7 +182,7 @@ class TestOaiRegistryGetAll(TestCase):
 class TestOaiRegistryGetAllActivatedRegistry(TestCase):
     @patch.object(OaiRegistry, "get_all_by_is_activated")
     def test_get_all_contains_only_oai_registry(self, mock_get_all):
-        """
+        """test_get_all_contains_only_oai_registry
 
         Args:
             mock_get_all:
@@ -205,7 +206,7 @@ class TestOaiRegistryUpsert(TestCase):
 
     @patch.object(OaiRegistry, "save")
     def test_upsert_oai_registry_raises_exception_if_save_failed(self, mock_save):
-        """
+        """test_upsert_oai_registry_raises_exception_if_save_failed
 
         Args:
             mock_save:
@@ -232,7 +233,7 @@ class TestCheckRegistryUrlAlreadyExists(TestCase):
 
     @patch.object(OaiRegistry, "check_registry_url_already_exists")
     def test_check_oai_registry_url_already_exists(self, mock_check):
-        """
+        """test_check_oai_registry_url_already_exists
 
         Args:
             mock_check:
@@ -248,11 +249,11 @@ class TestCheckRegistryUrlAlreadyExists(TestCase):
         result = registry_api.check_registry_url_already_exists(mock_url)
 
         # Assert
-        self.assertEquals(result, True)
+        self.assertEqual(result, True)
 
     @patch.object(OaiRegistry, "check_registry_url_already_exists")
     def test_check_oai_registry_url_does_not_already_exist(self, mock_check):
-        """
+        """test_check_oai_registry_url_does_not_already_exist
 
         Args:
             mock_check:
@@ -268,7 +269,7 @@ class TestCheckRegistryUrlAlreadyExists(TestCase):
         result = registry_api.check_registry_url_already_exists(mock_url)
 
         # Assert
-        self.assertEquals(result, False)
+        self.assertEqual(result, False)
 
 
 class TestOaiRegistryDelete(TestCase):
@@ -280,7 +281,7 @@ class TestOaiRegistryDelete(TestCase):
     def test_delete_oai_registry_raises_exception_if_object_does_not_exist(
         self, mock_delete
     ):
-        """
+        """test_delete_oai_registry_raises_exception_if_object_does_not_exist
 
         Args:
             mock_delete:
@@ -314,7 +315,7 @@ class TestAddRegistry(TestCase):
     def test_add_registry_by_url_raises_exception_if_bad_identify(
         self, mock_registry, mock
     ):
-        """
+        """test_add_registry_by_url_raises_exception_if_bad_identify
 
         Args:
             mock_registry:
@@ -352,7 +353,7 @@ class TestAddRegistry(TestCase):
     def test_add_registry_by_url_raises_exception_if_bad_identify_data(
         self, mock_registry, mock_identify, mock_transform
     ):
-        """
+        """test_add_registry_by_url_raises_exception_if_bad_identify_data
 
         Args:
             mock_registry:
@@ -385,7 +386,7 @@ class TestAddRegistry(TestCase):
     def test_add_registry_by_url_raises_exception_if_bad_sets(
         self, mock_registry, mock_sets, mock_identify
     ):
-        """
+        """test_add_registry_by_url_raises_exception_if_bad_sets
 
         Args:
             mock_registry:
@@ -425,7 +426,7 @@ class TestAddRegistry(TestCase):
     def test_add_registry_by_url_raises_exception_if_bad_sets_data(
         self, mock_registry, mock_identify, mock_set, mock_transform
     ):
-        """
+        """test_add_registry_by_url_raises_exception_if_bad_sets_data
 
         Args:
             mock_registry:
@@ -461,7 +462,7 @@ class TestAddRegistry(TestCase):
     def test_add_registry_by_url_raises_exception_if_bad_metadata_formats(
         self, mock_registry, mock_metadata_formats, mock_identify, mock_sets
     ):
-        """
+        """test_add_registry_by_url_raises_exception_if_bad_metadata_formats
 
         Args:
             mock_registry:
@@ -510,7 +511,7 @@ class TestAddRegistry(TestCase):
         mock_metadata_format,
         mock_transform,
     ):
-        """
+        """test_add_registry_by_url_raises_exception_if_bad_metadata_formats_data
 
         Args:
             mock_registry:
@@ -558,7 +559,7 @@ class TestUpdateRegistryInfo(TestCase):
     def test_update_registry_info_raises_exception_if_bad_identify(
         self, mock_get, mock_registry, mock
     ):
-        """
+        """test_update_registry_info_raises_exception_if_bad_identify
 
         Args:
             mock_get:
@@ -597,7 +598,7 @@ class TestUpdateRegistryInfo(TestCase):
     def test_update_registry_info_raises_exception_if_bad_sets(
         self, mock_get, mock_registry, mock_sets, mock_identify
     ):
-        """
+        """test_update_registry_info_raises_exception_if_bad_sets
 
         Args:
             mock_get:
@@ -639,7 +640,7 @@ class TestUpdateRegistryInfo(TestCase):
     def test_update_registry_info_raises_exception_if_bad_metadata_formats(
         self, mock_get, mock_registry, mock_metadata_formats, mock_identify, mock_sets
     ):
-        """
+        """test_update_registry_info_raises_exception_if_bad_metadata_formats
 
         Args:
             mock_get:
@@ -698,7 +699,7 @@ class TestHarvestRegistry(TestCase):
         mock_harvest_metadata_formats_and_sets,
         mock_harvest_by_metadata_formats,
     ):
-        """
+        """test_harvest_by_metadata_formats_and_sets
 
         Args:
             mock_upsert:
@@ -743,6 +744,8 @@ class TestHarvestRegistry(TestCase):
         mock_harvest_metadata_formats_and_sets,
         mock_harvest_by_metadata_formats,
     ):
+        """test_harvest_by_metadata_formats"""
+
         # Arrange
         mock_oai_registry = _create_mock_oai_registry()
         mock_upsert.return_value = mock_oai_registry
@@ -773,7 +776,7 @@ class TestHarvestRegistry(TestCase):
         mock_sets_to_harvest,
         mock_harvest_metadata_formats_and_sets,
     ):
-        """
+        """test_harvest_by_metadata_formats_and_sets_returns_errors
 
         Args:
             mock_upsert:
@@ -801,7 +804,7 @@ class TestHarvestRegistry(TestCase):
         result = oai_registry_api.harvest_registry(mock_oai_registry)
 
         # Assert
-        self.assertEquals(result, errors)
+        self.assertEqual(result, errors)
 
     @patch.object(oai_registry_api, "_harvest_by_metadata_formats")
     @patch.object(oai_harvester_set_api, "get_all_to_harvest_by_registry_id")
@@ -818,7 +821,7 @@ class TestHarvestRegistry(TestCase):
         mock_sets_to_harvest,
         mock_harvest_by_metadata_formats,
     ):
-        """
+        """test_harvest_by_metadata_formats_returns_errors
 
         Args:
             mock_upsert:
@@ -846,11 +849,13 @@ class TestHarvestRegistry(TestCase):
         result = oai_registry_api.harvest_registry(mock_oai_registry)
 
         # Assert
-        self.assertEquals(result, errors)
+        self.assertEqual(result, errors)
 
     @patch.object(oai_verbs_api, "list_records")
-    def test_harvest_records_returns_errors_if_not_HTTP_200_OK(self, mock_list_records):
-        """
+    def test_harvest_records_returns_errors_if_not_http_204_no_content(
+        self, mock_list_records
+    ):
+        """test_harvest_records_returns_errors_if_not_http_204_no_content
 
         Args:
             mock_list_records:
@@ -879,7 +884,7 @@ class TestHarvestRegistry(TestCase):
         )
 
         # Assert
-        self.assertEquals(result, expected_error)
+        self.assertEqual(result, expected_error)
 
 
 class TestGetIdentifyAsObject(TestCase):
@@ -892,8 +897,8 @@ class TestGetIdentifyAsObject(TestCase):
         self.error_message = "An error occurred: %s"
 
     @patch.object(oai_verbs_api, "identify_as_object")
-    def test_get_identify_as_object_raises_exception_if_not_200_OK(self, mock):
-        """
+    def test_get_identify_as_object_raises_exception_if_not_200_ok(self, mock):
+        """test_get_identify_as_object_raises_exception_if_not_200_ok
 
         Args:
             mock:
@@ -926,8 +931,8 @@ class TestGetSetsAsObject(TestCase):
         self.error_message = "An error occurred: %s"
 
     @patch.object(oai_verbs_api, "list_sets_as_object")
-    def test_get_sets_as_object_raises_exception_if_not_200_OK(self, mock):
-        """
+    def test_get_sets_as_object_raises_exception_if_not_200_ok(self, mock):
+        """test_get_sets_as_object_raises_exception_if_not_200_ok
 
         Args:
             mock:
@@ -951,8 +956,8 @@ class TestGetSetsAsObject(TestCase):
         )
 
     @patch.object(oai_verbs_api, "list_sets_as_object")
-    def test_get_sets_as_object_no_exception_if_204_NO_CONTENT(self, mock):
-        """
+    def test_get_sets_as_object_no_exception_if_204_no_content(self, mock):
+        """test_get_sets_as_object_no_exception_if_204_no_content
 
         Args:
             mock:
@@ -980,8 +985,8 @@ class TestGetMetadataFormatsAsObject(TestCase):
         self.error_message = "An error occurred: %s"
 
     @patch.object(oai_verbs_api, "list_metadata_formats_as_object")
-    def test_get_metadata_formats_as_object_raises_exception_if_not_200_OK(self, mock):
-        """
+    def test_get_metadata_formats_as_object_raises_exception_if_not_200_ok(self, mock):
+        """test_get_metadata_formats_as_object_raises_exception_if_not_200_ok
 
         Args:
             mock:
@@ -1005,8 +1010,8 @@ class TestGetMetadataFormatsAsObject(TestCase):
         )
 
     @patch.object(oai_verbs_api, "list_metadata_formats_as_object")
-    def test_get_metadata_formats_as_object_no_exception_if_204_NO_CONTENT(self, mock):
-        """
+    def test_get_metadata_formats_as_object_no_exception_if_204_no_content(self, mock):
+        """test_get_metadata_formats_as_object_no_exception_if_204_no_content
 
         Args:
             mock:
@@ -1031,7 +1036,7 @@ class TestInitRegistry(TestCase):
     """
 
     def test_init_registry_returns_initialized_object(self):
-        """
+        """test_init_registry_returns_initialized_object
 
         Returns:
 
@@ -1050,12 +1055,12 @@ class TestInitRegistry(TestCase):
 
         # Assert
         self.assertIsInstance(result, OaiRegistry)
-        self.assertEquals(result.url, url)
-        self.assertEquals(result.harvest, harvest)
-        self.assertEquals(result.harvest_rate, harvest_rate)
-        self.assertEquals(result.name, repository_name)
-        self.assertEquals(result.description, description)
-        self.assertEquals(result.is_activated, True)
+        self.assertEqual(result.url, url)
+        self.assertEqual(result.harvest, harvest)
+        self.assertEqual(result.harvest_rate, harvest_rate)
+        self.assertEqual(result.name, repository_name)
+        self.assertEqual(result.description, description)
+        self.assertEqual(result.is_activated, True)
 
 
 def _generic_get_all_test(self, mock_get_all, act_function):

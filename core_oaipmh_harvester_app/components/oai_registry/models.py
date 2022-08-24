@@ -22,6 +22,8 @@ class OaiRegistry(models.Model):
     is_queued = models.BooleanField(default=False)
 
     class Meta:
+        """Meta"""
+
         verbose_name = "Oai registry"
         verbose_name_plural = "Oai registries"
 
@@ -41,10 +43,10 @@ class OaiRegistry(models.Model):
         """
         try:
             return OaiRegistry.objects.get(pk=str(oai_registry_id))
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_by_name(oai_registry_name):
@@ -62,10 +64,10 @@ class OaiRegistry(models.Model):
         """
         try:
             return OaiRegistry.objects.get(name=oai_registry_name)
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all():

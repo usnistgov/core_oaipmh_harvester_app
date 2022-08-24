@@ -11,7 +11,11 @@ from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 
 
 class RegistrySerializer(serializers.ModelSerializer):
-    class Meta(object):
+    """Registry Serializer"""
+
+    class Meta:
+        """Meta"""
+
         model = OaiRegistry
         fields = "__all__"
 
@@ -27,13 +31,32 @@ class RegistrySerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
+        """create
+
+        Args:
+            validated_data:
+
+        Returns:
+
+        """
         return oai_registry_api.add_registry_by_url(
             **validated_data, request=self.context["request"]
         )
 
 
 class UpdateRegistrySerializer(BasicSerializer):
+    """Update Registry Serializer"""
+
     def update(self, instance, validated_data):
+        """update
+
+        Args:
+            instance
+            validated_data:
+
+        Returns:
+
+        """
         instance.harvest_rate = validated_data.get(
             "harvest_rate", instance.harvest_rate
         )
@@ -45,6 +68,8 @@ class UpdateRegistrySerializer(BasicSerializer):
 
 
 class HarvestSerializer(BasicSerializer):
+    """Harvest Serializer"""
+
     metadata_formats = serializers.ListField(
         child=serializers.CharField(), required=False
     )
@@ -56,7 +81,7 @@ class OaiRecordSerializer(serializers.ModelSerializer):
 
     xml_content = serializers.CharField()
 
-    class Meta(object):
+    class Meta:
         """Meta"""
 
         model = OaiRecord
