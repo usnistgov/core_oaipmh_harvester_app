@@ -1,1 +1,1 @@
-var deactivateRegistryGetUrl = "{% url 'admin:core_oaipmh_harvester_app_deactivate_registry' %}";
+var deactivateRegistryGetUrl = "{% url 'core-admin:core_oaipmh_harvester_app_deactivate_registry' %}";

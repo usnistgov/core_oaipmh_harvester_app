@@ -2,7 +2,7 @@
 """
 import datetime
 from unittest.case import TestCase
-from unittest.mock import patch
+from unittest.mock import Mock
 
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
@@ -10,71 +10,51 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models i
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
     OaiHarvesterSet,
 )
-from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
 from core_oaipmh_harvester_app.system import api as oai_harvester_system_api
 
 
 class TestOaiRecordUpsert(TestCase):
-    def setUp(self):
-        self.oai_record = _create_oai_record()
+    """Test Oai Record Upsert"""
 
-    @patch.object(OaiRecord, "save")
-    @patch.object(OaiRecord, "convert_to_file")
-    def test_upsert_oai_record_return_object(self, mock_convert_file, mock_save):
-        # Arrange
-        mock_save.return_value = self.oai_record
-        mock_convert_file.return_value = None
+    def test_upsert_oai_record_return_object(self):
+        """test_upsert_oai_record_return_object"""
 
         # Act
-        result = oai_harvester_system_api.upsert_oai_record(self.oai_record)
+        result = oai_harvester_system_api.upsert_oai_record(MockOaiRecord())
 
         # Assert
-        self.assertIsInstance(result, OaiRecord)
+        self.assertIsInstance(result, MockOaiRecord)
 
-    @patch.object(OaiRecord, "save")
-    @patch.object(OaiRecord, "convert_to_file")
-    def test_upsert_oai_harvester_raises_exception_if_save_failed(
-        self, mock_convert_file, mock_save
-    ):
-        # Arrange
-        mock_save.side_effect = Exception()
-        mock_convert_file.return_value = None
+    def test_upsert_oai_harvester_raises_exception_if_save_failed(self):
+        """test_upsert_oai_harvester_raises_exception_if_save_failed"""
 
         # Act + Assert
         with self.assertRaises(Exception):
-            oai_harvester_system_api.upsert_oai_record(self.oai_record)
+            oai_harvester_system_api.upsert_oai_record(MockOaiRecord(save_failed=True))
 
 
-def _create_oai_record():
-    """Get an OaiRecord object.
+class MockOaiRecord(Mock):
+    """Mock Oai Record"""
 
-    Returns:
-        OaiRecord instance.
+    identifier = "oai:test/id.0006"
+    last_modification_date = datetime.datetime.now()
+    deleted = False
+    harvester_sets = [OaiHarvesterSet(), OaiHarvesterSet()]
+    harvester_metadata_format = OaiHarvesterMetadataFormat()
+    registry = OaiRegistry()
+    xml_content = "<test><message>Hello</message></test>"
 
-    """
-    oai_record = OaiRecord()
-    _set_oai_record_fields(oai_record)
+    def __init__(self, save_failed=False):
+        super().__init__()
+        self.save_failed = save_failed
 
-    return oai_record
+    def convert_and_save(self):
+        """convert_and_save
 
+        Returns:
+        """
+        if self.save_failed:
+            raise Exception()
 
-def _set_oai_record_fields(oai_record):
-    """Set OaiRecord fields.
-
-    Args:
-        oai_record:
-
-    Returns:
-        OaiRecord with assigned fields.
-
-    """
-    oai_record.identifier = "oai:test/id.0006"
-    oai_record.last_modification_date = datetime.datetime.now()
-    oai_record.deleted = False
-    oai_record.harvester_sets = [OaiHarvesterSet(), OaiHarvesterSet()]
-    oai_record.harvester_metadata_format = OaiHarvesterMetadataFormat()
-    oai_record.registry = OaiRegistry()
-    oai_record.xml_content = "<test><message>Hello</message></test>"
-
-    return oai_record
+        return None

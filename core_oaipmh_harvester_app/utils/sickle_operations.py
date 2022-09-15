@@ -5,10 +5,11 @@ from sickle import Sickle
 from sickle.models import Record
 from sickle.oaiexceptions import NoSetHierarchy, NoMetadataFormat
 
+from xml_utils.xsd_tree.xsd_tree import XSDTree
+
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.settings import SSL_CERTIFICATES_DIR
 from core_oaipmh_harvester_app.utils import sickle_serializers
-from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
 def _sickle_init(url):
@@ -40,9 +41,10 @@ def sickle_identify(url):
         identify = sickle.Identify()
         serializer = sickle_serializers.IdentifySerializer(identify)
         return serializer.data, status.HTTP_200_OK
-    except Exception as e:
+    except Exception as exception:
         content = OaiPmhMessage.get_message_labelled(
-            "An error occurred when attempting to identify resource: %s" % str(e)
+            "An error occurred when attempting to identify resource: %s"
+            % str(exception)
         )
         return content, status.HTTP_500_INTERNAL_SERVER_ERROR
 
@@ -63,12 +65,12 @@ def sickle_list_sets(url):
         list_sets = sickle.ListSets()
         serializer = sickle_serializers.SetSerializer(list_sets, many=True)
         return serializer.data, status.HTTP_200_OK
-    except NoSetHierarchy as e:
-        content = OaiPmhMessage.get_message_labelled("%s" % str(e))
+    except NoSetHierarchy as exception:
+        content = OaiPmhMessage.get_message_labelled("%s" % str(exception))
         return content, status.HTTP_204_NO_CONTENT
-    except Exception as e:
+    except Exception as exception:
         content = OaiPmhMessage.get_message_labelled(
-            "An error occurred when attempting to get the sets: %s" % str(e)
+            "An error occurred when attempting to get the sets: %s" % str(exception)
         )
         return content, status.HTTP_500_INTERNAL_SERVER_ERROR
 
@@ -91,13 +93,14 @@ def sickle_list_metadata_formats(url):
             list_metadata_formats, many=True
         )
         return serializer.data, status.HTTP_200_OK
-    except NoMetadataFormat as e:
+    except NoMetadataFormat as exception:
         # This repository does not support sets
-        content = OaiPmhMessage.get_message_labelled("%s" % str(e))
+        content = OaiPmhMessage.get_message_labelled("%s" % str(exception))
         return content, status.HTTP_204_NO_CONTENT
-    except Exception as e:
+    except Exception as exception:
         content = OaiPmhMessage.get_message_labelled(
-            "An error occurred when attempting to get the metadata formats: %s" % str(e)
+            "An error occurred when attempting to get the metadata formats: %s"
+            % str(exception)
         )
         return content, status.HTTP_500_INTERNAL_SERVER_ERROR
 

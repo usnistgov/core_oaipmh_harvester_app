@@ -6,11 +6,11 @@ import requests
 from rest_framework import status
 from rest_framework.response import Response
 
+from xml_utils.xsd_tree.xsd_tree import XSDTree
 from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.utils import sickle_operations, transform_operations
-from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
 def identify(url):
@@ -44,9 +44,10 @@ def identify_as_object(url):
             data = transform_operations.transform_dict_identifier_to_oai_identifier(
                 data
             )
-        except Exception as e:
+        except Exception as exception:
             data = OaiPmhMessage.get_message_labelled(
-                "An error occurred when attempting to identify resource: %s" % str(e)
+                "An error occurred when attempting to identify resource: %s"
+                % str(exception)
             )
             status_code = status.HTTP_400_BAD_REQUEST
 
@@ -84,10 +85,10 @@ def list_metadata_formats_as_object(url):
             data = transform_operations.transform_dict_metadata_format_to_oai_harvester_metadata_format(
                 data
             )
-        except Exception as e:
+        except Exception as exception:
             data = OaiPmhMessage.get_message_labelled(
                 "An error occurred when attempting to get the metadata "
-                "formats: %s" % str(e)
+                "formats: %s" % str(exception)
             )
             status_code = status.HTTP_400_BAD_REQUEST
 
@@ -123,9 +124,9 @@ def list_sets_as_object(url):
     if status_code == status.HTTP_200_OK:
         try:
             data = transform_operations.transform_dict_set_to_oai_harvester_set(data)
-        except Exception as e:
+        except Exception as exception:
             data = OaiPmhMessage.get_message_labelled(
-                "An error occurred when attempting to get the sets: %s" % str(e)
+                "An error occurred when attempting to get the sets: %s" % str(exception)
             )
             status_code = status.HTTP_400_BAD_REQUEST
 
@@ -192,11 +193,11 @@ def list_records(
             )
 
         return Response(rtn, status=status.HTTP_200_OK), resumption_token
-    except oai_pmh_exceptions.OAIAPIException as e:
-        return e.response(), resumption_token
-    except Exception as e:
+    except oai_pmh_exceptions.OAIAPIException as exception:
+        return exception.response(), resumption_token
+    except Exception as exception:
         content = OaiPmhMessage.get_message_labelled(
-            "An error occurred during the list_records process: %s" % str(e)
+            "An error occurred during the list_records process: %s" % str(exception)
         )
         return (
             Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR),
@@ -219,43 +220,46 @@ def get_data(url, request=None):
 
     """
     try:
-        if str(url).__contains__("?"):
-            registry_url = str(url).split("?")[0]
-            data, status_code = identify(registry_url)
-            if status_code == status.HTTP_200_OK:
-                # TODO: refactor send request with cookies (same code in other apps)
-                try:
-                    session_id = request.session.session_key
-                except:
-                    session_id = None
-                http_response = send_get_request(url, cookies={"sessionid": session_id})
-                if http_response.status_code == status.HTTP_200_OK:
-                    return Response(http_response.text, status=status.HTTP_200_OK)
-                else:
-                    raise oai_pmh_exceptions.OAIAPIException(
-                        message="An error occurred.",
-                        status_code=http_response.status_code,
-                    )
-            else:
-                content = (
-                    "An error occurred when attempting to identify resource: %s" % data
-                )
-                raise oai_pmh_exceptions.OAIAPILabelledException(
-                    message=content, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
-        else:
+        if not str(url).__contains__("?"):
             raise oai_pmh_exceptions.OAIAPIException(
                 message="An error occurred, url malformed.",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
+
+        registry_url = str(url).split("?")[0]
+        data, status_code = identify(registry_url)
+        if status_code == status.HTTP_200_OK:
+            # TODO: refactor send request with cookies (same code in other apps)
+            try:
+                session_id = request.session.session_key
+            except:
+                session_id = None
+            http_response = send_get_request(url, cookies={"sessionid": session_id})
+            if http_response.status_code == status.HTTP_200_OK:
+                return Response(http_response.text, status=status.HTTP_200_OK)
+            else:
+                raise oai_pmh_exceptions.OAIAPIException(
+                    message="An error occurred.",
+                    status_code=http_response.status_code,
+                )
+        else:
+            content = (
+                "An error occurred when attempting to identify resource: %s" % data
+            )
+            raise oai_pmh_exceptions.OAIAPILabelledException(
+                message=content, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
     except requests.HTTPError as err:
         raise oai_pmh_exceptions.OAIAPILabelledException(
             message=str(err), status_code=err.response.status_code
         )
-    except oai_pmh_exceptions.OAIAPIException as e:
-        raise e
-    except Exception as e:
-        content = "An error occurred when attempting to retrieve data: %s" % str(e)
+    except oai_pmh_exceptions.OAIAPIException as exception:
+        raise exception
+    except Exception as exception:
+        content = "An error occurred when attempting to retrieve data: %s" % str(
+            exception
+        )
         raise oai_pmh_exceptions.OAIAPILabelledException(
             message=content, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )

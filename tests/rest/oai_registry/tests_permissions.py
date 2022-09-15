@@ -1,9 +1,9 @@
 """ Permissions Test for OAI Registry Rest API
 """
-from bson.objectid import ObjectId
+from unittest.mock import patch, Mock
+
 from django.db.models.query import QuerySet
 from django.test import SimpleTestCase
-from mock.mock import patch, Mock
 from rest_framework import status
 
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
@@ -24,12 +24,18 @@ from core_oaipmh_harvester_app.rest.serializers import (
 
 
 class TestGetRegistry(SimpleTestCase):
+    """Test Get Registry"""
+
     def setUp(self):
-        super(TestGetRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {}
-        self.param = {"registry_id": ObjectId()}
+        self.param = {"registry_id": 1}
 
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_get(
             rest_oai_registry.RegistryDetail.as_view(),
@@ -42,6 +48,8 @@ class TestGetRegistry(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -58,6 +66,8 @@ class TestGetRegistry(SimpleTestCase):
     def test_staff_returns_http_200(
         self, mock_oai_registry_api_get_by_id, mock_data_serializer_data
     ):
+        """test_staff_returns_http_200"""
+
         # Arrange
         user = create_mock_user("1", has_perm=True, is_staff=True)
         mock_oai_registry_api_get_by_id.return_value = None
@@ -73,12 +83,18 @@ class TestGetRegistry(SimpleTestCase):
 
 
 class TestDeleteRegistry(SimpleTestCase):
+    """Test Delete Registry"""
+
     def setUp(self):
-        super(TestDeleteRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = {}
-        self.param = {"registry_id": ObjectId()}
+        self.param = {"registry_id": 1}
 
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_delete(
             rest_oai_registry.RegistryDetail.as_view(),
@@ -91,6 +107,8 @@ class TestDeleteRegistry(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -107,6 +125,8 @@ class TestDeleteRegistry(SimpleTestCase):
     def test_staff_returns_http_204(
         self, mock_oai_registry_api_get_by_id, mock_oai_registry_api_delete
     ):
+        """test_staff_returns_http_204"""
+
         # Arrange
         user = create_mock_user("1", has_perm=True, is_staff=True)
         mock_oai_registry_api_get_by_id.return_value = None
@@ -122,12 +142,18 @@ class TestDeleteRegistry(SimpleTestCase):
 
 
 class TestPatchRegistry(SimpleTestCase):
+    """Test Patch Registry"""
+
     def setUp(self):
-        super(TestPatchRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.param = {"registry_id": 0}
         self.data = {"harvest_rate": 1, "harvest": False}
 
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.RegistryDetail.as_view(),
@@ -140,6 +166,8 @@ class TestPatchRegistry(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -164,6 +192,8 @@ class TestPatchRegistry(SimpleTestCase):
         mock_oaipmhmessage_get_message_labelled,
         mock_oai_registry_api_get_by_id,
     ):
+        """test_staff_returns_http_200"""
+
         # Arrange
         user = create_mock_user("1", has_perm=True, is_staff=True)
         mock_oai_registry_api_get_by_id.return_value = Mock(spec=OaiRegistry)
@@ -182,11 +212,17 @@ class TestPatchRegistry(SimpleTestCase):
 
 
 class TestInfoRegistry(SimpleTestCase):
+    """Test Info Registry"""
+
     def setUp(self):
-        super(TestInfoRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.param = {"registry_id": 1}
 
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.InfoRegistry.as_view(), user=None, param=self.param
@@ -196,6 +232,8 @@ class TestInfoRegistry(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.InfoRegistry.as_view(),
@@ -215,6 +253,8 @@ class TestInfoRegistry(SimpleTestCase):
         mock_oai_registry_api_update_registry_info,
         mock_oai_registry_api_get_by_id,
     ):
+        """test_staff_returns_http_200"""
+
         # Arrange
         user = create_mock_user("1", is_staff=True)
         mock_oaipmhmessage_get_message_labelled.return_value = None
@@ -231,11 +271,17 @@ class TestInfoRegistry(SimpleTestCase):
 
 
 class TestHarvestRegistry(SimpleTestCase):
+    """Test Harvest Registry"""
+
     def setUp(self):
-        super(TestHarvestRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.param = {"registry_id": 1}
 
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.Harvest.as_view(), user=None, param=self.param
@@ -245,6 +291,8 @@ class TestHarvestRegistry(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.Harvest.as_view(),
@@ -264,6 +312,8 @@ class TestHarvestRegistry(SimpleTestCase):
         mock_oai_registry_api_harvest_registry,
         mock_oai_registry_api_get_by_id,
     ):
+        """test_staff_returns_http_200"""
+
         # Arrange
         mock_oaipmhmessage_get_message_labelled.return_value = None
         mock_oai_registry_api_harvest_registry.return_value = []
@@ -281,12 +331,18 @@ class TestHarvestRegistry(SimpleTestCase):
 
 
 class TestEditHarvestRegistry(SimpleTestCase):
+    """Test Edit Harvest Registry"""
+
     def setUp(self):
-        super(TestEditHarvestRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.param = {"registry_id": 0}
         self.data = {"metadata_formats": [], "sets": []}
 
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_put(
             rest_oai_registry.Harvest.as_view(), user=None
@@ -296,6 +352,8 @@ class TestEditHarvestRegistry(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_put(
             rest_oai_registry.Harvest.as_view(), user=create_mock_user("1")
@@ -327,6 +385,8 @@ class TestEditHarvestRegistry(SimpleTestCase):
         mock_oai_set_api_update_for_all_harvest_by_list_ids,
         mock_queryset_values_list,
     ):
+        """test_staff_returns_http_200"""
+
         # Arrange
         mock_oaipmhmessage_get_message_labelled.return_value = None
         mock_oai_registry_api_harvest_registry.return_value = []
@@ -356,11 +416,17 @@ class TestEditHarvestRegistry(SimpleTestCase):
 
 
 class TestActivateRegistry(SimpleTestCase):
+    """Test Activate Registry"""
+
     def setUp(self):
-        super(TestActivateRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.param = {"registry_id": 1}
 
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.ActivateRegistry.as_view(), None, param=self.param
@@ -370,6 +436,8 @@ class TestActivateRegistry(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -390,6 +458,8 @@ class TestActivateRegistry(SimpleTestCase):
         mock_oai_registry_api_upsert,
         mock_oai_registry_api_get_by_id,
     ):
+        """test_staff_returns_http_200"""
+
         # Arrange
         mock_oaipmhmessage_get_message_labelled.return_value = None
         mock_oai_registry_api_upsert.return_value = None
@@ -407,11 +477,17 @@ class TestActivateRegistry(SimpleTestCase):
 
 
 class TestDeactivateRegistry(SimpleTestCase):
+    """Test Deactivate Registry"""
+
     def setUp(self):
-        super(TestDeactivateRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.param = {"registry_id": 1}
 
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_patch(
             rest_oai_registry.DeactivateRegistry.as_view(), None, param=self.param
@@ -421,6 +497,8 @@ class TestDeactivateRegistry(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -441,6 +519,8 @@ class TestDeactivateRegistry(SimpleTestCase):
         mock_oai_registry_api_upsert,
         mock_oai_registry_api_get_by_id,
     ):
+        """test_staff_returns_http_200"""
+
         # Arrange
         mock_oaipmhmessage_get_message_labelled.return_value = None
         mock_oai_registry_api_upsert.return_value = None
@@ -458,7 +538,11 @@ class TestDeactivateRegistry(SimpleTestCase):
 
 
 class TestGetAllRegistries(SimpleTestCase):
+    """Test Get All Registries"""
+
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_get(
             rest_oai_registry.RegistryList.as_view(), None, None
@@ -468,6 +552,8 @@ class TestGetAllRegistries(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         # Arrange
         user = create_mock_user("1", has_perm=True)
 
@@ -484,6 +570,8 @@ class TestGetAllRegistries(SimpleTestCase):
     def test_staff_returns_http_200(
         self, mock_oai_registry_api_get_all, mock_data_serializer_data
     ):
+        """test_staff_returns_http_200"""
+
         # Arrange
         user = create_mock_user("1", has_perm=True, is_staff=True)
         mock_oai_registry_api_get_all.return_value = None
@@ -499,11 +587,17 @@ class TestGetAllRegistries(SimpleTestCase):
 
 
 class TestCreateRegistry(SimpleTestCase):
+    """Test Create Registry"""
+
     def setUp(self):
-        super(TestCreateRegistry, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.param = {"url": "", "harvest_rate": 1, "harvest": False}
 
     def test_anonymous_returns_http_403(self):
+        """test_anonymous_returns_http_403"""
+
         # Act
         response = RequestMock.do_request_post(
             rest_oai_registry.RegistryList.as_view(), None, None
@@ -513,6 +607,8 @@ class TestCreateRegistry(SimpleTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_authenticated_returns_http_403(self):
+        """test_authenticated_returns_http_403"""
+
         # Arrange
         user = create_mock_user("1", has_perm=True)
 
@@ -535,6 +631,8 @@ class TestCreateRegistry(SimpleTestCase):
         mock_data_serializer_is_valid,
         mock_data_serializer_data,
     ):
+        """test_staff_returns_http_201"""
+
         # Arrange
         user = create_mock_user("1", is_staff=True)
         mock_data_serializer_data.return_value = None

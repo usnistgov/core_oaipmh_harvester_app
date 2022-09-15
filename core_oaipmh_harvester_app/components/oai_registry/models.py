@@ -1,26 +1,31 @@
 """
 OaiRegistry model
 """
-
-from django_mongoengine import fields, Document
-from mongoengine import errors as mongoengine_errors
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
 from core_main_app.commons import exceptions
 
 
-class OaiRegistry(Document):
+class OaiRegistry(models.Model):
     """A registry object for Oai-Pmh Harvester"""
 
-    name = fields.StringField()
-    url = fields.URLField(unique=True)
-    harvest_rate = fields.IntField(blank=True)
-    description = fields.StringField(blank=True)
-    harvest = fields.BooleanField(default=False)
-    last_update = fields.DateTimeField(blank=True)
-    is_harvesting = fields.BooleanField(default=False)
-    is_updating = fields.BooleanField(default=False)
-    is_activated = fields.BooleanField(default=True)
-    is_queued = fields.BooleanField(default=False)
+    name = models.CharField(blank=False, max_length=200)
+    url = models.URLField(unique=True)
+    harvest_rate = models.IntegerField(blank=True, null=True, default=None)
+    description = models.TextField(blank=True, null=True, default="")
+    harvest = models.BooleanField(default=False)
+    last_update = models.DateTimeField(blank=True, null=True)
+    is_harvesting = models.BooleanField(default=False)
+    is_updating = models.BooleanField(default=False)
+    is_activated = models.BooleanField(default=True)
+    is_queued = models.BooleanField(default=False)
+
+    class Meta:
+        """Meta"""
+
+        verbose_name = "Oai registry"
+        verbose_name_plural = "Oai registries"
 
     @staticmethod
     def get_by_id(oai_registry_id):
@@ -37,11 +42,11 @@ class OaiRegistry(Document):
 
         """
         try:
-            return OaiRegistry.objects().get(pk=str(oai_registry_id))
-        except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+            return OaiRegistry.objects.get(pk=str(oai_registry_id))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_by_name(oai_registry_name):
@@ -58,11 +63,11 @@ class OaiRegistry(Document):
 
         """
         try:
-            return OaiRegistry.objects().get(name=oai_registry_name)
-        except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+            return OaiRegistry.objects.get(name=oai_registry_name)
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all():
@@ -72,7 +77,7 @@ class OaiRegistry(Document):
             List of OaiRegistry
 
         """
-        return OaiRegistry.objects().all()
+        return OaiRegistry.objects.all()
 
     @staticmethod
     def get_all_by_is_activated(is_activated, order_by_field=None):
@@ -86,7 +91,10 @@ class OaiRegistry(Document):
             List of OaiRegistry
 
         """
-        return OaiRegistry.objects(is_activated=is_activated).order_by(order_by_field)
+        queryset = OaiRegistry.objects.filter(is_activated=is_activated)
+        if order_by_field:
+            queryset.order_by(order_by_field)
+        return queryset
 
     @staticmethod
     def check_registry_url_already_exists(oai_registry_url):
@@ -99,4 +107,4 @@ class OaiRegistry(Document):
             Yes or No (bool).
 
         """
-        return OaiRegistry.objects(url__exact=oai_registry_url).count() > 0
+        return OaiRegistry.objects.filter(url__exact=oai_registry_url).count() > 0

@@ -18,17 +18,17 @@ def init_harvest():
         api as oai_registry_api,
     )
 
-    # Revoke all scheduled tasks
-    _revoke_all_scheduled_tasks()
+    try:
+        # Init all registry is_queued to False in case of a server reboot after an issue.
+        registries = oai_registry_api.get_all_activated_registry()
+        for registry in registries:
+            registry.is_queued = False
+            oai_registry_api.upsert(registry)
 
-    # Init all registry is_queued to False in case of a server reboot after an issue.
-    registries = oai_registry_api.get_all_activated_registry()
-    for registry in registries:
-        registry.is_queued = False
-        oai_registry_api.upsert(registry)
-
-    # Watch Registries
-    watch_registry_harvest_task.apply_async()
+        # Watch Registries
+        watch_registry_harvest_task.apply_async()
+    except Exception as exc:
+        logger.error("Impossible to start harvesting data: %s", str(exc))
 
 
 @shared_task(name="watch_registry_harvest_task")
@@ -55,9 +55,10 @@ def watch_registry_harvest_task():
                     f"harvested."
                 )
         logger.info("FINISH watching registries.")
-    except Exception as e:
+    except Exception as exception:
         logger.error(
-            f"ERROR : Error while watching new registries to harvest: {str(e)}"
+            f"ERROR : Error while watching new registries to harvest: %s",
+            str(exception),
         )
     finally:
         # Periodic call every WATCH_REGISTRY_HARVEST_RATE seconds
@@ -111,9 +112,10 @@ def _harvest_registry(registry):
         else:
             logger.warning(f"Registry {registry.name} is busy. Skipping harvesting...")
         logger.info(f"FINISH harvesting registry: {registry.name}")
-    except Exception as e:
+    except Exception as exception:
         logger.error(
-            f"ERROR : Impossible to harvest registry {registry.name}: {str(e)}."
+            f"ERROR : Impossible to harvest registry {registry.name}: %s",
+            str(exception),
         )
     finally:
         # Harvest again in harvest_rate seconds.
@@ -134,16 +136,24 @@ def _stop_harvest_registry(registry):
         registry.is_queued = False
         oai_registry_api.upsert(registry)
         logger.info(f"Harvesting for Registry {registry.name} has been deactivated.")
-    except Exception as e:
+    except Exception as exception:
         logger.error(
             f"ERROR : Error while stopping the harvest process for the registry "
-            f"{registry.name}: {str(e)}."
+            f"{registry.name}: %s",
+            str(exception),
         )
 
 
-def _revoke_all_scheduled_tasks():
+def revoke_all_scheduled_tasks():
     """Revoke all OAI-PMH scheduled tasks. Avoid having duplicate tasks when the
     server reboot."""
+    if not current_app.backend.is_async:
+        logger.warning(
+            "Task 'revoke_all_scheduled_tasks' has been disabled since broker has no async "
+            "capabilities"
+        )
+        return
+
     try:
         logger.info("START revoking OAI-PMH scheduled tasks.")
         if current_app.control.inspect().scheduled() is not None:
@@ -160,8 +170,10 @@ def _revoke_all_scheduled_tasks():
         else:
             logger.warning("Impossible to retrieve scheduled tasks. Is Celery started?")
         logger.info("FINISH revoking OAI-PMH scheduled tasks.")
-    except Exception as e:
-        logger.error(f"ERROR : Error while revoking the scheduled tasks: {str(e)}")
+    except Exception as exception:
+        logger.error(
+            f"ERROR : Error while revoking the scheduled tasks: %s", str(exception)
+        )
 
 
 def _get_all_oai_tasks_full_name():
@@ -172,3 +184,46 @@ def _get_all_oai_tasks_full_name():
 
     """
     return [watch_registry_harvest_task.__name__, harvest_task.__name__]
+
+
+@shared_task
+def index_mongo_oai_record(oai_record_id):
+    """Index OaiRecord in MongoDB"""
+    try:
+        from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
+
+        oai_record = OaiRecord.objects.get(pk=oai_record_id)
+        try:
+            from core_oaipmh_harvester_app.components.mongo.models import MongoOaiRecord
+
+            mongo_oai_record = MongoOaiRecord.init_mongo_oai_record(oai_record)
+            mongo_oai_record.save()
+        except Exception as exception:
+            logger.error(
+                f"ERROR : An error occurred while indexing oai record : %s",
+                str(exception),
+            )
+    except Exception as exception:
+        logger.error(
+            f"ERROR : An error occurred while indexing oai record : %s", str(exception)
+        )
+
+
+@shared_task
+def delete_mongo_oai_record(oai_record_id):
+    """Delete Oai Record in MongoDB"""
+    try:
+        try:
+            from core_oaipmh_harvester_app.components.mongo.models import MongoOaiRecord
+
+            mongo_oai_record = MongoOaiRecord.objects.get(id=oai_record_id)
+            mongo_oai_record.delete()
+        except Exception as exception:
+            logger.error(
+                f"ERROR : An error occurred while deleting oai record : %s",
+                str(exception),
+            )
+    except Exception as exception:
+        logger.error(
+            f"ERROR : An error occurred while deleting oai record : %s", str(exception)
+        )

@@ -1,1 +1,1 @@
-var deleteRegistryGetUrl = "{% url 'admin:core_oaipmh_harvester_app_delete_registry' %}";
+var deleteRegistryGetUrl = "{% url 'core-admin:core_oaipmh_harvester_app_delete_registry' %}";

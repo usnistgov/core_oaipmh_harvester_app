@@ -1,15 +1,18 @@
+""" Menus
+"""
+
 from django.urls import reverse
 from menu import Menu, MenuItem
 
 sharing_children = (
     MenuItem(
         "Request builder",
-        reverse("admin:core_oaipmh_harvester_app_request_builder"),
+        reverse("core-admin:core_oaipmh_harvester_app_request_builder"),
         icon="magic",
     ),
     MenuItem(
         "Data providers",
-        reverse("admin:core_oaipmh_harvester_app_registries"),
+        reverse("core-admin:core_oaipmh_harvester_app_registries"),
         icon="database",
     ),
 )

@@ -1,6 +1,7 @@
-from os.path import dirname, realpath
+""" Test settings
+"""
 
-from core_main_app.utils.databases.mongoengine_database import Database
+from os.path import dirname, realpath
 
 SECRET_KEY = "fake-key"
 
@@ -14,6 +15,8 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     # Local apps
     "core_main_app",
+    "core_oaipmh_common_app",
+    "core_oaipmh_harvester_app",
     "tests",
 ]
 
@@ -22,6 +25,18 @@ MIDDLEWARE = (
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
 )
+
+# IN-MEMORY TEST DATABASE
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+        "USER": "",
+        "PASSWORD": "",
+        "HOST": "",
+        "PORT": "",
+    },
+}
 
 TEMPLATES = [
     {
@@ -40,14 +55,12 @@ TEMPLATES = [
     },
 ]
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 OAI_HARVESTER_ROOT = dirname(realpath(__file__))
 
 SSL_CERTIFICATES_DIR = True
 CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
-MOCK_DATABASE_NAME = "db_mock"
-MOCK_DATABASE_HOST = "mongomock://localhost"
-
-database = Database(MOCK_DATABASE_HOST, MOCK_DATABASE_NAME)
-database.connect()
+USE_TZ = True
+CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"

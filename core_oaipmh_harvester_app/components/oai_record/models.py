@@ -1,13 +1,13 @@
 """
 OaiRecord model
 """
-from django_mongoengine import fields
-from mongoengine import errors as mongoengine_errors
-from mongoengine.queryset.base import PULL, CASCADE
+from django.contrib.postgres.indexes import GinIndex
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
 from core_main_app.commons import exceptions
 from core_main_app.components.abstract_data.models import AbstractData
-from core_main_app.utils.databases.pymongo_database import get_full_text_query
+from core_main_app.settings import MONGODB_INDEXING
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -22,15 +22,32 @@ class OaiRecord(AbstractData):
     A record object
     """
 
-    identifier = fields.StringField()
-    deleted = fields.BooleanField()
-    harvester_sets = fields.ListField(
-        fields.ReferenceField(OaiHarvesterSet, reverse_delete_rule=PULL), blank=True
+    identifier = models.CharField(blank=False, max_length=200)
+    deleted = models.BooleanField()
+    harvester_sets = models.ManyToManyField(OaiHarvesterSet, blank=True)
+    harvester_metadata_format = models.ForeignKey(
+        OaiHarvesterMetadataFormat, on_delete=models.CASCADE
     )
-    harvester_metadata_format = fields.ReferenceField(
-        OaiHarvesterMetadataFormat, reverse_delete_rule=CASCADE
-    )
-    registry = fields.ReferenceField(OaiRegistry, reverse_delete_rule=CASCADE)
+    registry = models.ForeignKey(OaiRegistry, on_delete=models.CASCADE)
+
+    class Meta:
+        """Meta"""
+
+        indexes = [
+            GinIndex(fields=["vector_column"]),
+        ]
+
+    def get_dict_content(self):
+        """Get dict_content from object or from MongoDB
+
+        Returns:
+
+        """
+        if MONGODB_INDEXING:
+            from core_oaipmh_harvester_app.components.mongo.models import MongoOaiRecord
+
+            return MongoOaiRecord.objects.get(pk=self.id).dict_content
+        return self.dict_content
 
     @staticmethod
     def get_by_id(oai_record_id):
@@ -47,11 +64,11 @@ class OaiRecord(AbstractData):
 
         """
         try:
-            return OaiRecord.objects().get(pk=str(oai_record_id))
-        except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+            return OaiRecord.objects.get(pk=str(oai_record_id))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_by_identifier_and_metadata_format(identifier, harvester_metadata_format):
@@ -69,14 +86,14 @@ class OaiRecord(AbstractData):
 
         """
         try:
-            return OaiRecord.objects().get(
+            return OaiRecord.objects.get(
                 identifier=identifier,
                 harvester_metadata_format=harvester_metadata_format,
             )
-        except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all():
@@ -85,7 +102,7 @@ class OaiRecord(AbstractData):
         Returns: List of OaiRecord.
 
         """
-        return OaiRecord.objects().all()
+        return OaiRecord.objects.all()
 
     @staticmethod
     def get_all_by_registry_id(registry_id, order_by_field):
@@ -99,7 +116,9 @@ class OaiRecord(AbstractData):
             List of OaiRecord.
 
         """
-        return OaiRecord.objects(registry=str(registry_id)).order_by(*order_by_field)
+        return OaiRecord.objects.filter(registry=str(registry_id)).order_by(
+            *[field.replace("+", "") for field in order_by_field]
+        )
 
     @staticmethod
     def get_count_by_registry_id(registry_id):
@@ -112,7 +131,7 @@ class OaiRecord(AbstractData):
             Number of OaiRecord (int).
 
         """
-        return OaiRecord.objects(registry=str(registry_id)).count()
+        return OaiRecord.objects.filter(registry=str(registry_id)).count()
 
     @staticmethod
     def delete_all_by_registry_id(registry_id):
@@ -123,26 +142,6 @@ class OaiRecord(AbstractData):
 
         """
         OaiRecord.get_all_by_registry_id(registry_id, []).delete()
-
-    @staticmethod
-    def execute_full_text_query(text, list_metadata_format_id):
-        """Execute full text query on OaiRecord data collection.
-
-        Args:
-            text: Keywords.
-            list_metadata_format_id: List of metadata format id to search on.
-
-        Returns: List of OaiRecord.
-
-        """
-        full_text_query = get_full_text_query(text)
-        # only no deleted records, add harvester_metadata_format criteria
-        full_text_query.update(
-            {"deleted": False},
-            {"harvester_metadata_format__id": {"$in": list_metadata_format_id}},
-        )
-
-        return OaiRecord.objects.find(full_text_query)
 
     @staticmethod
     def execute_query(query, order_by_field):
@@ -156,16 +155,9 @@ class OaiRecord(AbstractData):
             Results of the query.
 
         """
-        return OaiRecord.objects(__raw__=query).order_by(*order_by_field)
+        queryset = OaiRecord.objects.filter(query)
 
-    @staticmethod
-    def aggregate(pipeline):
-        """Execute an aggregate on the Data collection.
+        if order_by_field:
+            queryset.order_by(*[field.replace("+", "") for field in order_by_field])
 
-        Args:
-            pipeline:
-
-        Returns:
-
-        """
-        return OaiRecord.objects.aggregate(*pipeline)
+        return queryset.all()

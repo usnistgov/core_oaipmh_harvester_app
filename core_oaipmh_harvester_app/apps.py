@@ -4,15 +4,14 @@ import sys
 
 from django.apps import AppConfig
 
-from core_main_app.utils.databases.mongoengine_database import init_text_index
-from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
-from core_oaipmh_harvester_app.tasks import init_harvest
+from core_oaipmh_harvester_app.tasks import init_harvest, revoke_all_scheduled_tasks
 
 
 class HarvesterAppConfig(AppConfig):
     """Core application settings"""
 
     name = "core_oaipmh_harvester_app"
+    verbose_name = "Core OAI-PMH Harvester App"
 
     def ready(self):
         """Run when the app is ready
@@ -20,6 +19,7 @@ class HarvesterAppConfig(AppConfig):
         Returns:
 
         """
-        if "migrate" not in sys.argv:
-            init_text_index(OaiRecord)
+        if "migrate" not in sys.argv and "makemigrations" not in sys.argv:
+            # Revoke all scheduled tasks
+            revoke_all_scheduled_tasks()
             init_harvest()

@@ -1,13 +1,24 @@
+""" Admin views
+"""
+
 from django.contrib.admin.views.decorators import staff_member_required
 
-import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
 from core_main_app.utils.rendering import admin_render
+import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
 from core_oaipmh_harvester_app.views.admin.ajax import EditRegistryView
 from core_oaipmh_harvester_app.views.admin.forms import AddRegistryForm, RequestForm
 
 
 @staff_member_required
 def request_builder_view(request):
+    """request_builder_view
+
+    Args:
+        request:
+
+    Returns:
+
+    """
     assets = {
         "js": [
             {
@@ -49,6 +60,14 @@ def request_builder_view(request):
 
 @staff_member_required
 def registries_view(request):
+    """registries_view
+
+    Args:
+        request:
+
+    Returns:
+
+    """
     modals = [
         "core_oaipmh_harvester_app/admin/registries/list/modals/view_registry.html",
         "core_oaipmh_harvester_app/admin/registries/list/modals/add_registry.html",

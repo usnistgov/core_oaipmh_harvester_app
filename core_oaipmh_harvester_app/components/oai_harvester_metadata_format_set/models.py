@@ -1,10 +1,8 @@
 """
 OaiHarvesterMetadataFormatSet model
 """
-
-from django_mongoengine import fields, Document
-from mongoengine import errors as mongoengine_errors
-from mongoengine.queryset.base import CASCADE
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
 from core_main_app.commons import exceptions
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
@@ -15,16 +13,20 @@ from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
 )
 
 
-class OaiHarvesterMetadataFormatSet(Document):
+class OaiHarvesterMetadataFormatSet(models.Model):
     """Association table between OaiHarvesterMetadataFormat and OaiHarvesterSet"""
 
-    harvester_set = fields.ReferenceField(OaiHarvesterSet, reverse_delete_rule=CASCADE)
-    harvester_metadata_format = fields.ReferenceField(
+    harvester_set = models.ForeignKey(OaiHarvesterSet, on_delete=models.CASCADE)
+    harvester_metadata_format = models.ForeignKey(
         OaiHarvesterMetadataFormat,
-        reverse_delete_rule=CASCADE,
-        unique_with="harvester_set",
+        on_delete=models.CASCADE,
     )
-    last_update = fields.DateTimeField(blank=True)
+    last_update = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        """Meta"""
+
+        unique_together = ("harvester_metadata_format", "harvester_set")
 
     @staticmethod
     def get_by_metadata_format_and_set(
@@ -45,10 +47,10 @@ class OaiHarvesterMetadataFormatSet(Document):
                 harvester_metadata_format=oai_harvester_metadata_format,
                 harvester_set=oai_harvester_set,
             )
-        except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def upsert_last_update_by_metadata_format_and_set(
@@ -64,9 +66,10 @@ class OaiHarvesterMetadataFormatSet(Document):
 
         """
         try:
-            OaiHarvesterMetadataFormatSet.objects(
+            OaiHarvesterMetadataFormatSet.objects.update_or_create(
                 harvester_metadata_format=harvester_metadata_format,
                 harvester_set=harvester_set,
-            ).update_one(last_update=last_update, upsert=True)
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+                defaults={"last_update": last_update},
+            )
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))

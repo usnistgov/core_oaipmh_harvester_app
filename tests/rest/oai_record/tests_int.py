@@ -12,10 +12,14 @@ from tests.components.oai_registry.fixtures.fixtures import OaiPmhFixtures
 
 
 class TestExecuteQueryView(MongoIntegrationBaseTestCase):
+    """Test Execute Query View"""
+
     fixture = OaiPmhFixtures()
 
     def setUp(self):
-        super(TestExecuteQueryView, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.fixture.insert_registry()
         self.one_record_data = {
             "query": "{"
@@ -24,6 +28,8 @@ class TestExecuteQueryView(MongoIntegrationBaseTestCase):
         self.user = create_mock_user("1")
 
     def test_post_query_zero_data_returns_zero_data(self):
+        """test_post_query_zero_data_returns_zero_data"""
+
         # Arrange
         data = {"query": '{"bad.path": "bad_value"}'}
 
@@ -36,6 +42,8 @@ class TestExecuteQueryView(MongoIntegrationBaseTestCase):
         self.assertEqual(len(response.data), 0)
 
     def test_post_query_one_data_returns_http_200(self):
+        """test_post_query_one_data_returns_http_200"""
+
         # Arrange
         data = self.one_record_data
 
@@ -48,6 +56,8 @@ class TestExecuteQueryView(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_post_query_one_data_returns_one_data(self):
+        """test_post_query_one_data_returns_one_data"""
+
         # Arrange
         data = self.one_record_data
 
