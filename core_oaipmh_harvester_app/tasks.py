@@ -52,12 +52,12 @@ def watch_registry_harvest_task():
                 oai_registry_api.upsert(registry)
                 logger.info(
                     f"Registry {registry.name} has been queued and will be "
-                    f"harvested."
+                    "harvested."
                 )
         logger.info("FINISH watching registries.")
     except Exception as exception:
         logger.error(
-            f"ERROR : Error while watching new registries to harvest: %s",
+            "ERROR : Error while watching new registries to harvest: %s",
             str(exception),
         )
     finally:
@@ -172,7 +172,7 @@ def revoke_all_scheduled_tasks():
         logger.info("FINISH revoking OAI-PMH scheduled tasks.")
     except Exception as exception:
         logger.error(
-            f"ERROR : Error while revoking the scheduled tasks: %s", str(exception)
+            "ERROR : Error while revoking the scheduled tasks: %s", str(exception)
         )
 
 
@@ -200,12 +200,12 @@ def index_mongo_oai_record(oai_record_id):
             mongo_oai_record.save()
         except Exception as exception:
             logger.error(
-                f"ERROR : An error occurred while indexing oai record : %s",
+                "ERROR : An error occurred while indexing oai record : %s",
                 str(exception),
             )
     except Exception as exception:
         logger.error(
-            f"ERROR : An error occurred while indexing oai record : %s", str(exception)
+            "ERROR : An error occurred while indexing oai record : %s", str(exception)
         )
 
 
@@ -220,10 +220,10 @@ def delete_mongo_oai_record(oai_record_id):
             mongo_oai_record.delete()
         except Exception as exception:
             logger.error(
-                f"ERROR : An error occurred while deleting oai record : %s",
+                "ERROR : An error occurred while deleting oai record : %s",
                 str(exception),
             )
     except Exception as exception:
         logger.error(
-            f"ERROR : An error occurred while deleting oai record : %s", str(exception)
+            "ERROR : An error occurred while deleting oai record : %s", str(exception)
         )

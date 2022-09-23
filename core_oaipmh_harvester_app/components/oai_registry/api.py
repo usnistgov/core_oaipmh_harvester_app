@@ -480,7 +480,7 @@ def _harvest_by_metadata_formats_and_sets(
                 last_update = oai_harvester_metadata_format_set_api.get_last_update_by_metadata_format_and_set(
                     metadata_format, set_
                 )
-            except:
+            except Exception:
                 last_update = None
 
             errors = _harvest_records(
@@ -523,7 +523,7 @@ def _harvest_by_metadata_formats(registry, metadata_formats, registry_all_sets):
             last_update = UTCdatetime.datetime_to_utc_datetime_iso8601(
                 metadata_format.last_update
             )
-        except:
+        except Exception:
             last_update = None
         # Update the new date for the metadataFormat
         current_update_mf = datetime.datetime.now()

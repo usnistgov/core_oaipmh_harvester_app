@@ -232,7 +232,7 @@ def get_data(url, request=None):
             # TODO: refactor send request with cookies (same code in other apps)
             try:
                 session_id = request.session.session_key
-            except:
+            except Exception:
                 session_id = None
             http_response = send_get_request(url, cookies={"sessionid": session_id})
             if http_response.status_code == status.HTTP_200_OK:

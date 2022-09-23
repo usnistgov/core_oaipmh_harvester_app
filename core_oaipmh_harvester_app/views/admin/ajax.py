@@ -494,7 +494,7 @@ def download_xml_build_req(request):
     try:
         xml_tree = XSDTree.build_tree(xml_string)
         xml_string_encoded = XSDTree.tostring(xml_tree, pretty=True)
-    except:
+    except Exception:
         xml_string_encoded = xml_string
     # Get the date to append it to the file title
     i = datetime.datetime.now()

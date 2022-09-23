@@ -1,4 +1,4 @@
-""" Settings for core_oaipmh_harvester_app. 
+""" Settings for core_oaipmh_harvester_app.
 
 Settings with the following syntax can be overwritten at the project level:
 SETTING_NAME = getattr(settings, "SETTING_NAME", "Default Value")
@@ -15,7 +15,7 @@ INSTALLED_APPS = getattr(settings, "INSTALLED_APPS", [])
 """
 
 OAI_HARVESTER_ROOT = dirname(realpath(__file__))
-""" :py:class:`str`: 
+""" :py:class:`str`:
 """
 
 SSL_CERTIFICATES_DIR = getattr(settings, "SSL_CERTIFICATES_DIR", "certs")

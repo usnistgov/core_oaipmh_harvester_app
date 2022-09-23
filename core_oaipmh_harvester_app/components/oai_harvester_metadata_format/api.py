@@ -172,7 +172,7 @@ def init_schema_info(oai_harvester_metadata_format, request=None):
     # TODO: refactor send request with cookies (same code in other apps)
     try:
         session_id = request.session.session_key
-    except:
+    except Exception:
         session_id = None
     http_response = send_get_request(
         oai_harvester_metadata_format.schema, cookies={"sessionid": session_id}
