@@ -4,7 +4,9 @@
 from django.urls import re_path
 
 from core_oaipmh_harvester_app.rest.oai_record import views as oai_record_views
-from core_oaipmh_harvester_app.rest.oai_registry import views as oai_registry_views
+from core_oaipmh_harvester_app.rest.oai_registry import (
+    views as oai_registry_views,
+)
 
 urlpatterns = [
     re_path(

@@ -107,4 +107,6 @@ class OaiRegistry(models.Model):
             Yes or No (bool).
 
         """
-        return OaiRegistry.objects.filter(url__exact=oai_registry_url).count() > 0
+        return (
+            OaiRegistry.objects.filter(url__exact=oai_registry_url).count() > 0
+        )

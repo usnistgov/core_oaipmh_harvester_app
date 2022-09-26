@@ -4,7 +4,10 @@ import sys
 
 from django.apps import AppConfig
 
-from core_oaipmh_harvester_app.tasks import init_harvest, revoke_all_scheduled_tasks
+from core_oaipmh_harvester_app.tasks import (
+    init_harvest,
+    revoke_all_scheduled_tasks,
+)
 
 
 class HarvesterAppConfig(AppConfig):

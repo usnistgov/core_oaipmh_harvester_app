@@ -11,7 +11,9 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models i
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
     OaiHarvesterSet,
 )
-from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
+from core_oaipmh_harvester_app.components.oai_identify.models import (
+    OaiIdentify,
+)
 from core_oaipmh_harvester_app.utils import transform_operations
 
 DUMP_OAI_PMH_TEST_PATH = os.path.join(os.path.dirname(__file__), "data")
@@ -23,7 +25,9 @@ class TestTransformOaiIdentify(TestCase):
     def setUp(self):
         """setUp"""
 
-        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, "oai_identify_v1.json")) as file:
+        with open(
+            os.path.join(DUMP_OAI_PMH_TEST_PATH, "oai_identify_v1.json")
+        ) as file:
             data = file.read()
         self.data = json.loads(data)
 
@@ -31,8 +35,10 @@ class TestTransformOaiIdentify(TestCase):
         """test_transform_oai_identify_return_object"""
 
         # Act
-        result = transform_operations.transform_dict_identifier_to_oai_identifier(
-            self.data
+        result = (
+            transform_operations.transform_dict_identifier_to_oai_identifier(
+                self.data
+            )
         )
 
         # Assert
@@ -46,7 +52,9 @@ class TestTransformOaiIdentify(TestCase):
 
         # Act + Assert
         with self.assertRaises(Exception):
-            transform_operations.transform_dict_identifier_to_oai_identifier(self.data)
+            transform_operations.transform_dict_identifier_to_oai_identifier(
+                self.data
+            )
 
 
 class TestTransformOaiHarvesterMetadataFormat(TestCase):
@@ -71,7 +79,9 @@ class TestTransformOaiHarvesterMetadataFormat(TestCase):
 
         # Assert
         self.assertTrue(
-            all(isinstance(item, OaiHarvesterMetadataFormat) for item in result)
+            all(
+                isinstance(item, OaiHarvesterMetadataFormat) for item in result
+            )
         )
 
     def test_transform_oai_harvester_metadata_format_catch_key_error(self):
@@ -93,7 +103,9 @@ class TestTransformOaiHarvesterSet(TestCase):
     def setUp(self):
         """setUp"""
 
-        with open(os.path.join(DUMP_OAI_PMH_TEST_PATH, "oai_set_v1.json")) as file:
+        with open(
+            os.path.join(DUMP_OAI_PMH_TEST_PATH, "oai_set_v1.json")
+        ) as file:
             data = file.read()
         self.data = json.loads(data)
 
@@ -101,10 +113,14 @@ class TestTransformOaiHarvesterSet(TestCase):
         """test_transform_oai_harvester_set_return_list_object"""
 
         # Act
-        result = transform_operations.transform_dict_set_to_oai_harvester_set(self.data)
+        result = transform_operations.transform_dict_set_to_oai_harvester_set(
+            self.data
+        )
 
         # Assert
-        self.assertTrue(all(isinstance(item, OaiHarvesterSet) for item in result))
+        self.assertTrue(
+            all(isinstance(item, OaiHarvesterSet) for item in result)
+        )
 
     def test_transform_oai_harvester_set_catch_key_error(self):
         """test_transform_oai_harvester_set_catch_key_error"""
@@ -114,4 +130,6 @@ class TestTransformOaiHarvesterSet(TestCase):
 
         # Act + Assert
         with self.assertRaises(Exception):
-            transform_operations.transform_dict_set_to_oai_harvester_set(self.data)
+            transform_operations.transform_dict_set_to_oai_harvester_set(
+                self.data
+            )

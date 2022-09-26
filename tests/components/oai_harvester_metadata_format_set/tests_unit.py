@@ -21,7 +21,9 @@ from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
 class TestOaiHarvesterMetadataFormatSetGetByMetadataAndSet(TestCase):
     """Test Oai Harvester Metadata Format Set Get By Metadata And Set"""
 
-    @patch.object(OaiHarvesterMetadataFormatSet, "get_by_metadata_format_and_set")
+    @patch.object(
+        OaiHarvesterMetadataFormatSet, "get_by_metadata_format_and_set"
+    )
     def test_get_by_metadata_format_and_set_return_object(
         self, get_by_metadata_format_and_set
     ):
@@ -45,7 +47,9 @@ class TestOaiHarvesterMetadataFormatSetGetByMetadataAndSet(TestCase):
         # Assert
         self.assertIsInstance(result, OaiHarvesterMetadataFormatSet)
 
-    @patch.object(OaiHarvesterMetadataFormatSet, "get_by_metadata_format_and_set")
+    @patch.object(
+        OaiHarvesterMetadataFormatSet, "get_by_metadata_format_and_set"
+    )
     def test_get_by_metadata_format_and_set_raises_exception_if_object_does_not_exist(
         self, get_by_metadata_format_and_set
     ):
@@ -55,7 +59,9 @@ class TestOaiHarvesterMetadataFormatSetGetByMetadataAndSet(TestCase):
         mock_absent_metadata_format = 1
         mock_absent_set = 1
 
-        get_by_metadata_format_and_set.side_effect = exceptions.DoesNotExist("Error.")
+        get_by_metadata_format_and_set.side_effect = exceptions.DoesNotExist(
+            "Error."
+        )
 
         # Act + Assert
         with self.assertRaises(exceptions.DoesNotExist):
@@ -63,7 +69,9 @@ class TestOaiHarvesterMetadataFormatSetGetByMetadataAndSet(TestCase):
                 mock_absent_metadata_format, mock_absent_set
             )
 
-    @patch.object(OaiHarvesterMetadataFormatSet, "get_by_metadata_format_and_set")
+    @patch.object(
+        OaiHarvesterMetadataFormatSet, "get_by_metadata_format_and_set"
+    )
     def test_get_by_metadata_format_and_set_raises_exception_if_internal_error(
         self, get_by_metadata_format_and_set
     ):
@@ -73,7 +81,9 @@ class TestOaiHarvesterMetadataFormatSetGetByMetadataAndSet(TestCase):
         mock_absent_metadata_format = 1
         mock_absent_set = 1
 
-        get_by_metadata_format_and_set.side_effect = exceptions.ModelError("Error.")
+        get_by_metadata_format_and_set.side_effect = exceptions.ModelError(
+            "Error."
+        )
 
         # Act + Assert
         with self.assertRaises(exceptions.ModelError):
@@ -107,7 +117,9 @@ class TestOaiHarvestMetadataFormatSetUpsert(TestCase):
             )
 
     @patch.object(OaiHarvesterMetadataFormatSet, "save")
-    def test_upsert_oai_harvester_metadata_format_set_return_object(self, mock_create):
+    def test_upsert_oai_harvester_metadata_format_set_return_object(
+        self, mock_create
+    ):
         """test_upsert_oai_harvester_metadata_format_set_return_object"""
 
         # Arrange
@@ -132,7 +144,8 @@ class TestOaiHarvestMetadataFormatSetUpsertLastUpdate(TestCase):
         )
 
     @patch.object(
-        OaiHarvesterMetadataFormatSet, "upsert_last_update_by_metadata_format_and_set"
+        OaiHarvesterMetadataFormatSet,
+        "upsert_last_update_by_metadata_format_and_set",
     )
     def test_upsert_last_update_raises_exception_if_save_failed(
         self, mock_upsert_last_update
@@ -151,22 +164,30 @@ class TestOaiHarvestMetadataFormatSetUpsertLastUpdate(TestCase):
             )
 
 
-class TestOaiHarvestMetadataFormatSetGetLastUpdateByMetadataFormatAndSet(TestCase):
+class TestOaiHarvestMetadataFormatSetGetLastUpdateByMetadataFormatAndSet(
+    TestCase
+):
     """Test Oai Harvest Metadata Format Set Get Last Update By Metadata Format And Set"""
 
-    @patch.object(OaiHarvesterMetadataFormatSet, "get_by_metadata_format_and_set")
+    @patch.object(
+        OaiHarvesterMetadataFormatSet, "get_by_metadata_format_and_set"
+    )
     def test_get_last_update_by_metadata_format_and_set(
         self, get_by_metadata_format_and_set
     ):
         """test_get_last_update_by_metadata_format_and_set"""
 
         # Arrange
-        oai_harvester_metadata_format_set = _create_oai_harvester_metadata_format_set()
+        oai_harvester_metadata_format_set = (
+            _create_oai_harvester_metadata_format_set()
+        )
         oai_harvester_metadata_format_set.last_update = datetime.datetime(
             year=2016, month=11, day=21, hour=8, minute=40, second=33
         )
 
-        get_by_metadata_format_and_set.return_value = oai_harvester_metadata_format_set
+        get_by_metadata_format_and_set.return_value = (
+            oai_harvester_metadata_format_set
+        )
 
         # Act
         result = harvester_metadata_format_set_api.get_last_update_by_metadata_format_and_set(
@@ -186,7 +207,9 @@ def _create_oai_harvester_metadata_format_set():
 
     """
     oai_harvester_metadata_format_set = OaiHarvesterMetadataFormatSet()
-    _set_oai_harvester_metadata_format_set_fields(oai_harvester_metadata_format_set)
+    _set_oai_harvester_metadata_format_set_fields(
+        oai_harvester_metadata_format_set
+    )
 
     return oai_harvester_metadata_format_set
 
@@ -198,13 +221,19 @@ def _create_mock_oai_harvester_metadata_format_set():
         OaiHarvesterMetadataFormatSet mock.
 
     """
-    mock_oai_harvester_metadata_format = Mock(spec=OaiHarvesterMetadataFormatSet)
-    _set_oai_harvester_metadata_format_set_fields(mock_oai_harvester_metadata_format)
+    mock_oai_harvester_metadata_format = Mock(
+        spec=OaiHarvesterMetadataFormatSet
+    )
+    _set_oai_harvester_metadata_format_set_fields(
+        mock_oai_harvester_metadata_format
+    )
 
     return mock_oai_harvester_metadata_format
 
 
-def _set_oai_harvester_metadata_format_set_fields(oai_harvester_metadata_format_set):
+def _set_oai_harvester_metadata_format_set_fields(
+    oai_harvester_metadata_format_set,
+):
     """Set OaiHarvesterMetadataFormatSet fields.
 
     Args:

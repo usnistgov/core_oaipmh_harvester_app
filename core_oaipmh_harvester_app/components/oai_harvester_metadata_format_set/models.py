@@ -16,7 +16,9 @@ from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
 class OaiHarvesterMetadataFormatSet(models.Model):
     """Association table between OaiHarvesterMetadataFormat and OaiHarvesterSet"""
 
-    harvester_set = models.ForeignKey(OaiHarvesterSet, on_delete=models.CASCADE)
+    harvester_set = models.ForeignKey(
+        OaiHarvesterSet, on_delete=models.CASCADE
+    )
     harvester_metadata_format = models.ForeignKey(
         OaiHarvesterMetadataFormat,
         on_delete=models.CASCADE,

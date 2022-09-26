@@ -8,7 +8,9 @@ from rest_framework.response import Response
 
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from core_oaipmh_harvester_app.rest.oai_record import views as oai_record_rest_views
+from core_oaipmh_harvester_app.rest.oai_record import (
+    views as oai_record_rest_views,
+)
 from core_oaipmh_harvester_app.rest.oai_record.abstract_views import (
     AbstractExecuteQueryView,
 )
@@ -54,7 +56,9 @@ class TestGetLocalQueryRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_get(
-            oai_record_rest_views.ExecuteQueryView.as_view(), user=user, data=data
+            oai_record_rest_views.ExecuteQueryView.as_view(),
+            user=user,
+            data=data,
         )
 
         # Assert
@@ -71,7 +75,9 @@ class TestGetLocalQueryRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_get(
-            oai_record_rest_views.ExecuteQueryView.as_view(), user=user, data=data
+            oai_record_rest_views.ExecuteQueryView.as_view(),
+            user=user,
+            data=data,
         )
 
         # Assert
@@ -118,7 +124,9 @@ class TestPostLocalQueryRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_post(
-            oai_record_rest_views.ExecuteQueryView.as_view(), user=user, data=data
+            oai_record_rest_views.ExecuteQueryView.as_view(),
+            user=user,
+            data=data,
         )
 
         # Assert
@@ -135,7 +143,9 @@ class TestPostLocalQueryRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_post(
-            oai_record_rest_views.ExecuteQueryView.as_view(), user=user, data=data
+            oai_record_rest_views.ExecuteQueryView.as_view(),
+            user=user,
+            data=data,
         )
 
         # Assert
@@ -165,7 +175,9 @@ class TestGetLocalKeywordQueryRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_get(
-            oai_record_rest_views.ExecuteKeywordQueryView.as_view(), None, data=data
+            oai_record_rest_views.ExecuteKeywordQueryView.as_view(),
+            None,
+            data=data,
         )
 
         # Assert
@@ -233,7 +245,9 @@ class TestPostLocalKeywordQueryRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_post(
-            oai_record_rest_views.ExecuteKeywordQueryView.as_view(), None, data=data
+            oai_record_rest_views.ExecuteKeywordQueryView.as_view(),
+            None,
+            data=data,
         )
 
         # Assert

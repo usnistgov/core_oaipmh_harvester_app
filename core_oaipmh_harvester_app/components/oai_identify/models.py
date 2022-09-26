@@ -5,7 +5,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from core_main_app.commons import exceptions
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 
 
 class OaiIdentify(models.Model):
@@ -17,15 +19,21 @@ class OaiIdentify(models.Model):
     deleted_record = models.CharField(blank=True, null=True, max_length=200)
     delimiter = models.CharField(blank=True, null=True, max_length=200)
     description = models.TextField(blank=True, null=True)
-    earliest_datestamp = models.CharField(blank=True, null=True, max_length=200)
+    earliest_datestamp = models.CharField(
+        blank=True, null=True, max_length=200
+    )
     granularity = models.CharField(blank=True, null=True, max_length=200)
     oai_identifier = models.CharField(blank=True, null=True, max_length=200)
     protocol_version = models.CharField(blank=True, null=True, max_length=200)
-    repository_identifier = models.CharField(blank=True, null=True, max_length=200)
+    repository_identifier = models.CharField(
+        blank=True, null=True, max_length=200
+    )
     sample_identifier = models.CharField(blank=True, null=True, max_length=200)
     scheme = models.CharField(blank=True, null=True, max_length=200)
     raw = models.JSONField(blank=True, null=True)
-    registry = models.OneToOneField(OaiRegistry, on_delete=models.CASCADE, unique=True)
+    registry = models.OneToOneField(
+        OaiRegistry, on_delete=models.CASCADE, unique=True
+    )
 
     class Meta:
         """Meta"""

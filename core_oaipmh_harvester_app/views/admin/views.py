@@ -6,7 +6,10 @@ from django.contrib.admin.views.decorators import staff_member_required
 from core_main_app.utils.rendering import admin_render
 import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
 from core_oaipmh_harvester_app.views.admin.ajax import EditRegistryView
-from core_oaipmh_harvester_app.views.admin.forms import AddRegistryForm, RequestForm
+from core_oaipmh_harvester_app.views.admin.forms import (
+    AddRegistryForm,
+    RequestForm,
+)
 
 
 @staff_member_required

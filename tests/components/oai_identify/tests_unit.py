@@ -7,8 +7,12 @@ from unittest.mock import Mock, patch
 from core_main_app.commons import exceptions
 from core_main_app.utils.xml import OrderedDict
 import core_oaipmh_harvester_app.components.oai_identify.api as oai_identify_api
-from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_identify.models import (
+    OaiIdentify,
+)
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 
 
 class TestOaiIdentifyUpsert(TestCase):
@@ -18,7 +22,9 @@ class TestOaiIdentifyUpsert(TestCase):
         self.oai_identify = _create_oai_identify()
 
     @patch.object(OaiIdentify, "save")
-    def test_upsert_oai_identifier_raises_exception_if_save_failed(self, mock_save):
+    def test_upsert_oai_identifier_raises_exception_if_save_failed(
+        self, mock_save
+    ):
         """test_upsert_oai_identifier_raises_exception_if_save_failed"""
 
         # Arrange
@@ -72,7 +78,9 @@ class TestOaiIdentifyUpsert(TestCase):
         self.assertIsInstance(result, OaiIdentify)
 
     @patch.object(OaiIdentify, "save")
-    def test_upsert_oai_identify_invalid_raw_return_empty_raw(self, mock_create):
+    def test_upsert_oai_identify_invalid_raw_return_empty_raw(
+        self, mock_create
+    ):
         """test_upsert_oai_identify_invalid_raw_return_empty_raw"""
 
         # Arrange
@@ -87,7 +95,9 @@ class TestOaiIdentifyUpsert(TestCase):
         self.assertEqual(result.raw, {})
 
     @patch.object(OaiIdentify, "save")
-    def test_upsert_oai_identify_no_exception_if_raw_not_string(self, mock_create):
+    def test_upsert_oai_identify_no_exception_if_raw_not_string(
+        self, mock_create
+    ):
         """test_upsert_oai_identify_no_exception_if_raw_not_string"""
 
         # Arrange
@@ -115,7 +125,9 @@ class TestOaiIdentifyGetByRegistryId(TestCase):
         mock_get.return_value = mock_oai_identify
 
         # Act
-        result = oai_identify_api.get_by_registry_id(mock_oai_identify.registry.id)
+        result = oai_identify_api.get_by_registry_id(
+            mock_oai_identify.registry.id
+        )
 
         # Assert
         self.assertIsInstance(result, OaiIdentify)
@@ -136,7 +148,9 @@ class TestOaiIdentifyGetByRegistryId(TestCase):
             oai_identify_api.get_by_registry_id(mock_absent_registry_id)
 
     @patch.object(OaiIdentify, "get_by_registry_id")
-    def test_get_by_registry_id_raises_exception_if_internal_error(self, mock_get):
+    def test_get_by_registry_id_raises_exception_if_internal_error(
+        self, mock_get
+    ):
         """test_get_by_registry_id_raises_exception_if_internal_error"""
 
         # Arrange

@@ -12,10 +12,18 @@ from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
     api as oai_metadata_format_api,
 )
-from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_set_api
-from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
-from core_oaipmh_harvester_app.rest.oai_registry import views as rest_oai_registry
+from core_oaipmh_harvester_app.components.oai_harvester_set import (
+    api as oai_set_api,
+)
+from core_oaipmh_harvester_app.components.oai_registry import (
+    api as oai_registry_api,
+)
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
+from core_oaipmh_harvester_app.rest.oai_registry import (
+    views as rest_oai_registry,
+)
 from core_oaipmh_harvester_app.rest.serializers import (
     RegistrySerializer,
     UpdateRegistrySerializer,
@@ -55,7 +63,9 @@ class TestGetRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_get(
-            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+            rest_oai_registry.RegistryDetail.as_view(),
+            user=user,
+            param=self.param,
         )
 
         # Assert
@@ -75,7 +85,9 @@ class TestGetRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_get(
-            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+            rest_oai_registry.RegistryDetail.as_view(),
+            user=user,
+            param=self.param,
         )
 
         # Assert
@@ -114,7 +126,9 @@ class TestDeleteRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_delete(
-            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+            rest_oai_registry.RegistryDetail.as_view(),
+            user=user,
+            param=self.param,
         )
 
         # Assert
@@ -134,7 +148,9 @@ class TestDeleteRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_delete(
-            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+            rest_oai_registry.RegistryDetail.as_view(),
+            user=user,
+            param=self.param,
         )
 
         # Assert
@@ -173,7 +189,9 @@ class TestPatchRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_patch(
-            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+            rest_oai_registry.RegistryDetail.as_view(),
+            user=user,
+            param=self.param,
         )
 
         # Assert
@@ -204,7 +222,9 @@ class TestPatchRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_patch(
-            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+            rest_oai_registry.RegistryDetail.as_view(),
+            user=user,
+            param=self.param,
         )
 
         # Assert
@@ -225,7 +245,9 @@ class TestInfoRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_patch(
-            rest_oai_registry.InfoRegistry.as_view(), user=None, param=self.param
+            rest_oai_registry.InfoRegistry.as_view(),
+            user=None,
+            param=self.param,
         )
 
         # Assert
@@ -258,12 +280,16 @@ class TestInfoRegistry(SimpleTestCase):
         # Arrange
         user = create_mock_user("1", is_staff=True)
         mock_oaipmhmessage_get_message_labelled.return_value = None
-        mock_oai_registry_api_update_registry_info.return_value = Mock(spec=OaiRegistry)
+        mock_oai_registry_api_update_registry_info.return_value = Mock(
+            spec=OaiRegistry
+        )
         mock_oai_registry_api_get_by_id.return_value = Mock(spec=OaiRegistry)
 
         # Act
         response = RequestMock.do_request_patch(
-            rest_oai_registry.InfoRegistry.as_view(), user=user, param=self.param
+            rest_oai_registry.InfoRegistry.as_view(),
+            user=user,
+            param=self.param,
         )
 
         # Assert
@@ -364,7 +390,9 @@ class TestEditHarvestRegistry(SimpleTestCase):
 
     @patch.object(QuerySet, "values_list")
     @patch.object(oai_set_api, "update_for_all_harvest_by_list_ids")
-    @patch.object(oai_metadata_format_api, "update_for_all_harvest_by_list_ids")
+    @patch.object(
+        oai_metadata_format_api, "update_for_all_harvest_by_list_ids"
+    )
     @patch.object(oai_set_api, "get_all_by_registry_id")
     @patch.object(oai_metadata_format_api, "get_all_by_registry_id")
     @patch.object(HarvestSerializer, "data")
@@ -393,10 +421,12 @@ class TestEditHarvestRegistry(SimpleTestCase):
         mock_oai_registry_api_get_by_id.return_value = Mock(spec=OaiRegistry)
         mock_data_serializer_data.return_value = Mock(spec=HarvestSerializer)
         mock_data_serializer_is_valid.return_value = True
-        mock_oai_metadata_format_api_get_all_by_registry_id.return_value = Mock(
+        mock_oai_metadata_format_api_get_all_by_registry_id.return_value = (
+            Mock(spec=QuerySet)
+        )
+        mock_oai_set_api_get_all_by_registry_id.return_value = Mock(
             spec=QuerySet
         )
-        mock_oai_set_api_get_all_by_registry_id.return_value = Mock(spec=QuerySet)
         mock_oai_metadata_format_api_update_for_all_harvest_by_list_ids.return_value = (
             None
         )
@@ -429,7 +459,9 @@ class TestActivateRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_patch(
-            rest_oai_registry.ActivateRegistry.as_view(), None, param=self.param
+            rest_oai_registry.ActivateRegistry.as_view(),
+            None,
+            param=self.param,
         )
 
         # Assert
@@ -443,7 +475,9 @@ class TestActivateRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_patch(
-            rest_oai_registry.ActivateRegistry.as_view(), user=user, param=self.param
+            rest_oai_registry.ActivateRegistry.as_view(),
+            user=user,
+            param=self.param,
         )
 
         # Assert
@@ -490,7 +524,9 @@ class TestDeactivateRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_patch(
-            rest_oai_registry.DeactivateRegistry.as_view(), None, param=self.param
+            rest_oai_registry.DeactivateRegistry.as_view(),
+            None,
+            param=self.param,
         )
 
         # Assert
@@ -504,7 +540,9 @@ class TestDeactivateRegistry(SimpleTestCase):
 
         # Act
         response = RequestMock.do_request_patch(
-            rest_oai_registry.DeactivateRegistry.as_view(), user=user, param=self.param
+            rest_oai_registry.DeactivateRegistry.as_view(),
+            user=user,
+            param=self.param,
         )
 
         # Assert

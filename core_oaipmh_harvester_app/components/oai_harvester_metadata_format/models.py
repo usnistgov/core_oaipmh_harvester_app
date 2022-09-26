@@ -9,7 +9,9 @@ from core_main_app.components.template.models import Template
 from core_oaipmh_common_app.components.oai_metadata_format.models import (
     OaiMetadataFormat,
 )
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 
 
 class OaiHarvesterMetadataFormat(OaiMetadataFormat):
@@ -52,7 +54,9 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
             List of OaiHarvesterMetadataFormat
 
         """
-        queryset = OaiHarvesterMetadataFormat.objects.filter(registry=str(registry_id))
+        queryset = OaiHarvesterMetadataFormat.objects.filter(
+            registry=str(registry_id)
+        )
 
         if order_by_field is not None:
             queryset.order_by(order_by_field)
@@ -81,7 +85,9 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
         return queryset
 
     @staticmethod
-    def get_all_by_registry_id_and_harvest(registry_id, harvest, order_by_field=None):
+    def get_all_by_registry_id_and_harvest(
+        registry_id, harvest, order_by_field=None
+    ):
         """
 
         Args:
@@ -151,7 +157,9 @@ class OaiHarvesterMetadataFormat(OaiMetadataFormat):
         )
 
     @staticmethod
-    def update_for_all_harvest_by_list_ids(list_oai_metadata_format_ids, harvest):
+    def update_for_all_harvest_by_list_ids(
+        list_oai_metadata_format_ids, harvest
+    ):
         """Update the harvest for all OaiHarvesterMetadataFormat by a list of ids.
 
         Args:

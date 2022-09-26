@@ -30,7 +30,9 @@ try:
         from bson import ObjectId
         from mongoengine import DoesNotExist
         from mongoengine import fields as mongo_fields
-        from core_main_app.utils.databases.mongo.pymongo_database import init_text_index
+        from core_main_app.utils.databases.mongo.pymongo_database import (
+            init_text_index,
+        )
         from core_main_app.components.mongo.models import AbstractMongoData
 
         class MongoOaiRecord(AbstractMongoData):
@@ -38,7 +40,9 @@ try:
 
             identifier = mongo_fields.StringField()
             deleted = mongo_fields.BooleanField()
-            _harvester_sets_ids = mongo_fields.ListField(db_field="harvester_sets")
+            _harvester_sets_ids = mongo_fields.ListField(
+                db_field="harvester_sets"
+            )
             _harvester_metadata_format_id = mongo_fields.IntField(
                 db_field="harvester_metadata_format"
             )
@@ -64,7 +68,9 @@ try:
 
                 """
                 if not self._xml_content:
-                    self._xml_content = OaiRecord.get_by_id(self.data_id).xml_content
+                    self._xml_content = OaiRecord.get_by_id(
+                        self.data_id
+                    ).xml_content
                 return self._xml_content
 
             @xml_content.setter
@@ -91,7 +97,9 @@ try:
                     Results of the query.
 
                 """
-                return MongoOaiRecord.objects(__raw__=query).order_by(*order_by_field)
+                return MongoOaiRecord.objects(__raw__=query).order_by(
+                    *order_by_field
+                )
 
             @staticmethod
             def aggregate(pipeline):
@@ -117,7 +125,9 @@ try:
                 """
                 try:
                     # check if oai_record already exists in mongo
-                    mongo_oai_record = MongoOaiRecord.objects.get(pk=oai_record.id)
+                    mongo_oai_record = MongoOaiRecord.objects.get(
+                        pk=oai_record.id
+                    )
                 except DoesNotExist:
                     # create new mongo oai_record otherwise
                     mongo_oai_record = MongoOaiRecord()
@@ -165,7 +175,9 @@ try:
                 if MONGODB_ASYNC_SAVE:
                     index_mongo_oai_record.apply_async((str(instance.id),))
                 else:
-                    mongo_oai_record = MongoOaiRecord.init_mongo_oai_record(instance)
+                    mongo_oai_record = MongoOaiRecord.init_mongo_oai_record(
+                        instance
+                    )
                     mongo_oai_record.save()
 
             @staticmethod
@@ -191,7 +203,9 @@ try:
                             f"Trying to delete {str(instance.id)} but document was not found."
                         )
                     except Exception as exception:
-                        logger.error(f"An unexpected error occurred: {str(exception)}")
+                        logger.error(
+                            f"An unexpected error occurred: {str(exception)}"
+                        )
 
         # Initialize text index
         init_text_index(MongoOaiRecord)

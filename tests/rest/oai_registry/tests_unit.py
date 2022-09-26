@@ -15,9 +15,15 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
 from core_oaipmh_harvester_app.components.oai_harvester_set import (
     api as oai_harvester_set_api,
 )
-from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
-from core_oaipmh_harvester_app.rest.oai_registry import views as rest_oai_registry
+from core_oaipmh_harvester_app.components.oai_registry import (
+    api as oai_registry_api,
+)
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
+from core_oaipmh_harvester_app.rest.oai_registry import (
+    views as rest_oai_registry,
+)
 
 
 class TestSelectRegistry(TestCase):
@@ -97,7 +103,11 @@ class TestAddRegistry(TestCase):
         """setUp"""
 
         super().setUp()
-        self.data = {"url": "http://url.com", "harvest_rate": 3000, "harvest": True}
+        self.data = {
+            "url": "http://url.com",
+            "harvest_rate": 3000,
+            "harvest": True,
+        }
         self.bad_data = {}
 
     def test_add_registry_unauthorized(self):
@@ -128,7 +138,9 @@ class TestAddRegistry(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @patch.object(OaiRegistry, "check_registry_url_already_exists")
-    def test_add_registry_raises_exception_if_url_already_exists(self, mock_check):
+    def test_add_registry_raises_exception_if_url_already_exists(
+        self, mock_check
+    ):
         """test_add_registry_raises_exception_if_url_already_exists"""
 
         # Arrange

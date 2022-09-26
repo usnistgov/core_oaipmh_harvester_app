@@ -17,4 +17,6 @@ sharing_children = (
     ),
 )
 
-Menu.add_item("admin", MenuItem("OAI PMH HARVESTER", None, children=sharing_children))
+Menu.add_item(
+    "admin", MenuItem("OAI PMH HARVESTER", None, children=sharing_children)
+)

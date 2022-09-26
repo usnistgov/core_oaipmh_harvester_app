@@ -10,7 +10,10 @@ from xml_utils.xsd_tree.xsd_tree import XSDTree
 from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
-from core_oaipmh_harvester_app.utils import sickle_operations, transform_operations
+from core_oaipmh_harvester_app.utils import (
+    sickle_operations,
+    transform_operations,
+)
 
 
 def identify(url):
@@ -123,10 +126,15 @@ def list_sets_as_object(url):
     data, status_code = list_sets(url)
     if status_code == status.HTTP_200_OK:
         try:
-            data = transform_operations.transform_dict_set_to_oai_harvester_set(data)
+            data = (
+                transform_operations.transform_dict_set_to_oai_harvester_set(
+                    data
+                )
+            )
         except Exception as exception:
             data = OaiPmhMessage.get_message_labelled(
-                "An error occurred when attempting to get the sets: %s" % str(exception)
+                "An error occurred when attempting to get the sets: %s"
+                % str(exception)
             )
             status_code = status.HTTP_400_BAD_REQUEST
 
@@ -197,7 +205,8 @@ def list_records(
         return exception.response(), resumption_token
     except Exception as exception:
         content = OaiPmhMessage.get_message_labelled(
-            "An error occurred during the list_records process: %s" % str(exception)
+            "An error occurred during the list_records process: %s"
+            % str(exception)
         )
         return (
             Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR),
@@ -234,7 +243,9 @@ def get_data(url, request=None):
                 session_id = request.session.session_key
             except Exception:
                 session_id = None
-            http_response = send_get_request(url, cookies={"sessionid": session_id})
+            http_response = send_get_request(
+                url, cookies={"sessionid": session_id}
+            )
             if http_response.status_code == status.HTTP_200_OK:
                 return Response(http_response.text, status=status.HTTP_200_OK)
             else:
@@ -244,10 +255,12 @@ def get_data(url, request=None):
                 )
         else:
             content = (
-                "An error occurred when attempting to identify resource: %s" % data
+                "An error occurred when attempting to identify resource: %s"
+                % data
             )
             raise oai_pmh_exceptions.OAIAPILabelledException(
-                message=content, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+                message=content,
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
     except requests.HTTPError as err:
@@ -257,8 +270,9 @@ def get_data(url, request=None):
     except oai_pmh_exceptions.OAIAPIException as exception:
         raise exception
     except Exception as exception:
-        content = "An error occurred when attempting to retrieve data: %s" % str(
-            exception
+        content = (
+            "An error occurred when attempting to retrieve data: %s"
+            % str(exception)
         )
         raise oai_pmh_exceptions.OAIAPILabelledException(
             message=content, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR

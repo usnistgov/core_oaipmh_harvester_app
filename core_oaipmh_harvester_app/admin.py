@@ -16,9 +16,13 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set.mode
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
     OaiHarvesterSet,
 )
-from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
+from core_oaipmh_harvester_app.components.oai_identify.models import (
+    OaiIdentify,
+)
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 from core_oaipmh_harvester_app.views.admin import (
     views as admin_views,
     ajax as admin_ajax,

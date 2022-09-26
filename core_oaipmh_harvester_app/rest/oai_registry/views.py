@@ -17,8 +17,12 @@ from core_oaipmh_harvester_app.commons import rights
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
     api as oai_metadata_format_api,
 )
-from core_oaipmh_harvester_app.components.oai_harvester_set import api as oai_set_api
-from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
+from core_oaipmh_harvester_app.components.oai_harvester_set import (
+    api as oai_set_api,
+)
+from core_oaipmh_harvester_app.components.oai_registry import (
+    api as oai_registry_api,
+)
 from core_oaipmh_harvester_app.rest import serializers
 
 
@@ -27,7 +31,9 @@ class RegistryList(APIView):
 
     @method_decorator(api_staff_member_required())
     @method_decorator(
-        api_permission_required(rights.OAI_PMH_CONTENT_TYPE, rights.OAI_PMH_ACCESS)
+        api_permission_required(
+            rights.OAI_PMH_CONTENT_TYPE, rights.OAI_PMH_ACCESS
+        )
     )
     def get(self, request):
         """Get all Registries (Data provider)
@@ -52,7 +58,9 @@ class RegistryList(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     @method_decorator(api_staff_member_required())
     def post(self, request):
@@ -94,13 +102,17 @@ class RegistryList(APIView):
 
             return Response(content, status=status.HTTP_201_CREATED)
         except ValidationError as validation_exception:
-            content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
+            content = OaiPmhMessage.get_message_labelled(
+                validation_exception.detail
+            )
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except exceptions_oai.OAIAPIException as exception:
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class RegistryDetail(APIView):
@@ -108,7 +120,9 @@ class RegistryDetail(APIView):
 
     @method_decorator(api_staff_member_required())
     @method_decorator(
-        api_permission_required(rights.OAI_PMH_CONTENT_TYPE, rights.OAI_PMH_ACCESS)
+        api_permission_required(
+            rights.OAI_PMH_CONTENT_TYPE, rights.OAI_PMH_ACCESS
+        )
     )
     def get(self, request, registry_id):
         """Retrieve a Registry (Data provider)
@@ -143,7 +157,9 @@ class RegistryDetail(APIView):
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     @method_decorator(api_staff_member_required())
     def delete(self, request, registry_id):
@@ -177,7 +193,9 @@ class RegistryDetail(APIView):
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
@@ -222,7 +240,9 @@ class RegistryDetail(APIView):
 
             return Response(content, status=status.HTTP_200_OK)
         except ValidationError as validation_exception:
-            content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
+            content = OaiPmhMessage.get_message_labelled(
+                validation_exception.detail
+            )
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except exceptions.DoesNotExist:
             content = OaiPmhMessage.get_message_labelled(
@@ -233,7 +253,9 @@ class RegistryDetail(APIView):
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class ActivateRegistry(APIView):
@@ -275,7 +297,9 @@ class ActivateRegistry(APIView):
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class DeactivateRegistry(APIView):
@@ -317,7 +341,9 @@ class DeactivateRegistry(APIView):
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class InfoRegistry(APIView):
@@ -343,9 +369,13 @@ class InfoRegistry(APIView):
         """
         try:
             registry = oai_registry_api.get_by_id(registry_id)
-            registry = oai_registry_api.update_registry_info(registry, request=request)
+            registry = oai_registry_api.update_registry_info(
+                registry, request=request
+            )
             content = OaiPmhMessage.get_message_labelled(
-                "Registry {0} information updated with success.".format(registry.name)
+                "Registry {0} information updated with success.".format(
+                    registry.name
+                )
             )
 
             return Response(content, status=status.HTTP_200_OK)
@@ -356,7 +386,9 @@ class InfoRegistry(APIView):
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class Harvest(APIView):
@@ -398,7 +430,9 @@ class Harvest(APIView):
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     @method_decorator(api_staff_member_required())
     def put(self, request, registry_id):
@@ -437,12 +471,14 @@ class Harvest(APIView):
             metadata_formats = serializer.data.get("metadata_formats")
             sets = serializer.data.get("sets")
             # Get metadata formats ids and sets ids related to the registry.
-            registry_metadata_formats = oai_metadata_format_api.get_all_by_registry_id(
+            registry_metadata_formats = (
+                oai_metadata_format_api.get_all_by_registry_id(
+                    registry_id
+                ).values_list("id", flat=True)
+            )
+            registry_sets = oai_set_api.get_all_by_registry_id(
                 registry_id
             ).values_list("id", flat=True)
-            registry_sets = oai_set_api.get_all_by_registry_id(registry_id).values_list(
-                "id", flat=True
-            )
             # Set all metadata_formats to false (Do not harvest)
             oai_metadata_format_api.update_for_all_harvest_by_list_ids(
                 registry_metadata_formats, False
@@ -452,7 +488,9 @@ class Harvest(APIView):
                 metadata_formats, True
             )
             # Set all sets to false (Do not harvest)
-            oai_set_api.update_for_all_harvest_by_list_ids(registry_sets, False)
+            oai_set_api.update_for_all_harvest_by_list_ids(
+                registry_sets, False
+            )
             # Set given sets to True (Harvest)
             oai_set_api.update_for_all_harvest_by_list_ids(sets, True)
             content = OaiPmhMessage.get_message_labelled(
@@ -461,7 +499,9 @@ class Harvest(APIView):
 
             return Response(content, status=status.HTTP_200_OK)
         except ValidationError as validation_exception:
-            content = OaiPmhMessage.get_message_labelled(validation_exception.detail)
+            content = OaiPmhMessage.get_message_labelled(
+                validation_exception.detail
+            )
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except exceptions.DoesNotExist as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
@@ -470,4 +510,6 @@ class Harvest(APIView):
             return exception.response()
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

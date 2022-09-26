@@ -78,7 +78,10 @@ class Migration(migrations.Migration):
                     "harvest_rate",
                     models.IntegerField(blank=True, default=None, null=True),
                 ),
-                ("description", models.TextField(blank=True, default="", null=True)),
+                (
+                    "description",
+                    models.TextField(blank=True, default="", null=True),
+                ),
                 ("harvest", models.BooleanField(default=False)),
                 ("last_update", models.DateTimeField(blank=True, null=True)),
                 ("is_harvesting", models.BooleanField(default=False)),
@@ -153,7 +156,8 @@ class Migration(migrations.Migration):
                 (
                     "harvester_sets",
                     models.ManyToManyField(
-                        blank=True, to="core_oaipmh_harvester_app.OaiHarvesterSet"
+                        blank=True,
+                        to="core_oaipmh_harvester_app.OaiHarvesterSet",
                     ),
                 ),
                 (
@@ -193,7 +197,10 @@ class Migration(migrations.Migration):
                     "deleted_record",
                     models.CharField(blank=True, max_length=200, null=True),
                 ),
-                ("delimiter", models.CharField(blank=True, max_length=200, null=True)),
+                (
+                    "delimiter",
+                    models.CharField(blank=True, max_length=200, null=True),
+                ),
                 ("description", models.TextField(blank=True, null=True)),
                 (
                     "earliest_datestamp",
@@ -219,7 +226,10 @@ class Migration(migrations.Migration):
                     "sample_identifier",
                     models.CharField(blank=True, max_length=200, null=True),
                 ),
-                ("scheme", models.CharField(blank=True, max_length=200, null=True)),
+                (
+                    "scheme",
+                    models.CharField(blank=True, max_length=200, null=True),
+                ),
                 ("raw", models.JSONField(blank=True, null=True)),
                 (
                     "registry",
@@ -293,7 +303,9 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "unique_together": {("harvester_metadata_format", "harvester_set")},
+                "unique_together": {
+                    ("harvester_metadata_format", "harvester_set")
+                },
             },
         ),
         migrations.AlterUniqueTogether(

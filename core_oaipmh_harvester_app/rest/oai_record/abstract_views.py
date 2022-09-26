@@ -11,8 +11,12 @@ import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
     api as oai_harvester_metadata_format_api,
 )
-from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
-from core_oaipmh_harvester_app.utils.query.mongo.query_builder import OaiPmhQueryBuilder
+from core_oaipmh_harvester_app.components.oai_registry import (
+    api as oai_registry_api,
+)
+from core_oaipmh_harvester_app.utils.query.mongo.query_builder import (
+    OaiPmhQueryBuilder,
+)
 
 
 # FIXME: Could inherit AbstractExecuteQuery from core_main_app
@@ -87,7 +91,9 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
 
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def build_query(self, query, templates, registries):
         """Build the raw query.
@@ -113,7 +119,9 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
 
         # if registries, check if activated
         list_activated_registry = list(
-            oai_registry_api.get_all_activated_registry().values_list("id", flat=True)
+            oai_registry_api.get_all_activated_registry().values_list(
+                "id", flat=True
+            )
         )
         if len(registries) > 0:
             activated_registries = [
@@ -137,9 +145,12 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
             list_metadata_formats_id = [
                 str(x.id)
                 for x in list_metadata_format
-                if x.template is not None and str(x.template.id) in list_template_ids
+                if x.template is not None
+                and str(x.template.id) in list_template_ids
             ]
-            query_builder.add_list_metadata_formats_criteria(list_metadata_formats_id)
+            query_builder.add_list_metadata_formats_criteria(
+                list_metadata_formats_id
+            )
         else:
             # Only activated registries
             query_builder.add_list_registries_criteria(activated_registries)

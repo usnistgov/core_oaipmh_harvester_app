@@ -10,7 +10,9 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models i
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
     OaiHarvesterSet,
 )
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 from core_oaipmh_harvester_app.system import api as oai_harvester_system_api
 
 
@@ -31,7 +33,9 @@ class TestOaiRecordUpsert(TestCase):
 
         # Act + Assert
         with self.assertRaises(Exception):
-            oai_harvester_system_api.upsert_oai_record(MockOaiRecord(save_failed=True))
+            oai_harvester_system_api.upsert_oai_record(
+                MockOaiRecord(save_failed=True)
+            )
 
 
 class MockOaiRecord(Mock):

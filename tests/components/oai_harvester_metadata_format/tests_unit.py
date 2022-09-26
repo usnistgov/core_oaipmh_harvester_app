@@ -17,7 +17,9 @@ import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 
 
 class TestOaiHarvesterMetadataFormatGetById(TestCase):
@@ -41,7 +43,9 @@ class TestOaiHarvesterMetadataFormatGetById(TestCase):
         self.assertIsInstance(result, OaiHarvesterMetadataFormat)
 
     @patch.object(OaiHarvesterMetadataFormat, "get_by_id")
-    def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
+    def test_get_by_id_raises_exception_if_object_does_not_exist(
+        self, mock_get_by_id
+    ):
         """test_get_by_id_raises_exception_if_object_does_not_exist"""
 
         # Arrange
@@ -54,7 +58,9 @@ class TestOaiHarvesterMetadataFormatGetById(TestCase):
             harvester_metadata_format_api.get_by_id(mock_absent_id)
 
     @patch.object(OaiHarvesterMetadataFormat, "get_by_id")
-    def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
+    def test_get_by_id_raises_exception_if_internal_error(
+        self, mock_get_by_id
+    ):
         """test_get_by_id_raises_exception_if_internal_error"""
 
         # Arrange
@@ -70,8 +76,12 @@ class TestOaiHarvesterMetadataFormatGetById(TestCase):
 class TestOaiHarvesterMetadataFormatGetByMetadataPrefixAndRegistryId(TestCase):
     """Test Oai Harvester Metadata Format Get By Metadata Prefix And Registry Id"""
 
-    @patch.object(OaiHarvesterMetadataFormat, "get_by_metadata_prefix_and_registry_id")
-    def test_get_by_metadata_prefix_and_registry_id_return_object(self, mock_get):
+    @patch.object(
+        OaiHarvesterMetadataFormat, "get_by_metadata_prefix_and_registry_id"
+    )
+    def test_get_by_metadata_prefix_and_registry_id_return_object(
+        self, mock_get
+    ):
         """test_get_by_metadata_prefix_and_registry_id_return_object"""
 
         # Arrange
@@ -90,7 +100,9 @@ class TestOaiHarvesterMetadataFormatGetByMetadataPrefixAndRegistryId(TestCase):
         # Assert
         self.assertIsInstance(result, OaiHarvesterMetadataFormat)
 
-    @patch.object(OaiHarvesterMetadataFormat, "get_by_metadata_prefix_and_registry_id")
+    @patch.object(
+        OaiHarvesterMetadataFormat, "get_by_metadata_prefix_and_registry_id"
+    )
     def test_get_by_metadata_prefix_and_registry_id_raises_exception_if_object_does_not_exist(
         self, mock_get
     ):
@@ -108,7 +120,9 @@ class TestOaiHarvesterMetadataFormatGetByMetadataPrefixAndRegistryId(TestCase):
                 mock_absent_metadata_prefix, mock_absent_registry_id
             )
 
-    @patch.object(OaiHarvesterMetadataFormat, "get_by_metadata_prefix_and_registry_id")
+    @patch.object(
+        OaiHarvesterMetadataFormat, "get_by_metadata_prefix_and_registry_id"
+    )
     def test_get_by_metadata_prefix_and_registry_id_raises_exception_if_internal_error(
         self, mock_get
     ):
@@ -131,7 +145,9 @@ class TestOaiHarvesterMetadataFormatGetAll(TestCase):
     """Test Oai Harvester Metadata Format Get All"""
 
     @patch.object(OaiHarvesterMetadataFormat, "get_all")
-    def test_get_all_contains_only_oai_harvester_metadata_format(self, mock_get_all):
+    def test_get_all_contains_only_oai_harvester_metadata_format(
+        self, mock_get_all
+    ):
         """test_get_all_contains_only_oai_harvester_metadata_format"""
 
         # Arrange
@@ -152,7 +168,9 @@ class TestOaiHarvesterMetadataFormatGetAll(TestCase):
 
         # Assert
         self.assertTrue(
-            all(isinstance(item, OaiHarvesterMetadataFormat) for item in result)
+            all(
+                isinstance(item, OaiHarvesterMetadataFormat) for item in result
+            )
         )
 
 
@@ -185,14 +203,18 @@ class TestOaiHarvesterMetadataFormatGetAllByRegistryId(TestCase):
 
         # Assert
         self.assertTrue(
-            all(isinstance(item, OaiHarvesterMetadataFormat) for item in result)
+            all(
+                isinstance(item, OaiHarvesterMetadataFormat) for item in result
+            )
         )
 
 
 class TestOaiHarvesterMetadataFormatGetAllToHarvestByRegistryId(TestCase):
     """Test Oai Harvester Metadata Format Get All To Harvest By Registry Id"""
 
-    @patch.object(OaiHarvesterMetadataFormat, "get_all_by_registry_id_and_harvest")
+    @patch.object(
+        OaiHarvesterMetadataFormat, "get_all_by_registry_id_and_harvest"
+    )
     def test_get_all_contains_only_oai_harvester_metadata_format_to_harvest_by_registry_id(
         self, mock_get_all
     ):
@@ -212,13 +234,17 @@ class TestOaiHarvesterMetadataFormatGetAllToHarvestByRegistryId(TestCase):
         ]
 
         # Act
-        result = harvester_metadata_format_api.get_all_to_harvest_by_registry_id(
-            mock_oai_harvester_metadata_format1.registry.id
+        result = (
+            harvester_metadata_format_api.get_all_to_harvest_by_registry_id(
+                mock_oai_harvester_metadata_format1.registry.id
+            )
         )
 
         # Assert
         self.assertTrue(
-            all(isinstance(item, OaiHarvesterMetadataFormat) for item in result)
+            all(
+                isinstance(item, OaiHarvesterMetadataFormat) for item in result
+            )
         )
 
 
@@ -226,10 +252,14 @@ class TestOaiHarvestMetadataFormatUpsert(TestCase):
     """Test Oai Harvester Metadata Format Upsert"""
 
     def setUp(self):
-        self.oai_harvester_metadata_format = _create_oai_harvester_metadata_format()
+        self.oai_harvester_metadata_format = (
+            _create_oai_harvester_metadata_format()
+        )
 
     @patch.object(OaiHarvesterMetadataFormat, "save")
-    def test_upsert_oai_harvester_raises_exception_if_save_failed(self, mock_save):
+    def test_upsert_oai_harvester_raises_exception_if_save_failed(
+        self, mock_save
+    ):
         """test_upsert_oai_harvester_raises_exception_if_save_failed"""
 
         # Arrange
@@ -237,10 +267,14 @@ class TestOaiHarvestMetadataFormatUpsert(TestCase):
 
         # Act + Assert
         with self.assertRaises(Exception):
-            harvester_metadata_format_api.upsert(self.oai_harvester_metadata_format)
+            harvester_metadata_format_api.upsert(
+                self.oai_harvester_metadata_format
+            )
 
     @patch.object(OaiHarvesterMetadataFormat, "save")
-    def test_upsert_oai_harvester_metadata_format_return_object(self, mock_create):
+    def test_upsert_oai_harvester_metadata_format_return_object(
+        self, mock_create
+    ):
         """test_upsert_oai_harvester_metadata_format_return_object"""
 
         # Arrange
@@ -297,7 +331,9 @@ class TestOaiHarvesterMetadataFormatDelete(TestCase):
 class TestOaiHarvesterMetadataFormatUpdateForAllByRegistryId(TestCase):
     """Test Oai Harvester Metadata Format Update For All By Registry Id"""
 
-    @patch.object(OaiHarvesterMetadataFormat, "update_for_all_harvest_by_registry_id")
+    @patch.object(
+        OaiHarvesterMetadataFormat, "update_for_all_harvest_by_registry_id"
+    )
     def test_update_for_all_harvest_by_registry_id_raises_exception_if_object_does_not_exist(
         self, mock_update_all
     ):
@@ -318,7 +354,9 @@ class TestOaiHarvesterMetadataFormatUpdateForAllByRegistryId(TestCase):
 class TestOaiHarvesterMetadataFormatUpdateForAllByListIds(TestCase):
     """Test Oai Harvester Metadata Format Update For All By List Ids"""
 
-    @patch.object(OaiHarvesterMetadataFormat, "update_for_all_harvest_by_list_ids")
+    @patch.object(
+        OaiHarvesterMetadataFormat, "update_for_all_harvest_by_list_ids"
+    )
     def test_update_for_all_harvest_by_list_ids_raises_exception_if_object_does_not_exist(
         self, mock_update_all
     ):
@@ -341,7 +379,9 @@ class TestInitSchemaInfo(TestCase):
 
     @patch.object(api_template, "get_all_accessible_by_hash")
     @patch.object(requests, "get")
-    def test_init_schema_info_return_object(self, mock_get, mock_get_all_by_hash):
+    def test_init_schema_info_return_object(
+        self, mock_get, mock_get_all_by_hash
+    ):
         """test_init_schema_info_return_object"""
 
         # Arrange
@@ -447,7 +487,9 @@ class TestInitSchemaInfo(TestCase):
         self.assertEqual(result.template, list_template[0])
 
     @patch.object(requests, "get")
-    def test_init_schema_info_raises_api_error_if_bad_status_code(self, mock_get):
+    def test_init_schema_info_raises_api_error_if_bad_status_code(
+        self, mock_get
+    ):
         """test_init_schema_info_raises_api_error_if_bad_status_code"""
 
         # Arrange
@@ -458,7 +500,9 @@ class TestInitSchemaInfo(TestCase):
         )
         text = "<test>Hello</test>"
 
-        mock_get.return_value.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        mock_get.return_value.status_code = (
+            status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
         mock_get.return_value.text = text
 
         # Act + Assert
@@ -489,7 +533,9 @@ def _create_mock_oai_harvester_metadata_format():
 
     """
     mock_oai_harvester_metadata_format = Mock(spec=OaiHarvesterMetadataFormat)
-    _set_oai_harvester_metadata_format_fields(mock_oai_harvester_metadata_format)
+    _set_oai_harvester_metadata_format_fields(
+        mock_oai_harvester_metadata_format
+    )
 
     return mock_oai_harvester_metadata_format
 

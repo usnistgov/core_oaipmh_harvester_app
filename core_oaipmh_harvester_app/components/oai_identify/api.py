@@ -4,7 +4,9 @@ OaiIdentify API
 
 from core_main_app.commons import exceptions
 from core_main_app.utils.xml import raw_xml_to_dict
-from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
+from core_oaipmh_harvester_app.components.oai_identify.models import (
+    OaiIdentify,
+)
 
 
 def upsert(oai_identify):

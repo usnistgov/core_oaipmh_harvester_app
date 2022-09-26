@@ -7,7 +7,9 @@ from core_main_app.utils.integration_tests.integration_base_test_case import (
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from core_oaipmh_harvester_app.rest.oai_record import views as oai_record_rest_views
+from core_oaipmh_harvester_app.rest.oai_record import (
+    views as oai_record_rest_views,
+)
 from tests.components.oai_registry.fixtures.fixtures import OaiPmhFixtures
 
 
@@ -35,7 +37,9 @@ class TestExecuteQueryView(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_post(
-            oai_record_rest_views.ExecuteQueryView.as_view(), self.user, data=data
+            oai_record_rest_views.ExecuteQueryView.as_view(),
+            self.user,
+            data=data,
         )
 
         # Assert
@@ -49,7 +53,9 @@ class TestExecuteQueryView(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_post(
-            oai_record_rest_views.ExecuteQueryView.as_view(), self.user, data=data
+            oai_record_rest_views.ExecuteQueryView.as_view(),
+            self.user,
+            data=data,
         )
 
         # Assert
@@ -63,7 +69,9 @@ class TestExecuteQueryView(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_post(
-            oai_record_rest_views.ExecuteQueryView.as_view(), self.user, data=data
+            oai_record_rest_views.ExecuteQueryView.as_view(),
+            self.user,
+            data=data,
         )
 
         # Assert

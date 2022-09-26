@@ -12,8 +12,13 @@ from core_main_app.utils.integration_tests.integration_base_test_case import (
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
-from core_oaipmh_harvester_app.rest.oai_registry import views as rest_oai_registry
-from tests.components.oai_registry.fixtures.fixtures import OaiPmhFixtures, OaiPmhMock
+from core_oaipmh_harvester_app.rest.oai_registry import (
+    views as rest_oai_registry,
+)
+from tests.components.oai_registry.fixtures.fixtures import (
+    OaiPmhFixtures,
+    OaiPmhMock,
+)
 
 
 class TestSelectRegistry(MongoIntegrationBaseTestCase):
@@ -36,7 +41,9 @@ class TestSelectRegistry(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_get(
-            rest_oai_registry.RegistryDetail.as_view(), user=user, param=self.param
+            rest_oai_registry.RegistryDetail.as_view(),
+            user=user,
+            param=self.param,
         )
 
         # Assert
@@ -95,7 +102,10 @@ class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
         identify = OaiPmhMock.mock_oai_identify(version=2)
         mock_identify.return_value = identify, status.HTTP_200_OK
         first_metadata_format = OaiPmhMock.mock_oai_metadata_format(version=2)
-        mock_metadata_formats.return_value = first_metadata_format, status.HTTP_200_OK
+        mock_metadata_formats.return_value = (
+            first_metadata_format,
+            status.HTTP_200_OK,
+        )
         first_set = OaiPmhMock.mock_oai_set(version=2)
         mock_sets.return_value = first_set, status.HTTP_200_OK
         text = "<test>Hello</test>"

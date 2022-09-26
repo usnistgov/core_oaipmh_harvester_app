@@ -7,7 +7,9 @@ import core_oaipmh_harvester_app.components.oai_harvester_set.api as harvester_s
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
     OaiHarvesterSet,
 )
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 
 
 class TestOaiHarvesterSetGetById(TestCase):
@@ -30,7 +32,9 @@ class TestOaiHarvesterSetGetById(TestCase):
         self.assertIsInstance(result, OaiHarvesterSet)
 
     @patch.object(OaiHarvesterSet, "get_by_id")
-    def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
+    def test_get_by_id_raises_exception_if_object_does_not_exist(
+        self, mock_get_by_id
+    ):
         """test_get_by_id_raises_exception_if_object_does_not_exist"""
 
         # Arrange
@@ -43,7 +47,9 @@ class TestOaiHarvesterSetGetById(TestCase):
             harvester_set_api.get_by_id(mock_absent_id)
 
     @patch.object(OaiHarvesterSet, "get_by_id")
-    def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
+    def test_get_by_id_raises_exception_if_internal_error(
+        self, mock_get_by_id
+    ):
         """test_get_by_id_raises_exception_if_internal_error"""
 
         # Arrange
@@ -124,20 +130,27 @@ class TestOaiHarvesterSetGetAll(TestCase):
         mock_oai_harvester_set1 = _create_mock_oai_harvester_set()
         mock_oai_harvester_set2 = _create_mock_oai_harvester_set()
 
-        mock_get_all.return_value = [mock_oai_harvester_set1, mock_oai_harvester_set2]
+        mock_get_all.return_value = [
+            mock_oai_harvester_set1,
+            mock_oai_harvester_set2,
+        ]
 
         # Act
         result = harvester_set_api.get_all()
 
         # Assert
-        self.assertTrue(all(isinstance(item, OaiHarvesterSet) for item in result))
+        self.assertTrue(
+            all(isinstance(item, OaiHarvesterSet) for item in result)
+        )
 
 
 class TestOaiHarvesterSetGetAllByRegistryId(TestCase):
     """Test Oai Harvester Set Get All By Registry Id"""
 
     @patch.object(OaiHarvesterSet, "get_all_by_registry_id")
-    def test_get_all_contains_only_oai_harvester_set(self, mock_get_all_by_registry_id):
+    def test_get_all_contains_only_oai_harvester_set(
+        self, mock_get_all_by_registry_id
+    ):
         """test_get_all_contains_only_oai_harvester_set"""
 
         # Arrange
@@ -155,7 +168,9 @@ class TestOaiHarvesterSetGetAllByRegistryId(TestCase):
         )
 
         # Assert
-        self.assertTrue(all(isinstance(item, OaiHarvesterSet) for item in result))
+        self.assertTrue(
+            all(isinstance(item, OaiHarvesterSet) for item in result)
+        )
 
 
 class TestOaiHarvesterSetGetAllToHarvestByRegistryId(TestCase):
@@ -171,7 +186,10 @@ class TestOaiHarvesterSetGetAllToHarvestByRegistryId(TestCase):
         mock_oai_harvester_set1 = _create_mock_oai_harvester_set()
         mock_oai_harvester_set2 = _create_mock_oai_harvester_set()
 
-        mock_get_all.return_value = [mock_oai_harvester_set1, mock_oai_harvester_set2]
+        mock_get_all.return_value = [
+            mock_oai_harvester_set1,
+            mock_oai_harvester_set2,
+        ]
 
         # Act
         result = harvester_set_api.get_all_to_harvest_by_registry_id(
@@ -179,7 +197,9 @@ class TestOaiHarvesterSetGetAllToHarvestByRegistryId(TestCase):
         )
 
         # Assert
-        self.assertTrue(all(isinstance(item, OaiHarvesterSet) for item in result))
+        self.assertTrue(
+            all(isinstance(item, OaiHarvesterSet) for item in result)
+        )
 
 
 class TestOaiHarvestSetUpsert(TestCase):
@@ -191,7 +211,9 @@ class TestOaiHarvestSetUpsert(TestCase):
         self.oai_harvester_set = _create_oai_harvester_set()
 
     @patch.object(OaiHarvesterSet, "save")
-    def test_upsert_oai_harvester_raises_exception_if_save_failed(self, mock_save):
+    def test_upsert_oai_harvester_raises_exception_if_save_failed(
+        self, mock_save
+    ):
         """test_upsert_oai_harvester_raises_exception_if_save_failed"""
 
         # Arrange
@@ -231,7 +253,9 @@ class TestOaiHarvesterSetDeleteAllByRegistryId(TestCase):
 
         # Act + Assert
         with self.assertRaises(Exception):
-            harvester_set_api.delete_all_by_registry_id(mock_absent_registry_id)
+            harvester_set_api.delete_all_by_registry_id(
+                mock_absent_registry_id
+            )
 
 
 class TestOaiHarvesterSetDelete(TestCase):

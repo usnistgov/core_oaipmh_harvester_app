@@ -70,7 +70,8 @@ def sickle_list_sets(url):
         return content, status.HTTP_204_NO_CONTENT
     except Exception as exception:
         content = OaiPmhMessage.get_message_labelled(
-            "An error occurred when attempting to get the sets: %s" % str(exception)
+            "An error occurred when attempting to get the sets: %s"
+            % str(exception)
         )
         return content, status.HTTP_500_INTERNAL_SERVER_ERROR
 

@@ -8,7 +8,9 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models i
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
     OaiHarvesterSet,
 )
-from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
+from core_oaipmh_harvester_app.components.oai_identify.models import (
+    OaiIdentify,
+)
 
 
 def transform_dict_identifier_to_oai_identifier(data):

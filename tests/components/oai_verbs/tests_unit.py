@@ -14,7 +14,9 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models i
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
     OaiHarvesterSet,
 )
-from core_oaipmh_harvester_app.components.oai_identify.models import OaiIdentify
+from core_oaipmh_harvester_app.components.oai_identify.models import (
+    OaiIdentify,
+)
 from tests.components.oai_registry.fixtures.fixtures import OaiPmhMock
 from tests.test_settings import SSL_CERTIFICATES_DIR
 
@@ -78,7 +80,8 @@ class TestListSetsAsObject(TestCase):
     """Test List Sets As Object"""
 
     @patch.object(
-        oai_verbs_api.transform_operations, "transform_dict_set_to_oai_harvester_set"
+        oai_verbs_api.transform_operations,
+        "transform_dict_set_to_oai_harvester_set",
     )
     @patch.object(oai_verbs_api, "list_sets")
     def test_list_sets_as_object_return_object_and_ok_status(
@@ -94,7 +97,9 @@ class TestListSetsAsObject(TestCase):
         data, status_code = oai_verbs_api.list_sets_as_object("")
 
         # Assert
-        self.assertTrue(all(isinstance(item, OaiHarvesterSet) for item in data))
+        self.assertTrue(
+            all(isinstance(item, OaiHarvesterSet) for item in data)
+        )
         self.assertEqual(status_code, status.HTTP_200_OK)
 
 
@@ -117,7 +122,9 @@ class TestListRecordsParameter(TestCase):
 
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
-        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records()
+        mock_get.return_value.text = (
+            OaiPmhMock.mock_oai_response_list_records()
+        )
         expected_params = {
             "verb": "ListRecords",
             "metadataPrefix": self.metadata_prefix,
@@ -146,7 +153,9 @@ class TestListRecordsParameter(TestCase):
 
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
-        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records()
+        mock_get.return_value.text = (
+            OaiPmhMock.mock_oai_response_list_records()
+        )
         resumption_token = "h34fh"
         expected_params = {"verb": "ListRecords", "resumptionToken": "h34fh"}
 
@@ -179,7 +188,9 @@ class TestListRecordsParameter(TestCase):
         result, resumption_token = oai_verbs_api.list_records(self.url)
 
         # Assert
-        self.assertEqual(result.data[oai_pmh_exceptions.OaiPmhMessage.label], error)
+        self.assertEqual(
+            result.data[oai_pmh_exceptions.OaiPmhMessage.label], error
+        )
         self.assertEqual(result.status_code, status_code)
 
     @patch.object(requests, "get")
@@ -196,7 +207,9 @@ class TestListRecordsParameter(TestCase):
         result, resumption_token = oai_verbs_api.list_records(self.url)
 
         # Assert
-        self.assertEqual(result.data[oai_pmh_exceptions.OaiPmhMessage.label], error)
+        self.assertEqual(
+            result.data[oai_pmh_exceptions.OaiPmhMessage.label], error
+        )
         self.assertEqual(result.status_code, status_code)
 
     @patch.object(requests, "get")
@@ -207,7 +220,9 @@ class TestListRecordsParameter(TestCase):
 
         # Arrange
         mock_get.return_value.status_code = status.HTTP_200_OK
-        mock_get.return_value.text = OaiPmhMock.mock_oai_response_list_records()
+        mock_get.return_value.text = (
+            OaiPmhMock.mock_oai_response_list_records()
+        )
         resumption_token = "h34fh"
 
         # Act

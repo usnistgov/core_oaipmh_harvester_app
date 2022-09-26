@@ -2,7 +2,9 @@ from django import forms
 from django.core.validators import MinValueValidator
 
 import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 
 VERBS = (
     ("0", "Pick one"),
@@ -36,7 +38,9 @@ class AddRegistryForm(forms.Form):
         label="Harvest Rate (seconds)",
         required=False,
         validators=[MinValueValidator(0)],
-        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "60"}),
+        widget=forms.NumberInput(
+            attrs={"class": "form-control", "placeholder": "60"}
+        ),
         min_value=0,
     )
     harvest = forms.BooleanField(
@@ -44,7 +48,10 @@ class AddRegistryForm(forms.Form):
         required=False,
         initial=True,
         widget=forms.CheckboxInput(
-            attrs={"class": "cmn-toggle cmn-toggle-round", "visibility": "hidden"}
+            attrs={
+                "class": "cmn-toggle cmn-toggle-round",
+                "visibility": "hidden",
+            }
         ),
     )
 
@@ -176,10 +183,14 @@ class RequestForm(forms.Form):
         widget=forms.Select(attrs=disabled_attributes),
     )
     from_date = forms.CharField(
-        label="From", required=False, widget=forms.DateInput(attrs=date_attributes)
+        label="From",
+        required=False,
+        widget=forms.DateInput(attrs=date_attributes),
     )
     until_date = forms.CharField(
-        label="Until", required=False, widget=forms.DateInput(attrs=date_attributes)
+        label="Until",
+        required=False,
+        widget=forms.DateInput(attrs=date_attributes),
     )
     resumption_token = forms.CharField(
         label="Resumption Token",
@@ -197,7 +208,10 @@ class RequestForm(forms.Form):
 
         for registry in oai_registry_api.get_all_activated_registry():
             default_fields.append(
-                ("%s|%s" % (str(registry.id), registry.url), str(registry.name))
+                (
+                    "%s|%s" % (str(registry.id), registry.url),
+                    str(registry.name),
+                )
             )
 
         self.fields["data_provider"].choices = default_fields

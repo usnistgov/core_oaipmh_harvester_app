@@ -10,7 +10,9 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models i
 )
 import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 
 
 class TestOaiRecordGetById(TestCase):
@@ -33,7 +35,9 @@ class TestOaiRecordGetById(TestCase):
         self.assertIsInstance(result, OaiRecord)
 
     @patch.object(OaiRecord, "get_by_id")
-    def test_get_by_id_raises_exception_if_object_does_not_exist(self, mock_get_by_id):
+    def test_get_by_id_raises_exception_if_object_does_not_exist(
+        self, mock_get_by_id
+    ):
         """test_get_by_id_raises_exception_if_object_does_not_exist"""
 
         # Arrange
@@ -47,7 +51,9 @@ class TestOaiRecordGetById(TestCase):
             oai_record_api.get_by_id(mock_absent_id, mock_user)
 
     @patch.object(OaiRecord, "get_by_id")
-    def test_get_by_id_raises_exception_if_internal_error(self, mock_get_by_id):
+    def test_get_by_id_raises_exception_if_internal_error(
+        self, mock_get_by_id
+    ):
         """test_get_by_id_raises_exception_if_internal_error"""
 
         # Arrange
@@ -97,7 +103,9 @@ class TestOaiRecordGetCountByRegistryId(TestCase):
         mock_get.return_value = 2
 
         # Act
-        result = oai_record_api.get_count_by_registry_id(mock_registry_id, mock_user)
+        result = oai_record_api.get_count_by_registry_id(
+            mock_registry_id, mock_user
+        )
 
         # Assert
         self.assertEqual(result, 2)

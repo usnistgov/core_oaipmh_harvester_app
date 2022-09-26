@@ -10,7 +10,9 @@ from core_main_app.utils.query.mongo.prepare import (
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 
 if MONGODB_INDEXING:
-    from core_oaipmh_harvester_app.components.mongo.api import execute_mongo_query
+    from core_oaipmh_harvester_app.components.mongo.api import (
+        execute_mongo_query,
+    )
 
 
 @access_control(main_access_control_api.can_anonymous_access_public_data)

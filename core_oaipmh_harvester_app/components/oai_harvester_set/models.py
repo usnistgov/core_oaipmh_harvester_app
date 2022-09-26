@@ -6,7 +6,9 @@ from django.db import models
 
 from core_main_app.commons import exceptions
 from core_oaipmh_common_app.components.oai_set.models import OaiSet
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 
 
 class OaiHarvesterSet(OaiSet):
@@ -41,7 +43,9 @@ class OaiHarvesterSet(OaiSet):
         return queryset
 
     @staticmethod
-    def get_all_by_registry_id_and_harvest(registry_id, harvest, order_by_field=None):
+    def get_all_by_registry_id_and_harvest(
+        registry_id, harvest, order_by_field=None
+    ):
         """Return a list of OaiHarvesterSet by registry and harvest. Possibility to order_by the list.
 
         Args:
@@ -105,7 +109,9 @@ class OaiHarvesterSet(OaiSet):
             harvest: Harvest (True/False).
 
         """
-        OaiHarvesterSet.get_all_by_registry_id(registry_id).update(set__harvest=harvest)
+        OaiHarvesterSet.get_all_by_registry_id(registry_id).update(
+            set__harvest=harvest
+        )
 
     @staticmethod
     def update_for_all_harvest_by_list_ids(list_oai_set_ids, harvest):

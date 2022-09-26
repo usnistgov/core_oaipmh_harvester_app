@@ -6,8 +6,12 @@ from rest_framework import serializers
 
 from core_main_app.commons.serializers import BasicSerializer
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
-from core_oaipmh_harvester_app.components.oai_registry import api as oai_registry_api
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_registry import (
+    api as oai_registry_api,
+)
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 
 
 class RegistrySerializer(serializers.ModelSerializer):

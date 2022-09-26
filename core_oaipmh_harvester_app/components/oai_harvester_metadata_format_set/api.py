@@ -39,7 +39,9 @@ def upsert_last_update_by_metadata_format_and_set(
     )
 
 
-def get_by_metadata_format_and_set(oai_harvester_metadata_format, oai_harvester_set):
+def get_by_metadata_format_and_set(
+    oai_harvester_metadata_format, oai_harvester_set
+):
     """Get an OaiHarvesterMetadataFormatSet by its OaiHarvesterMetadataFormat and OaiHarvesterSet.
 
     Args:

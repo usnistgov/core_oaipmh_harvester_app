@@ -4,7 +4,9 @@ import json
 
 from rest_framework.response import Response
 
-from core_main_app.utils.databases.mongo.pymongo_database import get_full_text_query
+from core_main_app.utils.databases.mongo.pymongo_database import (
+    get_full_text_query,
+)
 from core_main_app.utils.pagination.django_paginator.results_paginator import (
     ResultsPaginator,
 )

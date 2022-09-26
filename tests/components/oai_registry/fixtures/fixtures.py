@@ -5,10 +5,14 @@ import os
 
 from core_main_app.settings import XML_POST_PROCESSOR
 from core_main_app.utils import xml as xml_utils
-from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
+from core_main_app.utils.integration_tests.fixture_interface import (
+    FixtureInterface,
+)
 from core_oaipmh_common_app.utils import UTCdatetime
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 from core_oaipmh_harvester_app.utils import transform_operations
 from tests.test_settings import OAI_HARVESTER_ROOT
 
@@ -46,7 +50,10 @@ class OaiPmhFixtures(FixtureInterface):
         pass
 
     def insert_registry(
-        self, name="Registry", insert_related_collections=True, insert_records=True
+        self,
+        name="Registry",
+        insert_related_collections=True,
+        insert_records=True,
     ):
         """insert_registry
 
@@ -177,13 +184,16 @@ class OaiPmhMock:
         """
         with open(
             os.path.join(
-                DUMP_OAI_PMH_TEST_PATH, "oai_identify_v{0}.json".format(version)
+                DUMP_OAI_PMH_TEST_PATH,
+                "oai_identify_v{0}.json".format(version),
             )
         ) as file:
             data = file.read()
         data_json = json.loads(data)
         oai_identifier = (
-            transform_operations.transform_dict_identifier_to_oai_identifier(data_json)
+            transform_operations.transform_dict_identifier_to_oai_identifier(
+                data_json
+            )
         )
         return oai_identifier
 
@@ -199,7 +209,8 @@ class OaiPmhMock:
         """
         with open(
             os.path.join(
-                DUMP_OAI_PMH_TEST_PATH, "oai_metadata_format_v{0}.json".format(version)
+                DUMP_OAI_PMH_TEST_PATH,
+                "oai_metadata_format_v{0}.json".format(version),
             )
         ) as file:
             data = file.read()
@@ -220,12 +231,16 @@ class OaiPmhMock:
 
         """
         with open(
-            os.path.join(DUMP_OAI_PMH_TEST_PATH, "oai_set_v{0}.json".format(version))
+            os.path.join(
+                DUMP_OAI_PMH_TEST_PATH, "oai_set_v{0}.json".format(version)
+            )
         ) as file:
             data = file.read()
         data_json = json.loads(data)
-        list_sets = transform_operations.transform_dict_set_to_oai_harvester_set(
-            data_json
+        list_sets = (
+            transform_operations.transform_dict_set_to_oai_harvester_set(
+                data_json
+            )
         )
         return list_sets
 
@@ -252,7 +267,9 @@ class OaiPmhMock:
             version:
 
         """
-        list_oai_metadata_formats = OaiPmhMock.mock_oai_metadata_format(version)
+        list_oai_metadata_formats = OaiPmhMock.mock_oai_metadata_format(
+            version
+        )
         return list_oai_metadata_formats[0]
 
     @staticmethod
@@ -266,7 +283,9 @@ class OaiPmhMock:
 
         """
         with open(
-            os.path.join(DUMP_OAI_PMH_TEST_PATH, "oai_record_v{0}.json".format(version))
+            os.path.join(
+                DUMP_OAI_PMH_TEST_PATH, "oai_record_v{0}.json".format(version)
+            )
         ) as file:
             data = file.read()
         data_json = json.loads(data)
@@ -275,11 +294,15 @@ class OaiPmhMock:
             OaiRecord(
                 identifier=item["identifier"],
                 last_modification_date=(
-                    UTCdatetime.utc_datetime_iso8601_to_datetime(item["datestamp"])
+                    UTCdatetime.utc_datetime_iso8601_to_datetime(
+                        item["datestamp"]
+                    )
                 ),
                 deleted=item["deleted"],
                 xml_content=(
-                    str(item["metadata"]) if item["metadata"] is not None else None
+                    str(item["metadata"])
+                    if item["metadata"] is not None
+                    else None
                 ),
             )
             for item in data_json

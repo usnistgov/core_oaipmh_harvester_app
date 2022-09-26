@@ -147,4 +147,6 @@ def update_for_all_harvest_by_list_ids(list_oai_set_ids, harvest):
         harvest: Harvest (True/False)
 
     """
-    OaiHarvesterSet.update_for_all_harvest_by_list_ids(list_oai_set_ids, harvest)
+    OaiHarvesterSet.update_for_all_harvest_by_list_ids(
+        list_oai_set_ids, harvest
+    )

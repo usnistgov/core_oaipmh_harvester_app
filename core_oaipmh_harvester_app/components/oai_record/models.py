@@ -14,7 +14,9 @@ from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models i
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
     OaiHarvesterSet,
 )
-from core_oaipmh_harvester_app.components.oai_registry.models import OaiRegistry
+from core_oaipmh_harvester_app.components.oai_registry.models import (
+    OaiRegistry,
+)
 
 
 class OaiRecord(AbstractData):
@@ -44,7 +46,9 @@ class OaiRecord(AbstractData):
 
         """
         if MONGODB_INDEXING:
-            from core_oaipmh_harvester_app.components.mongo.models import MongoOaiRecord
+            from core_oaipmh_harvester_app.components.mongo.models import (
+                MongoOaiRecord,
+            )
 
             return MongoOaiRecord.objects.get(pk=self.id).dict_content
         return self.dict_content
@@ -71,7 +75,9 @@ class OaiRecord(AbstractData):
             raise exceptions.ModelError(str(exception))
 
     @staticmethod
-    def get_by_identifier_and_metadata_format(identifier, harvester_metadata_format):
+    def get_by_identifier_and_metadata_format(
+        identifier, harvester_metadata_format
+    ):
         """Get an OaiRecord by its identifier and metadata format.
 
         Args:
@@ -158,6 +164,8 @@ class OaiRecord(AbstractData):
         queryset = OaiRecord.objects.filter(query)
 
         if order_by_field:
-            queryset.order_by(*[field.replace("+", "") for field in order_by_field])
+            queryset.order_by(
+                *[field.replace("+", "") for field in order_by_field]
+            )
 
         return queryset.all()
