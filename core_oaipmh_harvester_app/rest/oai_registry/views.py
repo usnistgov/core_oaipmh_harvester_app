@@ -85,7 +85,7 @@ class RegistryList(APIView):
                 data=request.data, context={"request": request}
             )
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Save data
             registry = serializer.save()
             content = OaiPmhMessage.get_message_labelled(
@@ -213,7 +213,7 @@ class RegistryDetail(APIView):
                 instance=registry, data=request.data
             )
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Save data
             serializer.save()
             content = OaiPmhMessage.get_message_labelled(
@@ -432,7 +432,7 @@ class Harvest(APIView):
             # Build serializer
             serializer = serializers.HarvestSerializer(data=request.data)
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Harvest
             metadata_formats = serializer.data.get("metadata_formats")
             sets = serializer.data.get("sets")
