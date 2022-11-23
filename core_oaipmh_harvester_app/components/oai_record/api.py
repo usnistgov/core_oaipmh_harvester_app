@@ -1,18 +1,15 @@
 """
 OaiRecord API
 """
+from django.conf import settings
+
 from core_main_app.access_control import api as main_access_control_api
 from core_main_app.access_control.decorators import access_control
-from core_main_app.settings import DATA_SORTING_FIELDS, MONGODB_INDEXING
+from core_main_app.settings import DATA_SORTING_FIELDS
 from core_main_app.utils.query.mongo.prepare import (
     convert_to_django,
 )
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
-
-if MONGODB_INDEXING:
-    from core_oaipmh_harvester_app.components.mongo.api import (
-        execute_mongo_query,
-    )
 
 
 @access_control(main_access_control_api.can_anonymous_access_public_data)
@@ -114,7 +111,11 @@ def execute_json_query(json_query, user, order_by_field=DATA_SORTING_FIELDS):
     Returns:
 
     """
-    if MONGODB_INDEXING:
+    if settings.MONGODB_INDEXING:
+        from core_oaipmh_harvester_app.components.mongo.api import (
+            execute_mongo_query,
+        )
+
         return execute_mongo_query(json_query, user, order_by_field)
     # convert JSON query to Django syntax
     query = convert_to_django(query_dict=json_query)

@@ -1,13 +1,12 @@
 """ Unit Test OaiRegistry
 """
 import datetime
+from rest_framework import status
+from rest_framework.response import Response
 from unittest.case import TestCase
 from unittest.mock import Mock, patch
 
-from rest_framework import status
-from rest_framework.response import Response
-
-
+import core_oaipmh_harvester_app.components.oai_registry.api as registry_api
 from core_main_app.commons import exceptions
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import create_mock_request
@@ -16,7 +15,6 @@ from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format import (
     api as oai_harvester_metadata_format_api,
 )
-import core_oaipmh_harvester_app.components.oai_registry.api as registry_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )

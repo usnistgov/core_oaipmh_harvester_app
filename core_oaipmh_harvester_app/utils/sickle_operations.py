@@ -5,11 +5,10 @@ from sickle import Sickle
 from sickle.models import Record
 from sickle.oaiexceptions import NoSetHierarchy, NoMetadataFormat
 
-from xml_utils.xsd_tree.xsd_tree import XSDTree
-
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.settings import SSL_CERTIFICATES_DIR
 from core_oaipmh_harvester_app.utils import sickle_serializers
+from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
 def _sickle_init(url):

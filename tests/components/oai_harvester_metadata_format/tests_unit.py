@@ -2,18 +2,17 @@
 """
 
 import datetime
+import requests
+from rest_framework import status
 from unittest.case import TestCase
 from unittest.mock import Mock, patch
 
-import requests
-from rest_framework import status
-
+import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as harvester_metadata_format_api
 from core_main_app.commons import exceptions
 from core_main_app.components.template import api as api_template
 from core_main_app.components.template.models import Template
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import create_mock_request
-import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as harvester_metadata_format_api
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )

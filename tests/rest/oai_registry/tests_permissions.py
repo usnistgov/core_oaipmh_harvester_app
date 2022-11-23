@@ -1,10 +1,9 @@
 """ Permissions Test for OAI Registry Rest API
 """
-from unittest.mock import patch, Mock
-
 from django.db.models.query import QuerySet
 from django.test import SimpleTestCase
 from rest_framework import status
+from unittest.mock import patch, Mock
 
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock

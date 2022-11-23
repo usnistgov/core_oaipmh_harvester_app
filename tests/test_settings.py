@@ -63,4 +63,6 @@ SSL_CERTIFICATES_DIR = True
 CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 USE_TZ = True
-CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+MONGODB_INDEXING = False
+MONGODB_ASYNC_SAVE = False

@@ -1,13 +1,12 @@
 """ Unit Test oai_verbs
 """
+import requests
+from rest_framework import status
 from unittest.case import TestCase
 from unittest.mock import patch
 
-import requests
-from rest_framework import status
-
-from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verbs_api
+from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )

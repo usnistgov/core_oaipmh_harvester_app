@@ -6,7 +6,6 @@ import requests
 from rest_framework import status
 from rest_framework.response import Response
 
-from xml_utils.xsd_tree.xsd_tree import XSDTree
 from core_main_app.utils.requests_utils.requests_utils import send_get_request
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
@@ -14,6 +13,7 @@ from core_oaipmh_harvester_app.utils import (
     sickle_operations,
     transform_operations,
 )
+from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 
 def identify(url):

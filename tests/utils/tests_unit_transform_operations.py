@@ -1,9 +1,10 @@
 """
     Transform operation test class
 """
+from unittest import TestCase
+
 import json
 import os
-from unittest import TestCase
 
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,

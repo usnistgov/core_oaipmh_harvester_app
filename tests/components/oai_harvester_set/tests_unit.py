@@ -2,8 +2,8 @@ from builtins import str
 from unittest.case import TestCase
 from unittest.mock import Mock, patch
 
-from core_main_app.commons import exceptions
 import core_oaipmh_harvester_app.components.oai_harvester_set.api as harvester_set_api
+from core_main_app.commons import exceptions
 from core_oaipmh_harvester_app.components.oai_harvester_set.models import (
     OaiHarvesterSet,
 )

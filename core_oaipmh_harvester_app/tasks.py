@@ -1,15 +1,35 @@
 """ OAI-PMH Harvester tasks
 """
 import logging
-from itertools import chain
-
 from celery import current_app
 from celery import shared_task
+from django.conf import settings
+from django.db.models.signals import post_save, post_delete
+from itertools import chain
 
 from core_main_app.commons.exceptions import DoesNotExist
 from core_oaipmh_harvester_app.settings import WATCH_REGISTRY_HARVEST_RATE
 
 logger = logging.getLogger(__name__)
+
+
+def init_mongo_indexing():
+    if settings.MONGODB_INDEXING:
+        from core_oaipmh_harvester_app.components.mongo.models import (
+            MongoOaiRecord,
+        )
+        from core_oaipmh_harvester_app.components.oai_record.models import (
+            OaiRecord,
+        )
+        from core_main_app.utils.databases.mongo.pymongo_database import (
+            init_text_index,
+        )
+
+        # Initialize text index
+        init_text_index(MongoOaiRecord)
+        # Connect MongoOaiRecord sync methods to OaiRecord signals
+        post_save.connect(MongoOaiRecord.post_save_data, sender=OaiRecord)
+        post_delete.connect(MongoOaiRecord.post_delete_data, sender=OaiRecord)
 
 
 def init_harvest():

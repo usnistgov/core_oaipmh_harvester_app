@@ -1,13 +1,13 @@
 """
 OaiRecord model
 """
+from django.conf import settings
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from core_main_app.commons import exceptions
 from core_main_app.components.abstract_data.models import AbstractData
-from core_main_app.settings import MONGODB_INDEXING
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -45,7 +45,7 @@ class OaiRecord(AbstractData):
         Returns:
 
         """
-        if MONGODB_INDEXING:
+        if settings.MONGODB_INDEXING:
             from core_oaipmh_harvester_app.components.mongo.models import (
                 MongoOaiRecord,
             )

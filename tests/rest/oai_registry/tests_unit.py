@@ -1,10 +1,9 @@
 """ Unit Test Rest OaiRegistry
 """
 import datetime
+from rest_framework import status
 from unittest.case import TestCase
 from unittest.mock import patch, Mock
-
-from rest_framework import status
 
 from core_main_app.commons import exceptions
 from core_main_app.utils.tests_tools.MockUser import create_mock_user

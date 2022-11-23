@@ -1,18 +1,21 @@
+""" Unit tests for OaiRecord component
+"""
 import datetime
+from django.test import override_settings, tag
 from unittest.case import TestCase
 from unittest.mock import Mock, patch
 
-
+import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
 from core_main_app.commons import exceptions
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
-import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.components.oai_registry.models import (
     OaiRegistry,
 )
+from tests.mocks import MockMongoOaiRecord
 
 
 class TestOaiRecordGetById(TestCase):
@@ -127,6 +130,39 @@ class TestOaiRecordDelete(TestCase):
         # Act # Assert
         with self.assertRaises(Exception):
             oai_record_api.delete(oai_record)
+
+
+class TestOaiRecordGetDictContent(TestCase):
+    """Test OaiRecord get_dict_content"""
+
+    def test_returns_dict_content(
+        self,
+    ):
+        """test_returns_dict_content"""
+        mock_dict_content = "dict_content"
+        mock_oai_record = OaiRecord()
+        mock_oai_record.dict_content = mock_dict_content
+
+        self.assertEqual(mock_oai_record.get_dict_content(), mock_dict_content)
+
+    @patch(
+        "core_oaipmh_harvester_app.components.mongo.models.MongoOaiRecord.objects"
+    )
+    @override_settings(MONGODB_INDEXING=True)
+    @override_settings(MONGODB_ASYNC_SAVE=False)
+    @tag("mongodb")
+    def test_mongo_indexing_true_returns_content_from_mongo_object(
+        self, mock_oai_record_objects
+    ):
+        """test_mongo_indexing_true_returns_content_from_mongo_object"""
+        mock_mongo_oai_record = MockMongoOaiRecord()
+        mock_oai_record_objects.get.return_value = mock_mongo_oai_record
+
+        mock_oai_record = OaiRecord()
+        self.assertEqual(
+            mock_oai_record.get_dict_content(),
+            mock_mongo_oai_record.dict_content,
+        )
 
 
 def _generic_get_all_test(self, mock_get_all, act_function):

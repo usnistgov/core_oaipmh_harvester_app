@@ -1,18 +1,15 @@
 """ Mongoengine OaiRecord model
 """
 import logging
+from django.conf import settings
 
-from django.db.models.signals import post_save, post_delete
-
-from core_main_app.utils import xml as xml_utils
 from core_main_app.commons.exceptions import CoreError
 from core_main_app.settings import (
-    MONGODB_INDEXING,
     SEARCHABLE_DATA_OCCURRENCES_LIMIT,
-    MONGODB_ASYNC_SAVE,
     XML_POST_PROCESSOR,
     XML_FORCE_LIST,
 )
+from core_main_app.utils import xml as xml_utils
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -26,13 +23,10 @@ logger = logging.getLogger(__name__)
 
 
 try:
-    if MONGODB_INDEXING:
+    if settings.MONGODB_INDEXING:
         from bson import ObjectId
         from mongoengine import DoesNotExist
         from mongoengine import fields as mongo_fields
-        from core_main_app.utils.databases.mongo.pymongo_database import (
-            init_text_index,
-        )
         from core_main_app.components.mongo.models import AbstractMongoData
 
         class MongoOaiRecord(AbstractMongoData):
@@ -87,7 +81,7 @@ try:
 
             @staticmethod
             def execute_query(query, order_by_field):
-                """Executes a query on the OaiRecord collection.
+                """Executes a query on the MongoOaiRecord collection.
 
                 Args:
                     query: Query to execute.
@@ -97,9 +91,12 @@ try:
                     Results of the query.
 
                 """
-                return MongoOaiRecord.objects(__raw__=query).order_by(
-                    *order_by_field
-                )
+                queryset = MongoOaiRecord.objects(__raw__=query)
+
+                if order_by_field:
+                    queryset.order_by(*order_by_field)
+
+                return queryset
 
             @staticmethod
             def aggregate(pipeline):
@@ -172,7 +169,7 @@ try:
                     **kwargs: Args.
 
                 """
-                if MONGODB_ASYNC_SAVE:
+                if settings.MONGODB_ASYNC_SAVE:
                     index_mongo_oai_record.apply_async((str(instance.id),))
                 else:
                     mongo_oai_record = MongoOaiRecord.init_mongo_oai_record(
@@ -189,7 +186,7 @@ try:
                     **kwargs: Args.
 
                 """
-                if MONGODB_ASYNC_SAVE:
+                if settings.MONGODB_ASYNC_SAVE:
                     delete_mongo_oai_record.apply_async((str(instance.id),))
                 else:
                     try:
@@ -207,12 +204,6 @@ try:
                             f"An unexpected error occurred: {str(exception)}"
                         )
 
-        # Initialize text index
-        init_text_index(MongoOaiRecord)
-        # connect sync method to OaiRecord post save
-        post_save.connect(MongoOaiRecord.post_save_data, sender=OaiRecord)
-        # connect sync method to OaiRecord post delete
-        post_delete.connect(MongoOaiRecord.post_delete_data, sender=OaiRecord)
 except ImportError:
     raise CoreError(
         "Mongoengine needs to be installed when MongoDB indexing is enabled. "

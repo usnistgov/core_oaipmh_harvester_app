@@ -1,10 +1,9 @@
 """ Int Test OaiRegistry
 """
 
-from unittest.mock import patch
-
 import requests
 from rest_framework import status
+from unittest.mock import patch
 
 from core_main_app.commons import exceptions
 from core_main_app.utils.integration_tests.integration_base_test_case import (
@@ -419,11 +418,6 @@ class TestUpsertIdentifyForRegistry(MongoIntegrationBaseTestCase):
 
     fixture = fixture_data
 
-    def setUp(self):
-        """Set up test"""
-
-        super().setUp()
-
     def test_upsert_updates_if_does_exist(self):
         """Test upsert update"""
         self.fixture.insert_registry()
@@ -468,9 +462,6 @@ class TestUpsertMetadataFormatForRegistry(MongoIntegrationBaseTestCase):
     """
 
     fixture = fixture_data
-
-    def setUp(self):
-        super().setUp()
 
     @patch.object(requests, "get")
     def test_upsert_updates_if_does_exist(self, mock_get):
@@ -549,10 +540,6 @@ class TestUpsertSetForRegistry(MongoIntegrationBaseTestCase):
 
     fixture = fixture_data
 
-    def setUp(self):
-        """Set up test"""
-        super().setUp()
-
     def test_upsert_updates_if_does_exist(self):
         """Test upsert update"""
         self.fixture.insert_registry()
@@ -602,11 +589,6 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
     """
 
     fixture = fixture_data
-
-    def setUp(self):
-        """Set up test"""
-
-        super().setUp()
 
     @patch.object(OaiRecord, "convert_to_file")
     def test_upsert_updates_if_does_exist(self, mock_convert_file):

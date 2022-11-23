@@ -4,9 +4,9 @@
 from unittest.case import TestCase
 from unittest.mock import Mock, patch
 
+import core_oaipmh_harvester_app.components.oai_identify.api as oai_identify_api
 from core_main_app.commons import exceptions
 from core_main_app.utils.xml import OrderedDict
-import core_oaipmh_harvester_app.components.oai_identify.api as oai_identify_api
 from core_oaipmh_harvester_app.components.oai_identify.models import (
     OaiIdentify,
 )

@@ -1,10 +1,12 @@
 """MongoOaiRecord api
 """
+from django.conf import settings
+
 from core_main_app.access_control import api as main_access_control_api
 from core_main_app.access_control.decorators import access_control
-from core_main_app.settings import DATA_SORTING_FIELDS, MONGODB_INDEXING
+from core_main_app.settings import DATA_SORTING_FIELDS
 
-if MONGODB_INDEXING:
+if settings.MONGODB_INDEXING:
     from core_oaipmh_harvester_app.components.mongo.models import (
         MongoOaiRecord,
     )
