@@ -1,6 +1,7 @@
 """OAI-PMH Query builder class
 """
 from core_main_app.utils.query.mongo.query_builder import QueryBuilder
+from django.conf import settings
 
 
 class OaiPmhQueryBuilder(QueryBuilder):
@@ -15,8 +16,12 @@ class OaiPmhQueryBuilder(QueryBuilder):
         Returns:
 
         """
+        if settings.MONGODB_INDEXING:
+            harvester_metadata_key = "_harvester_metadata_format_id"
+        else:
+            harvester_metadata_key = "harvester_metadata_format"
         self.criteria.append(
-            {"harvester_metadata_format": {"$in": list_metadata_format_ids}}
+            {harvester_metadata_key: {"$in": list_metadata_format_ids}}
         )
 
     def add_not_deleted_criteria(self):
@@ -33,4 +38,8 @@ class OaiPmhQueryBuilder(QueryBuilder):
         Returns:
 
         """
-        self.criteria.append({"registry": {"$in": list_registry_ids}})
+        if settings.MONGODB_INDEXING:
+            registry_key = "_registry_id"
+        else:
+            registry_key = "registry"
+        self.criteria.append({registry_key: {"$in": list_registry_ids}})

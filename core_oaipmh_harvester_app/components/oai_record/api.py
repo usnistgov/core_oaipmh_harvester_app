@@ -111,13 +111,15 @@ def execute_json_query(json_query, user, order_by_field=DATA_SORTING_FIELDS):
     Returns:
 
     """
+    # convert JSON query to Django syntax
+    query = convert_to_django(query_dict=json_query)
+
     if settings.MONGODB_INDEXING:
         from core_oaipmh_harvester_app.components.mongo.api import (
             execute_mongo_query,
         )
 
-        return execute_mongo_query(json_query, user, order_by_field)
-    # convert JSON query to Django syntax
-    query = convert_to_django(query_dict=json_query)
+        return execute_mongo_query(query, user, order_by_field)
+
     # execute query and return results
     return execute_query(query, user, order_by_field)

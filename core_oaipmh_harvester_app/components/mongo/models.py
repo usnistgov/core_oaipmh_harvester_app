@@ -91,7 +91,7 @@ try:
                     Results of the query.
 
                 """
-                queryset = MongoOaiRecord.objects(__raw__=query)
+                queryset = MongoOaiRecord.objects.filter(query)
 
                 if order_by_field:
                     queryset.order_by(*order_by_field)

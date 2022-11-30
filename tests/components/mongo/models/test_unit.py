@@ -26,7 +26,7 @@ class TestMongoOaiRecordExecuteQuery(TestCase):
         )
 
         mock_queryset = "mock_queryset"
-        mock_mongo_oai_record_qset.return_value = mock_queryset
+        mock_mongo_oai_record_qset.filter.return_value = mock_queryset
         result = MongoOaiRecord.execute_query("mock_query", None)
 
         self.assertEqual(result, mock_queryset)
@@ -47,7 +47,7 @@ class TestMongoOaiRecordExecuteQuery(TestCase):
 
         mock_queryset = Mock()
         mock_order_by_filters = ["+mock_field"]
-        mock_mongo_oai_record_qset.return_value = mock_queryset
+        mock_mongo_oai_record_qset.filter.return_value = mock_queryset
         MongoOaiRecord.execute_query("mock_query", mock_order_by_filters)
 
         mock_queryset.order_by.assert_called_with(*mock_order_by_filters)
