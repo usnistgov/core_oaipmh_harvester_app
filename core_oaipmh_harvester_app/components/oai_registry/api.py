@@ -1,12 +1,12 @@
 """
 OaiRegistry API
 """
-import datetime
 import logging
 from rest_framework import status
 from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR
 
 from core_main_app.commons import exceptions
+from core_main_app.utils.datetime import datetime_now
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
 from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_common_app.utils import UTCdatetime
@@ -241,7 +241,7 @@ def harvest_registry(registry):
         registry.is_harvesting = True
         upsert(registry)
         # Set the last update date
-        harvest_date = datetime.datetime.now()
+        harvest_date = datetime_now()
         # Get all metadata formats to harvest
         metadata_formats = oai_harvester_metadata_format_api.get_all_to_harvest_by_registry_id(
             registry.id
@@ -484,11 +484,11 @@ def _harvest_by_metadata_formats_and_sets(
     all_errors = []
 
     for metadata_format in metadata_formats:
-        current_update_mf = datetime.datetime.now()
+        current_update_mf = datetime_now()
         errors_during_harvest = False
 
         for set_ in registry_sets_to_harvest:
-            current_update_mf_set = datetime.datetime.now()
+            current_update_mf_set = datetime_now()
             try:
                 # Retrieve the last update for this metadata format and this set
                 last_update = oai_harvester_metadata_format_set_api.get_last_update_by_metadata_format_and_set(
@@ -542,7 +542,7 @@ def _harvest_by_metadata_formats(
         except Exception:
             last_update = None
         # Update the new date for the metadataFormat
-        current_update_mf = datetime.datetime.now()
+        current_update_mf = datetime_now()
         errors = _harvest_records(
             registry, metadata_format, last_update, registry_all_sets
         )

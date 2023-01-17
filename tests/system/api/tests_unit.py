@@ -1,9 +1,9 @@
 """ Unit tests on system APIs
 """
-import datetime
 from unittest.case import TestCase
 from unittest.mock import Mock
 
+from core_main_app.utils.datetime import datetime_now
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -42,7 +42,7 @@ class MockOaiRecord(Mock):
     """Mock Oai Record"""
 
     identifier = "oai:test/id.0006"
-    last_modification_date = datetime.datetime.now()
+    last_modification_date = datetime_now()
     deleted = False
     harvester_sets = [OaiHarvesterSet(), OaiHarvesterSet()]
     harvester_metadata_format = OaiHarvesterMetadataFormat()

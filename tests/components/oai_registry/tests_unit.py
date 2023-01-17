@@ -1,6 +1,5 @@
 """ Unit Test OaiRegistry
 """
-import datetime
 from rest_framework import status
 from rest_framework.response import Response
 from unittest.case import TestCase
@@ -8,6 +7,7 @@ from unittest.mock import Mock, patch
 
 import core_oaipmh_harvester_app.components.oai_registry.api as registry_api
 from core_main_app.commons import exceptions
+from core_main_app.utils.datetime import datetime_now
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import create_mock_request
 from core_oaipmh_common_app.commons import exceptions as oai_pmh_exceptions
@@ -1199,7 +1199,7 @@ def _set_oai_registry_fields(oai_registry):
     oai_registry.harvest_rate = 3000
     oai_registry.description = "This is the registry"
     oai_registry.harvest = True
-    oai_registry.last_update = datetime.datetime.now()
+    oai_registry.last_update = datetime_now()
     oai_registry.is_harvesting = False
     oai_registry.is_updating = False
     oai_registry.is_activated = True

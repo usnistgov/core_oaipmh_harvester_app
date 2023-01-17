@@ -1,12 +1,12 @@
 """ Unit tests for OaiRecord component
 """
-import datetime
 from django.test import override_settings, tag
 from unittest.case import TestCase
 from unittest.mock import Mock, patch
 
 import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
 from core_main_app.commons import exceptions
+from core_main_app.utils.datetime import datetime_now
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
@@ -225,7 +225,7 @@ def _set_oai_record_fields(oai_record):
 
     """
     oai_record.identifier = "oai:test/id.0006"
-    oai_record.last_modification_date = datetime.datetime.now()
+    oai_record.last_modification_date = datetime_now()
     oai_record.deleted = False
     # oai_record.harvester_sets = [OaiHarvesterSet(), OaiHarvesterSet()]
     oai_record.harvester_metadata_format = OaiHarvesterMetadataFormat()

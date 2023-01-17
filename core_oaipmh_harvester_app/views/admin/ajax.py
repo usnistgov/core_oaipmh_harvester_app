@@ -2,7 +2,6 @@
 """
 from os.path import join
 
-import datetime
 import json
 import logging
 import urllib.error
@@ -26,6 +25,7 @@ import core_oaipmh_harvester_app.components.oai_identify.api as oai_identify_api
 import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
 import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
 import core_oaipmh_harvester_app.components.oai_verbs.api as oai_verb_api
+from core_main_app.utils.datetime import datetime_now
 from core_main_app.utils.xml import xsl_transform
 from core_main_app.views.common.ajax import EditObjectModalView
 from core_oaipmh_harvester_app.components.oai_registry.models import (
@@ -516,7 +516,7 @@ def download_xml_build_req(request):
     except Exception:
         xml_string_encoded = xml_string
     # Get the date to append it to the file title
-    i = datetime.datetime.now()
+    i = datetime_now()
     title = "OAI_PMH_BUILD_REQ_%s_.xml" % i.isoformat()
     file_obj = StringIO(xml_string_encoded)
     # Return the XML file

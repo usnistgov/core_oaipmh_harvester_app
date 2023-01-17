@@ -7,6 +7,7 @@ from unittest.mock import Mock, patch
 
 import core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set.api as harvester_metadata_format_set_api
 from core_main_app.commons import exceptions
+from core_main_app.utils.datetime import datetime_now
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -160,7 +161,7 @@ class TestOaiHarvestMetadataFormatSetUpsertLastUpdate(TestCase):
             harvester_metadata_format_set_api.upsert_last_update_by_metadata_format_and_set(
                 self.oai_harvester_metadata_format_set.harvester_metadata_format,
                 self.oai_harvester_metadata_format_set.harvester_set,
-                datetime.datetime.now(),
+                datetime_now(),
             )
 
 
@@ -247,6 +248,6 @@ def _set_oai_harvester_metadata_format_set_fields(
         OaiHarvesterMetadataFormat()
     )
     oai_harvester_metadata_format_set.harvester_set = OaiHarvesterSet()
-    oai_harvester_metadata_format_set.last_update = datetime.datetime.now()
+    oai_harvester_metadata_format_set.last_update = datetime_now()
 
     return oai_harvester_metadata_format_set

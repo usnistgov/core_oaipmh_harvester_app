@@ -1,7 +1,6 @@
 """ Tests unit
 """
 
-import datetime
 import requests
 from rest_framework import status
 from unittest.case import TestCase
@@ -11,6 +10,7 @@ import core_oaipmh_harvester_app.components.oai_harvester_metadata_format.api as
 from core_main_app.commons import exceptions
 from core_main_app.components.template import api as api_template
 from core_main_app.components.template.models import Template
+from core_main_app.utils.datetime import datetime_now
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import create_mock_request
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
@@ -555,6 +555,6 @@ def _set_oai_harvester_metadata_format_fields(oai_harvester_metadata_format):
     oai_harvester_metadata_format.raw = dict()
     oai_harvester_metadata_format.registry = OaiRegistry()
     oai_harvester_metadata_format.harvest = True
-    oai_harvester_metadata_format.last_update = datetime.datetime.now()
+    oai_harvester_metadata_format.last_update = datetime_now()
 
     return oai_harvester_metadata_format

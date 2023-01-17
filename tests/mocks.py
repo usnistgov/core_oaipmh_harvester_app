@@ -9,3 +9,8 @@ class MockObject(Mock):
 
 class MockMongoOaiRecord(MockObject):
     dict_content = "mock_dict_content"
+
+
+class MockRequest:
+    user = None
+    session: dict = None
