@@ -23,6 +23,7 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
     """Abstract Execute Query View"""
 
     sub_document_root = "dict_content"
+    query_builder = OaiPmhQueryBuilder
 
     def get(self, request):
         """Execute query on OaiRecord and return results
@@ -108,7 +109,7 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
             The raw query
         """
         # build query builder
-        query_builder = OaiPmhQueryBuilder(query, self.sub_document_root)
+        query_builder = self.query_builder(query, self.sub_document_root)
 
         if type(templates) is str:
             templates = json.loads(templates)
