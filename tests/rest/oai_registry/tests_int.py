@@ -6,7 +6,7 @@ from rest_framework import status
 from unittest.mock import patch
 
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
@@ -20,7 +20,7 @@ from tests.components.oai_registry.fixtures.fixtures import (
 )
 
 
-class TestSelectRegistry(MongoIntegrationBaseTestCase):
+class TestSelectRegistry(IntegrationBaseTestCase):
     """Test Select Registry"""
 
     fixture = OaiPmhFixtures()
@@ -49,7 +49,7 @@ class TestSelectRegistry(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TestSelectAllRegistries(MongoIntegrationBaseTestCase):
+class TestSelectAllRegistries(IntegrationBaseTestCase):
     """Test Select All Registries"""
 
     fixture = OaiPmhFixtures()
@@ -76,7 +76,7 @@ class TestSelectAllRegistries(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
+class TestUpdateRegistryInfo(IntegrationBaseTestCase):
     """Test Update Registry Info"""
 
     fixture = OaiPmhFixtures()
@@ -122,7 +122,7 @@ class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TestUpdateRegistryConf(MongoIntegrationBaseTestCase):
+class TestUpdateRegistryConf(IntegrationBaseTestCase):
     """Test Update Registry Conf"""
 
     fixture = OaiPmhFixtures()
@@ -153,7 +153,7 @@ class TestUpdateRegistryConf(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TestActivateRegistry(MongoIntegrationBaseTestCase):
+class TestActivateRegistry(IntegrationBaseTestCase):
     """Test Activate Registry"""
 
     fixture = OaiPmhFixtures()
@@ -179,7 +179,7 @@ class TestActivateRegistry(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TestDeactivateRegistry(MongoIntegrationBaseTestCase):
+class TestDeactivateRegistry(IntegrationBaseTestCase):
     """Test Deactivate Registry"""
 
     fixture = OaiPmhFixtures()
@@ -205,7 +205,7 @@ class TestDeactivateRegistry(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TestDeleteRegistry(MongoIntegrationBaseTestCase):
+class TestDeleteRegistry(IntegrationBaseTestCase):
     """Test Delete Registry"""
 
     fixture = OaiPmhFixtures()

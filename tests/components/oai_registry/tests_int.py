@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 from core_main_app.commons import exceptions
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import create_mock_request
@@ -45,7 +45,7 @@ from tests.components.oai_registry.fixtures.fixtures import OaiPmhMock
 fixture_data = OaiPmhFixtures()
 
 
-class TestAddRegistry(MongoIntegrationBaseTestCase):
+class TestAddRegistry(IntegrationBaseTestCase):
     """
     Test Add Registry
     """
@@ -97,7 +97,7 @@ class TestAddRegistry(MongoIntegrationBaseTestCase):
         self.assertIsInstance(result, OaiRegistry)
 
 
-class TestAddRegistryNotAvailable(MongoIntegrationBaseTestCase):
+class TestAddRegistryNotAvailable(IntegrationBaseTestCase):
     """
     Test Add Registry Not Available
     """
@@ -135,7 +135,7 @@ class TestAddRegistryNotAvailable(MongoIntegrationBaseTestCase):
             )
 
 
-class TestAddRegistryNoSetsNoMetadataFormats(MongoIntegrationBaseTestCase):
+class TestAddRegistryNoSetsNoMetadataFormats(IntegrationBaseTestCase):
     """
     Test Add Registry No Sets No Metadata Formats
     """
@@ -184,7 +184,7 @@ class TestAddRegistryNoSetsNoMetadataFormats(MongoIntegrationBaseTestCase):
         self.assertIsInstance(result, OaiRegistry)
 
 
-class TestAddRegistryIdentify(MongoIntegrationBaseTestCase):
+class TestAddRegistryIdentify(IntegrationBaseTestCase):
     """
     Test Add Registry Identify
     """
@@ -231,7 +231,7 @@ class TestAddRegistryIdentify(MongoIntegrationBaseTestCase):
         _assert_identify(self, identify, result.id)
 
 
-class TestAddRegistrySets(MongoIntegrationBaseTestCase):
+class TestAddRegistrySets(IntegrationBaseTestCase):
     """
     Test Add Registry Sets
     """
@@ -281,7 +281,7 @@ class TestAddRegistrySets(MongoIntegrationBaseTestCase):
         _assert_set(self, list_sets, result.id)
 
 
-class TestAddRegistryMetadataFormats(MongoIntegrationBaseTestCase):
+class TestAddRegistryMetadataFormats(IntegrationBaseTestCase):
     """
     Test Add Registry Metadata Formats
     """
@@ -334,7 +334,7 @@ class TestAddRegistryMetadataFormats(MongoIntegrationBaseTestCase):
         _assert_metadata_format(self, list_metadata_formats, result.id)
 
 
-class TestAddRegistryConstraints(MongoIntegrationBaseTestCase):
+class TestAddRegistryConstraints(IntegrationBaseTestCase):
     """
     Test Add Registry Constraints
     """
@@ -362,7 +362,7 @@ class TestAddRegistryConstraints(MongoIntegrationBaseTestCase):
             )
 
 
-class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
+class TestUpdateRegistryInfo(IntegrationBaseTestCase):
     """
     Test Update Registry Info
     """
@@ -411,7 +411,7 @@ class TestUpdateRegistryInfo(MongoIntegrationBaseTestCase):
         _assert_set(self, first_set, result.id)
 
 
-class TestUpsertIdentifyForRegistry(MongoIntegrationBaseTestCase):
+class TestUpsertIdentifyForRegistry(IntegrationBaseTestCase):
     """
     Test Upsert Identify For Registry
     """
@@ -456,7 +456,7 @@ class TestUpsertIdentifyForRegistry(MongoIntegrationBaseTestCase):
         self.assertEquals(identify_in_database, oai_identify)
 
 
-class TestUpsertMetadataFormatForRegistry(MongoIntegrationBaseTestCase):
+class TestUpsertMetadataFormatForRegistry(IntegrationBaseTestCase):
     """
     Test Upsert Metadata Format For Registry
     """
@@ -533,7 +533,7 @@ class TestUpsertMetadataFormatForRegistry(MongoIntegrationBaseTestCase):
         )
 
 
-class TestUpsertSetForRegistry(MongoIntegrationBaseTestCase):
+class TestUpsertSetForRegistry(IntegrationBaseTestCase):
     """
     Test Upsert Set For Registry
     """
@@ -583,7 +583,7 @@ class TestUpsertSetForRegistry(MongoIntegrationBaseTestCase):
         self.assertEquals(oai_harvester_set, set_in_database)
 
 
-class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
+class TestUpsertRecordForRegistry(IntegrationBaseTestCase):
     """
     Test Upsert Record For Registry
     """
@@ -638,7 +638,7 @@ class TestUpsertRecordForRegistry(MongoIntegrationBaseTestCase):
         self.assertEquals(record_in_database, saved_record)
 
 
-class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
+class TestHarvestByMetadataFormats(IntegrationBaseTestCase):
     """
     Test Harvest By Metadata Formats
     """
@@ -732,7 +732,7 @@ class TestHarvestByMetadataFormats(MongoIntegrationBaseTestCase):
         self.assertNotEquals(oai_h_mf_set.last_update, None)
 
 
-class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
+class TestHarvestByMetadataFormatsAndSets(IntegrationBaseTestCase):
     """
     Test Harvest By Metadata Formats And Sets
     """
@@ -829,7 +829,7 @@ class TestHarvestByMetadataFormatsAndSets(MongoIntegrationBaseTestCase):
         self.assertIsNotNone(oai_h_mf_set.last_update)
 
 
-class TestHarvestRegistry(MongoIntegrationBaseTestCase):
+class TestHarvestRegistry(IntegrationBaseTestCase):
     """
     Test class
     """
@@ -900,7 +900,7 @@ class TestHarvestRegistry(MongoIntegrationBaseTestCase):
         self.assertNotEquals(self.fixture.registry.last_update, None)
 
 
-class TestHandleDeleteSet(MongoIntegrationBaseTestCase):
+class TestHandleDeleteSet(IntegrationBaseTestCase):
     """
     Test Handle Delete Set
     """
@@ -936,7 +936,7 @@ class TestHandleDeleteSet(MongoIntegrationBaseTestCase):
         )
 
 
-class TestHandleDeleteMetadataFormat(MongoIntegrationBaseTestCase):
+class TestHandleDeleteMetadataFormat(IntegrationBaseTestCase):
     """
     Test Handle Delete Metadata Format
     """

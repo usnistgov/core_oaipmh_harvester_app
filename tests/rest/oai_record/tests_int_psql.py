@@ -3,7 +3,7 @@
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
@@ -13,7 +13,7 @@ from core_oaipmh_harvester_app.rest.oai_record import (
 from tests.components.oai_registry.fixtures.fixtures import OaiPmhFixtures
 
 
-class TestExecuteQueryView(MongoIntegrationBaseTestCase):
+class TestExecuteQueryView(IntegrationBaseTestCase):
     """Test Execute Query View"""
 
     fixture = OaiPmhFixtures()
