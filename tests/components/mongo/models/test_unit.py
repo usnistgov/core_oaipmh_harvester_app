@@ -3,7 +3,7 @@
 from unittest import TestCase
 
 from django.test import override_settings, tag
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, MagicMock
 
 from tests.mocks import MockObject
 
@@ -25,11 +25,12 @@ class TestMongoOaiRecordExecuteQuery(TestCase):
             MongoOaiRecord,
         )
 
-        mock_queryset = "mock_queryset"
+        mock_queryset = MagicMock()
+        mock_queryset.order_by.return_value = ["mock_queryset"]
         mock_mongo_oai_record_qset.filter.return_value = mock_queryset
-        result = MongoOaiRecord.execute_query("mock_query", None)
+        result = MongoOaiRecord.execute_query("mock_query", [])
 
-        self.assertEqual(result, mock_queryset)
+        self.assertEqual(result, ["mock_queryset"])
 
     @patch(
         "core_oaipmh_harvester_app.components.mongo.models.MongoOaiRecord.objects"

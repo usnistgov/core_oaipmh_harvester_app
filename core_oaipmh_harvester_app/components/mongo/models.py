@@ -43,6 +43,13 @@ try:
             _registry_id = mongo_fields.IntField(db_field="registry")
             _xml_content = None
 
+            meta = {
+                "indexes": [
+                    "title",
+                    "last_modification_date",
+                ],
+            }
+
             @property
             def harvester_metadata_format(self):
                 """harvester_metadata_format
@@ -91,10 +98,9 @@ try:
                     Results of the query.
 
                 """
-                queryset = MongoOaiRecord.objects.filter(query)
-
-                if order_by_field:
-                    queryset.order_by(*order_by_field)
+                queryset = MongoOaiRecord.objects.filter(query).order_by(
+                    *order_by_field
+                )
 
                 return queryset
 

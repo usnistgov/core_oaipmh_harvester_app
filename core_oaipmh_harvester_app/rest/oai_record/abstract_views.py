@@ -73,7 +73,7 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
             query = self.request.data.get("query", None)
             templates = self.request.data.get("templates", "[]")
             registries = self.get_registries()
-            order_by_field = self.request.data.get("order_by_field", None)
+            order_by_field = self.request.data.get("order_by_field", "")
 
             if order_by_field:
                 order_by_field = order_by_field.split(",")
