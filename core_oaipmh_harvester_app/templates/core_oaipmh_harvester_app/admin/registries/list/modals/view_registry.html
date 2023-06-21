@@ -13,5 +13,8 @@
 {% endblock %}
 
 {% block modal_footer %}
-<a class="btn btn-secondary float-right" data-dismiss="modal" href="#"><i class="fas fa-check"></i> Ok</a>
+<a
+        class="btn btn-secondary {% if BOOTSTRAP_VERSION == "4.6.2" %}float-right{% elif BOOTSTRAP_VERSION == "5.1.3" %}float-end{% endif %}"
+         {% if BOOTSTRAP_VERSION == "4.6.2" %}data-dismiss{% elif BOOTSTRAP_VERSION == "5.1.3" %}data-bs-dismiss{% endif %}="modal"
+    href="#"><i class="fas fa-check"></i> Ok</a>
 {% endblock %}
