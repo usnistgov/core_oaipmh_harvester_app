@@ -1,3 +1,4 @@
+{% load tz %}
 <table autofocus class="data">
     <tr class="grey">
         <td colspan="2">
@@ -37,7 +38,7 @@
     <tr >
         <td>Last update</td>
         <td>
-            <span class='value'>{{ registry.last_update }}</span>
+            <span class='value'>{{ registry.last_update|localtime }}</span>
         </td>
     </tr>
 </table>
