@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.core.validators import MinValueValidator
 
 import core_oaipmh_harvester_app.components.oai_registry.api as oai_registry_api
@@ -145,8 +146,7 @@ class RequestForm(forms.Form):
     """Request builder form"""
 
     # Widget attributes
-    default_attributes = {"class": "form-control"}
-    disabled_attributes = {"class": "form-control", "disabled": "true"}
+    disabled_attributes = {"disabled": "true"}
     date_attributes = {
         "data-date-format": "yyyy-mm-ddThh:ii:00Z",
         "class": "form-control",
@@ -157,13 +157,13 @@ class RequestForm(forms.Form):
         label="Data Provider",
         choices=[],
         required=False,
-        widget=forms.Select(attrs=default_attributes),
+        widget=forms.Select(),
     )
     verb = forms.ChoiceField(
         label="Verb",
         choices=VERBS,
         required=False,
-        widget=forms.Select(attrs=default_attributes),
+        widget=forms.Select(),
     )
     set = forms.ChoiceField(
         label="Set",
@@ -174,7 +174,7 @@ class RequestForm(forms.Form):
     identifier = forms.CharField(
         label="Identifier",
         required=False,
-        widget=forms.TextInput(attrs=default_attributes),
+        widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     metadata_prefix = forms.ChoiceField(
         label="Metadata Prefix",
@@ -205,6 +205,22 @@ class RequestForm(forms.Form):
 
         self.fields["metadata_prefix"].choices = default_fields
         self.fields["set"].choices = default_fields
+
+        if settings.BOOTSTRAP_VERSION == "4.6.2":
+            self.fields["data_provider"].widget.attrs["class"] = "form-control"
+            self.fields["verb"].widget.attrs["class"] = "form-control"
+            self.fields["set"].widget.attrs["class"] = "form-control"
+            self.fields["metadata_prefix"].widget.attrs[
+                "class"
+            ] = "form-control"
+
+        elif settings.BOOTSTRAP_VERSION == "5.1.3":
+            self.fields["data_provider"].widget.attrs["class"] = "form-select"
+            self.fields["verb"].widget.attrs["class"] = "form-select"
+            self.fields["set"].widget.attrs["class"] = "form-select"
+            self.fields["metadata_prefix"].widget.attrs[
+                "class"
+            ] = "form-select"
 
         for registry in oai_registry_api.get_all_activated_registry():
             default_fields.append(
