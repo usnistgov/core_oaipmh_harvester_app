@@ -206,7 +206,7 @@ class RequestForm(forms.Form):
         self.fields["metadata_prefix"].choices = default_fields
         self.fields["set"].choices = default_fields
 
-        if settings.BOOTSTRAP_VERSION == "4.6.2":
+        if settings.BOOTSTRAP_VERSION.startswith("4"):
             self.fields["data_provider"].widget.attrs["class"] = "form-control"
             self.fields["verb"].widget.attrs["class"] = "form-control"
             self.fields["set"].widget.attrs["class"] = "form-control"
@@ -214,7 +214,7 @@ class RequestForm(forms.Form):
                 "class"
             ] = "form-control"
 
-        elif settings.BOOTSTRAP_VERSION == "5.1.3":
+        elif settings.BOOTSTRAP_VERSION.startswith("5"):
             self.fields["data_provider"].widget.attrs["class"] = "form-select"
             self.fields["verb"].widget.attrs["class"] = "form-select"
             self.fields["set"].widget.attrs["class"] = "form-select"
