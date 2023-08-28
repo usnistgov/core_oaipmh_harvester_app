@@ -76,3 +76,20 @@ class TestExecuteQueryView(IntegrationBaseTestCase):
 
         # Assert
         self.assertEqual(len(response.data), 1)
+
+    def test_post_query_one_data_one_template_returns_no_data(self):
+        """test_post_query_one_data_one_template_returns_no_data"""
+
+        # Arrange
+        data = self.one_record_data
+        data["templates"] = [{"id": 1}]
+
+        # Act
+        response = RequestMock.do_request_post(
+            oai_record_rest_views.ExecuteQueryView.as_view(),
+            self.user,
+            data=data,
+        )
+
+        # Assert
+        self.assertEqual(len(response.data), 0)

@@ -4,10 +4,17 @@ OaiRecord model
 from django.conf import settings
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
 
 from core_main_app.commons import exceptions
 from core_main_app.components.abstract_data.models import AbstractData
+from core_main_app.settings import (
+    SEARCHABLE_DATA_OCCURRENCES_LIMIT,
+    XML_POST_PROCESSOR,
+    XML_FORCE_LIST,
+)
+from core_main_app.utils import xml as xml_utils
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
@@ -52,6 +59,33 @@ class OaiRecord(AbstractData):
 
             return MongoOaiRecord.objects.get(pk=self.id).dict_content
         return self.dict_content
+
+    def convert_to_dict(self):
+        """Convert data object to dict."""
+        # if data stored in mongo, don't store dict_content
+        if settings.MONGODB_INDEXING:
+            return
+
+        # transform xml content into a dictionary
+        self.dict_content = xml_utils.raw_xml_to_dict(
+            self.xml_content,
+            postprocessor=XML_POST_PROCESSOR,
+            force_list=XML_FORCE_LIST,
+            list_limit=SEARCHABLE_DATA_OCCURRENCES_LIMIT,
+        )
+
+    def convert_to_file(self):
+        """Convert data to file."""
+        try:
+            content = self.content.encode("utf-8")
+        except UnicodeEncodeError:
+            content = self.content
+
+        self.file = SimpleUploadedFile(
+            name=self.title,
+            content=content,
+            content_type="application/xml",
+        )
 
     @staticmethod
     def get_by_id(oai_record_id):

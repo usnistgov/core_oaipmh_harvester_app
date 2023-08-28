@@ -1,8 +1,10 @@
 """ Unit tests for OaiRecord component
 """
-from django.test import override_settings, tag
 from unittest.case import TestCase
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
+
+from django.test import override_settings, tag
+from tests.mocks import MockMongoOaiRecord
 
 import core_oaipmh_harvester_app.components.oai_record.api as oai_record_api
 from core_main_app.commons import exceptions
@@ -15,7 +17,6 @@ from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.components.oai_registry.models import (
     OaiRegistry,
 )
-from tests.mocks import MockMongoOaiRecord
 
 
 class TestOaiRecordGetById(TestCase):
@@ -165,6 +166,75 @@ class TestOaiRecordGetDictContent(TestCase):
         )
 
 
+class TestOaiRecord(TestCase):
+    """Test Oai Record"""
+
+    @patch("core_main_app.utils.xml.raw_xml_to_dict")
+    def test_oai_record_convert_to_dict_converts_xml(
+        self, mock_raw_xml_to_dict
+    ):
+        """test_oai_record_convert_to_dict_converts_xml"""
+
+        # Arrange
+        oai_record = _create_oai_record()
+
+        # Act
+        oai_record.convert_to_dict()
+
+        # Assert
+        self.assertTrue(mock_raw_xml_to_dict.called)
+
+    @override_settings(MONGODB_INDEXING=True)
+    @patch("core_main_app.utils.xml.raw_xml_to_dict")
+    def test_oai_record_convert_to_dict_not_converted_xml_when_mongodb(
+        self, mock_raw_xml_to_dict
+    ):
+        """test_oai_record_convert_to_dict_not_converted_xml_when_mongodb"""
+
+        # Arrange
+        oai_record = _create_oai_record()
+
+        # Act
+        oai_record.convert_to_dict()
+
+        # Assert
+        self.assertFalse(mock_raw_xml_to_dict.called)
+
+    def test_oai_record_convert_to_file_converts_xml(
+        self,
+    ):
+        """test_oai_record_convert_to_dict_converts_xml"""
+
+        # Arrange
+        oai_record = _create_oai_record()
+
+        # Act
+        oai_record.convert_to_file()
+
+        # Assert
+        self.assertEqual(oai_record.file.read().decode(), oai_record.content)
+
+    @patch("django.core.files.uploadedfile.SimpleUploadedFile.__init__")
+    def test_oai_record_convert_to_file_with_encode_error(
+        self, mock_simple_upload_file
+    ):
+        """test_oai_record_convert_to_file_with_encode_error"""
+
+        # Arrange
+        oai_record = _create_oai_record()
+        mock_content = MagicMock()
+        mock_content.encode.side_effect = UnicodeEncodeError("", "", 0, 0, "")
+        oai_record.content = mock_content
+        mock_simple_upload_file.return_value = None
+
+        # Act
+        oai_record.convert_to_file()
+
+        # Assert
+        self.assertTrue(mock_simple_upload_file.called)
+        self.assertTrue(mock_content.encode)
+
+
 def _generic_get_all_test(self, mock_get_all, act_function):
     """_generic_get_all_test
 
@@ -225,6 +295,7 @@ def _set_oai_record_fields(oai_record):
 
     """
     oai_record.identifier = "oai:test/id.0006"
+    oai_record.title = oai_record.identifier
     oai_record.last_modification_date = datetime_now()
     oai_record.deleted = False
     # oai_record.harvester_sets = [OaiHarvesterSet(), OaiHarvesterSet()]

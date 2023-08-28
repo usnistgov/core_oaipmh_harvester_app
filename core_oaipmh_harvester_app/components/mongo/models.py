@@ -62,7 +62,7 @@ try:
                 )
 
             @property
-            def xml_content(self):
+            def content(self):
                 """Get xml content - read from data.
 
                 Returns:
@@ -71,11 +71,11 @@ try:
                 if not self._xml_content:
                     self._xml_content = OaiRecord.get_by_id(
                         self.data_id
-                    ).xml_content
+                    ).content
                 return self._xml_content
 
-            @xml_content.setter
-            def xml_content(self, value):
+            @content.setter
+            def content(self, value):
                 """Set xml content - to be saved as a file.
 
                 Args:
@@ -85,6 +85,16 @@ try:
 
                 """
                 self._xml_content = value
+
+            @property
+            def xml_content(self):
+                """Get content - backward compatibility"""
+                return self.content
+
+            @xml_content.setter
+            def xml_content(self, value):
+                """Set content - backward compatibility"""
+                self.content = value
 
             @staticmethod
             def execute_query(query, order_by_field):

@@ -2,6 +2,7 @@
 """
 import json
 from abc import ABCMeta, abstractmethod
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -24,24 +25,6 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
 
     sub_document_root = "dict_content"
     query_builder = OaiPmhQueryBuilder
-
-    def get(self, request):
-        """Execute query on OaiRecord and return results
-
-        Args:
-
-            request: HTTP request
-
-        Returns:
-
-            - code: 200
-              content: List of data
-            - code: 400
-              content: Bad request
-            - code: 500
-              content: Internal server error
-        """
-        return self.execute_query()
 
     def post(self, request):
         """Execute query on OaiRecord and return results
@@ -125,9 +108,9 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
         )
         if len(registries) > 0:
             activated_registries = [
-                activated_registy_id
-                for activated_registy_id in registries
-                if activated_registy_id in list_activated_registry
+                activated_registry_id
+                for activated_registry_id in registries
+                if activated_registry_id in list_activated_registry
             ]
         else:
             activated_registries = list_activated_registry
@@ -143,10 +126,10 @@ class AbstractExecuteQueryView(APIView, metaclass=ABCMeta):
             )
             # Filter metadata formats that use the given templates
             list_metadata_formats_id = [
-                str(x.id)
+                x.id
                 for x in list_metadata_format
                 if x.template is not None
-                and str(x.template.id) in list_template_ids
+                and x.template.id in list_template_ids
             ]
             query_builder.add_list_metadata_formats_criteria(
                 list_metadata_formats_id

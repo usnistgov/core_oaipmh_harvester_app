@@ -2,7 +2,8 @@
 """
 from rest_framework import serializers
 
-from core_main_app.rest.data.serializers import XMLContentField
+from core_main_app.rest.data.serializers import ContentField
+from core_main_app.settings import BACKWARD_COMPATIBILITY_DATA_XML_CONTENT
 
 
 class MongoOaiRecordSerializer(serializers.Serializer):
@@ -13,8 +14,12 @@ class MongoOaiRecordSerializer(serializers.Serializer):
     harvester_sets = serializers.SerializerMethodField()
     harvester_metadata_format = serializers.SerializerMethodField()
     title = serializers.CharField()
-    xml_content = XMLContentField()
     last_modification_date = serializers.DateTimeField()
+
+    if BACKWARD_COMPATIBILITY_DATA_XML_CONTENT:
+        xml_content = ContentField()
+    else:
+        content = ContentField()
 
     class Meta:
         """Meta"""
@@ -25,9 +30,13 @@ class MongoOaiRecordSerializer(serializers.Serializer):
             "harvester_sets",
             "harvester_metadata_format",
             "title",
-            "xml_content",
             "last_modification_date",
         ]
+
+        if BACKWARD_COMPATIBILITY_DATA_XML_CONTENT:
+            fields.append("xml_content")
+        else:
+            fields.append("content")
 
     def get_registry(self, obj):
         return obj._registry_id
