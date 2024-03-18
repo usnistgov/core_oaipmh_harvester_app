@@ -63,7 +63,7 @@ def add_registry(request):
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    "Data provider added with success.",
+                    "Data provider added.",
                 )
             else:
                 return HttpResponseBadRequest("Please enter a valid URL.")
@@ -168,7 +168,7 @@ class EditRegistryView(EditObjectModalView):
     success_url = reverse_lazy(
         "core-admin:core_oaipmh_harvester_app_registries"
     )
-    success_message = "Data provider edited with success."
+    success_message = "Data provider edited."
 
     def _save(self, form):
         # Save treatment.
@@ -222,7 +222,7 @@ class EditHarvestRegistryView(EditObjectModalView):
     success_url = reverse_lazy(
         "core-admin:core_oaipmh_harvester_app_registries"
     )
-    success_message = "Data provider edited with success."
+    success_message = "Data provider edited."
     metadata_formats = None
     sets = None
 

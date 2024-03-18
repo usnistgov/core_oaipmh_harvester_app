@@ -97,7 +97,7 @@ class RegistryList(APIView):
             # Save data
             registry = serializer.save()
             content = OaiPmhMessage.get_message_labelled(
-                "Registry {0} added with success.".format(registry.name)
+                "Registry {0} added.".format(registry.name)
             )
 
             return Response(content, status=status.HTTP_201_CREATED)
@@ -235,7 +235,7 @@ class RegistryDetail(APIView):
             # Save data
             serializer.save()
             content = OaiPmhMessage.get_message_labelled(
-                "Registry {0} updated with success.".format(registry.name)
+                "Registry {0} updated.".format(registry.name)
             )
 
             return Response(content, status=status.HTTP_200_OK)
@@ -284,7 +284,7 @@ class ActivateRegistry(APIView):
             registry.is_activated = True
             oai_registry_api.upsert(registry)
             content = OaiPmhMessage.get_message_labelled(
-                "Registry {0} activated with success.".format(registry.name)
+                "Registry {0} activated.".format(registry.name)
             )
 
             return Response(content, status=status.HTTP_200_OK)
@@ -328,7 +328,7 @@ class DeactivateRegistry(APIView):
             registry.is_activated = False
             oai_registry_api.upsert(registry)
             content = OaiPmhMessage.get_message_labelled(
-                "Registry {0} deactivated with success.".format(registry.name)
+                "Registry {0} deactivated.".format(registry.name)
             )
 
             return Response(content, status=status.HTTP_200_OK)
@@ -373,9 +373,7 @@ class InfoRegistry(APIView):
                 registry, request=request
             )
             content = OaiPmhMessage.get_message_labelled(
-                "Registry {0} information updated with success.".format(
-                    registry.name
-                )
+                "Registry {0} information updated.".format(registry.name)
             )
 
             return Response(content, status=status.HTTP_200_OK)
@@ -420,7 +418,7 @@ class Harvest(APIView):
                     errors=all_errors, status_code=status.HTTP_400_BAD_REQUEST
                 )
             content = OaiPmhMessage.get_message_labelled(
-                "Registry {0} harvested with success.".format(registry.name)
+                "Registry {0} harvested.".format(registry.name)
             )
             return Response(content, status=status.HTTP_200_OK)
         except exceptions.DoesNotExist as exception:
@@ -494,7 +492,7 @@ class Harvest(APIView):
             # Set given sets to True (Harvest)
             oai_set_api.update_for_all_harvest_by_list_ids(sets, True)
             content = OaiPmhMessage.get_message_labelled(
-                "Registry harvesting configuration updated with success."
+                "Registry harvesting configuration updated."
             )
 
             return Response(content, status=status.HTTP_200_OK)
