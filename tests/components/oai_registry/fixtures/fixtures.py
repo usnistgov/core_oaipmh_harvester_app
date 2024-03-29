@@ -5,10 +5,10 @@ import os
 
 from core_main_app.settings import XML_POST_PROCESSOR
 from core_main_app.utils import xml as xml_utils
+from core_main_app.utils import datetime as datetime_utils
 from core_main_app.utils.integration_tests.fixture_interface import (
     FixtureInterface,
 )
-from core_oaipmh_common_app.utils import UTCdatetime
 from core_oaipmh_harvester_app.components.oai_record.models import OaiRecord
 from core_oaipmh_harvester_app.components.oai_registry.models import (
     OaiRegistry,
@@ -294,7 +294,7 @@ class OaiPmhMock:
             OaiRecord(
                 identifier=item["identifier"],
                 last_modification_date=(
-                    UTCdatetime.utc_datetime_iso8601_to_datetime(
+                    datetime_utils.utc_datetime_iso8601_to_datetime(
                         item["datestamp"]
                     )
                 ),

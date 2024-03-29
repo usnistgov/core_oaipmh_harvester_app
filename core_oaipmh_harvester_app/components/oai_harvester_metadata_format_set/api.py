@@ -2,7 +2,7 @@
 OaiHarvesterMetadataFormatSet API
 """
 
-from core_oaipmh_common_app.utils import UTCdatetime
+from core_main_app.utils import datetime as datetime_utils
 
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format_set.models import (
     OaiHarvesterMetadataFormatSet,
@@ -70,7 +70,7 @@ def get_last_update_by_metadata_format_and_set(
         OaiHarvesterMetadataFormatSet last update (string).
 
     """
-    return UTCdatetime.datetime_to_utc_datetime_iso8601(
+    return datetime_utils.datetime_to_utc_datetime_iso8601(
         get_by_metadata_format_and_set(
             oai_harvester_metadata_format, oai_harvester_set
         ).last_update
