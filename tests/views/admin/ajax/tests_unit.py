@@ -20,7 +20,7 @@ class TestDownloadXmlBuildReq(TestCase):
         mock_request.session = {}
 
         response = download_xml_build_req(mock_request)
-        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @patch("core_oaipmh_harvester_app.views.admin.ajax.XSDTree")
     def test_success_returns_200(self, mock_xsd_tree):
@@ -33,4 +33,4 @@ class TestDownloadXmlBuildReq(TestCase):
         mock_request.session = {"xmlStringOAIPMH": "mock_xml_string"}
 
         response = download_xml_build_req(mock_request)
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

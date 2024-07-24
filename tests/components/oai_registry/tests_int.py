@@ -434,9 +434,7 @@ class TestUpsertIdentifyForRegistry(IntegrationBaseTestCase):
         identify_in_database = oai_identify_api.get_by_registry_id(
             self.fixture.registry.id
         )
-        self.assertEquals(
-            identify_in_database.repository_name, repository_name
-        )
+        self.assertEqual(identify_in_database.repository_name, repository_name)
 
     def test_upsert_creates_if_does_not_exist(self):
         """Test upsert create"""
@@ -453,7 +451,7 @@ class TestUpsertIdentifyForRegistry(IntegrationBaseTestCase):
         identify_in_database = oai_identify_api.get_by_registry_id(
             self.fixture.registry.id
         )
-        self.assertEquals(identify_in_database, oai_identify)
+        self.assertEqual(identify_in_database, oai_identify)
 
 
 class TestUpsertMetadataFormatForRegistry(IntegrationBaseTestCase):
@@ -493,7 +491,7 @@ class TestUpsertMetadataFormatForRegistry(IntegrationBaseTestCase):
         metadata_format_in_database = oai_harvester_metadata_format_api.get_by_metadata_prefix_and_registry_id(
             metadata_format.metadata_prefix, self.fixture.registry.id
         )
-        self.assertEquals(metadata_format_in_database.schema, schema)
+        self.assertEqual(metadata_format_in_database.schema, schema)
 
     @patch.object(requests, "get")
     def test_upsert_creates_if_does_not_exist(self, mock_get):
@@ -528,7 +526,7 @@ class TestUpsertMetadataFormatForRegistry(IntegrationBaseTestCase):
             self.fixture.registry.id,
         )
 
-        self.assertEquals(
+        self.assertEqual(
             oai_harvester_metadata_format, metadata_format_in_database
         )
 
@@ -560,7 +558,7 @@ class TestUpsertSetForRegistry(IntegrationBaseTestCase):
                 oai_harvester_set.set_spec, self.fixture.registry.id
             )
         )
-        self.assertEquals(set_in_database.set_name, set_name)
+        self.assertEqual(set_in_database.set_name, set_name)
 
     def test_upsert_creates_if_does_not_exist(self):
         """Test upsert create"""
@@ -580,7 +578,7 @@ class TestUpsertSetForRegistry(IntegrationBaseTestCase):
             )
         )
 
-        self.assertEquals(oai_harvester_set, set_in_database)
+        self.assertEqual(oai_harvester_set, set_in_database)
 
 
 class TestUpsertRecordForRegistry(IntegrationBaseTestCase):
@@ -608,8 +606,8 @@ class TestUpsertRecordForRegistry(IntegrationBaseTestCase):
         )
 
         # Assert
-        self.assertEquals(record_in_database.identifier, identifier)
-        self.assertEquals(
+        self.assertEqual(record_in_database.identifier, identifier)
+        self.assertEqual(
             record_in_database.harvester_metadata_format, metadata_format
         )
 
@@ -635,7 +633,7 @@ class TestUpsertRecordForRegistry(IntegrationBaseTestCase):
             oai_record["identifier"], metadata_format
         )
 
-        self.assertEquals(record_in_database, saved_record)
+        self.assertEqual(record_in_database, saved_record)
 
 
 class TestHarvestByMetadataFormats(IntegrationBaseTestCase):
@@ -680,7 +678,7 @@ class TestHarvestByMetadataFormats(IntegrationBaseTestCase):
         record_in_database = oai_record_api.get_all_by_registry_id(
             self.fixture.registry.id
         )
-        self.assertEquals(result, [])
+        self.assertEqual(result, [])
         self.assertTrue(len(record_in_database) > 0)
 
     @patch.object(requests, "get")
@@ -706,7 +704,7 @@ class TestHarvestByMetadataFormats(IntegrationBaseTestCase):
 
         # Assert
         # Metadata Format date
-        self.assertEquals(metadata_format.last_update, None)
+        self.assertEqual(metadata_format.last_update, None)
         # Metadata Format + Set date
         with self.assertRaises(exceptions.DoesNotExist):
             oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(
@@ -719,17 +717,17 @@ class TestHarvestByMetadataFormats(IntegrationBaseTestCase):
         )
 
         # Assert
-        self.assertEquals(result, [])
+        self.assertEqual(result, [])
         # Metadata Format date
         metadata_format_in_database = (
             oai_harvester_metadata_format_api.get_by_id(metadata_format.id)
         )
-        self.assertNotEquals(metadata_format_in_database.last_update, None)
+        self.assertNotEqual(metadata_format_in_database.last_update, None)
         # Metadata Format + Set date
         oai_h_mf_set = oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(
             metadata_format, set_
         )
-        self.assertNotEquals(oai_h_mf_set.last_update, None)
+        self.assertNotEqual(oai_h_mf_set.last_update, None)
 
 
 class TestHarvestByMetadataFormatsAndSets(IntegrationBaseTestCase):
@@ -774,7 +772,7 @@ class TestHarvestByMetadataFormatsAndSets(IntegrationBaseTestCase):
         record_in_database = oai_record_api.get_all_by_registry_id(
             self.fixture.registry.id
         )
-        self.assertEquals(result, [])
+        self.assertEqual(result, [])
         self.assertTrue(len(record_in_database) > 0)
 
     @patch.object(requests, "get")
@@ -800,7 +798,7 @@ class TestHarvestByMetadataFormatsAndSets(IntegrationBaseTestCase):
 
         # Assert
         # Metadata Format date
-        self.assertEquals(metadata_format.last_update, None)
+        self.assertEqual(metadata_format.last_update, None)
         # Metadata Format + Set date
         with self.assertRaises(exceptions.DoesNotExist):
             oai_harvester_metadata_format_set_api.get_by_metadata_format_and_set(
@@ -816,7 +814,7 @@ class TestHarvestByMetadataFormatsAndSets(IntegrationBaseTestCase):
         )
 
         # Assert
-        self.assertEquals(result, [])
+        self.assertEqual(result, [])
         # Metadata Format date
         metadata_format_in_database = (
             oai_harvester_metadata_format_api.get_by_id(metadata_format.id)
@@ -866,7 +864,7 @@ class TestHarvestRegistry(IntegrationBaseTestCase):
         record_in_database = oai_record_api.get_all_by_registry_id(
             self.fixture.registry.id
         )
-        self.assertEquals(result, [])
+        self.assertEqual(result, [])
         self.assertTrue(len(record_in_database) > 0)
 
     @patch.object(requests, "get")
@@ -889,15 +887,15 @@ class TestHarvestRegistry(IntegrationBaseTestCase):
 
         # Assert
         # Registry date
-        self.assertEquals(self.fixture.registry.last_update, None)
+        self.assertEqual(self.fixture.registry.last_update, None)
 
         # Act
         result = oai_registry_api.harvest_registry(self.fixture.registry)
 
         # Assert
-        self.assertEquals(result, [])
+        self.assertEqual(result, [])
         # Registry date
-        self.assertNotEquals(self.fixture.registry.last_update, None)
+        self.assertNotEqual(self.fixture.registry.last_update, None)
 
 
 class TestHandleDeleteSet(IntegrationBaseTestCase):
@@ -991,22 +989,20 @@ def _assert_identify(self, mock, registry_id):
 
     """
     obj_in_database = oai_identify_api.get_by_registry_id(registry_id)
-    self.assertEquals(mock.admin_email, obj_in_database.admin_email)
-    self.assertEquals(mock.repository_name, obj_in_database.repository_name)
-    self.assertEquals(mock.deleted_record, obj_in_database.deleted_record)
-    self.assertEquals(mock.delimiter, obj_in_database.delimiter)
-    self.assertEquals(mock.description, obj_in_database.description)
-    self.assertEquals(mock.granularity, obj_in_database.granularity)
-    self.assertEquals(mock.oai_identifier, obj_in_database.oai_identifier)
-    self.assertEquals(mock.protocol_version, obj_in_database.protocol_version)
-    self.assertEquals(
+    self.assertEqual(mock.admin_email, obj_in_database.admin_email)
+    self.assertEqual(mock.repository_name, obj_in_database.repository_name)
+    self.assertEqual(mock.deleted_record, obj_in_database.deleted_record)
+    self.assertEqual(mock.delimiter, obj_in_database.delimiter)
+    self.assertEqual(mock.description, obj_in_database.description)
+    self.assertEqual(mock.granularity, obj_in_database.granularity)
+    self.assertEqual(mock.oai_identifier, obj_in_database.oai_identifier)
+    self.assertEqual(mock.protocol_version, obj_in_database.protocol_version)
+    self.assertEqual(
         mock.repository_identifier, obj_in_database.repository_identifier
     )
-    self.assertEquals(
-        mock.sample_identifier, obj_in_database.sample_identifier
-    )
-    self.assertEquals(mock.scheme, obj_in_database.scheme)
-    self.assertEquals(mock.raw, obj_in_database.raw)
+    self.assertEqual(mock.sample_identifier, obj_in_database.sample_identifier)
+    self.assertEqual(mock.scheme, obj_in_database.scheme)
+    self.assertEqual(mock.raw, obj_in_database.raw)
 
 
 def _assert_set(self, mock, registry_id):
@@ -1025,9 +1021,9 @@ def _assert_set(self, mock, registry_id):
             (x for x in mock if x.set_spec == set_.set_spec), [None]
         )
         if obj_in_database != [None]:
-            self.assertEquals(set_.set_spec, obj_in_database.set_spec)
-            self.assertEquals(set_.set_name, obj_in_database.set_name)
-            self.assertEquals(set_.raw, obj_in_database.raw)
+            self.assertEqual(set_.set_spec, obj_in_database.set_spec)
+            self.assertEqual(set_.set_name, obj_in_database.set_name)
+            self.assertEqual(set_.raw, obj_in_database.raw)
 
 
 def _assert_metadata_format(self, mock, registry_id):
@@ -1053,13 +1049,13 @@ def _assert_metadata_format(self, mock, registry_id):
             [None],
         )
         if obj_in_database != [None]:
-            self.assertEquals(
+            self.assertEqual(
                 metadata_format.metadata_prefix,
                 obj_in_database.metadata_prefix,
             )
-            self.assertEquals(metadata_format.schema, obj_in_database.schema)
-            self.assertEquals(
+            self.assertEqual(metadata_format.schema, obj_in_database.schema)
+            self.assertEqual(
                 metadata_format.metadata_namespace,
                 obj_in_database.metadata_namespace,
             )
-            self.assertEquals(metadata_format.raw, obj_in_database.raw)
+            self.assertEqual(metadata_format.raw, obj_in_database.raw)

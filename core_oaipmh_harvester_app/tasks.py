@@ -47,6 +47,11 @@ def init_harvest():
 
         # Watch Registries
         watch_registry_harvest_task.apply_async()
+
+        # Init periodic harvesting (every WATCH_REGISTRY_HARVEST_RATE seconds)
+        watch_registry_harvest_task.apply_async(
+            countdown=WATCH_REGISTRY_HARVEST_RATE
+        )
     except Exception as exc:
         logger.error("Impossible to start harvesting data: %s", str(exc))
 
@@ -79,11 +84,6 @@ def watch_registry_harvest_task():
         logger.error(
             "ERROR : Error while watching new registries to harvest: %s",
             str(exception),
-        )
-    finally:
-        # Periodic call every WATCH_REGISTRY_HARVEST_RATE seconds
-        watch_registry_harvest_task.apply_async(
-            countdown=WATCH_REGISTRY_HARVEST_RATE
         )
 
 

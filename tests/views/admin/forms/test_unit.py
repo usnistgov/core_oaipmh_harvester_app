@@ -20,16 +20,16 @@ class TestRequestForm(TestCase):
         form = RequestForm()
 
         # Assert
-        self.assertEquals(
+        self.assertEqual(
             form.fields["data_provider"].widget.attrs["class"], "form-control"
         )
-        self.assertEquals(
+        self.assertEqual(
             form.fields["verb"].widget.attrs["class"], "form-control"
         )
-        self.assertEquals(
+        self.assertEqual(
             form.fields["set"].widget.attrs["class"], "form-control"
         )
-        self.assertEquals(
+        self.assertEqual(
             form.fields["metadata_prefix"].widget.attrs["class"],
             "form-control",
         )
@@ -45,15 +45,15 @@ class TestRequestForm(TestCase):
         form = RequestForm()
 
         # Assert
-        self.assertEquals(
+        self.assertEqual(
             form.fields["data_provider"].widget.attrs["class"], "form-select"
         )
-        self.assertEquals(
+        self.assertEqual(
             form.fields["verb"].widget.attrs["class"], "form-select"
         )
-        self.assertEquals(
+        self.assertEqual(
             form.fields["set"].widget.attrs["class"], "form-select"
         )
-        self.assertEquals(
+        self.assertEqual(
             form.fields["metadata_prefix"].widget.attrs["class"], "form-select"
         )
