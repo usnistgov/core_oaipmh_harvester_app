@@ -1,5 +1,6 @@
 """OAI-PMH Query builder class
 """
+
 from core_main_app.utils.query.mongo.query_builder import QueryBuilder
 from django.conf import settings
 

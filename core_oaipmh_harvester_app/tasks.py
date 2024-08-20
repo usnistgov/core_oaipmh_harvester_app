@@ -1,5 +1,6 @@
 """ OAI-PMH Harvester tasks
 """
+
 import logging
 from celery import current_app
 from celery import shared_task

@@ -1,5 +1,6 @@
 """ Mock objects for core_oaipmh_harvester_app
 """
+
 from unittest.mock import Mock
 
 

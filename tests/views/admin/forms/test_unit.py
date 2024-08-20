@@ -1,5 +1,6 @@
 """ Test forms from `views.admin.forms`.
 """
+
 from unittest.case import TestCase
 
 from core_oaipmh_harvester_app.views.admin.forms import RequestForm

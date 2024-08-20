@@ -1,6 +1,7 @@
 """
     Serializers used throughout the Rest API
 """
+
 from rest_framework import serializers
 
 from core_main_app.commons.serializers import BasicSerializer

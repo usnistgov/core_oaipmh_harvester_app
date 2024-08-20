@@ -1,6 +1,7 @@
 """
     Transform operation test class
 """
+
 from unittest import TestCase
 
 import json

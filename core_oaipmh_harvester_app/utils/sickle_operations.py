@@ -1,5 +1,6 @@
 """ Sickle utils provide tool operation for sickle library.
 """
+
 from rest_framework import status
 from sickle import Sickle
 from sickle.models import Record
@@ -122,13 +123,17 @@ def get_record_elt(xml_elt, metadata_prefix):
         "deleted": record.deleted,
         "sets": record.header.setSpecs,
         "metadataPrefix": metadata_prefix,
-        "metadata": XSDTree.tostring(
-            record.xml.find(
-                ".//" + "{http://www.openarchives.org/OAI/2.0/}" + "metadata/"
+        "metadata": (
+            XSDTree.tostring(
+                record.xml.find(
+                    ".//"
+                    + "{http://www.openarchives.org/OAI/2.0/}"
+                    + "metadata/"
+                )
             )
-        )
-        if not record.deleted
-        else None,
+            if not record.deleted
+            else None
+        ),
         "raw": record.raw,
     }
     return elt_

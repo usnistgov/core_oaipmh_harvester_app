@@ -1,5 +1,6 @@
 """ Unit tests for admin AJAX views
 """
+
 from unittest.mock import patch
 
 from django.test.testcases import TestCase

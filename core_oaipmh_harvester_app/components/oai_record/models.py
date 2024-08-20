@@ -1,6 +1,7 @@
 """
 OaiRecord model
 """
+
 from django.conf import settings
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import ObjectDoesNotExist

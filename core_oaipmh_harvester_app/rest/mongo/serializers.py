@@ -1,5 +1,6 @@
 """ Serializers for MongoDB
 """
+
 from rest_framework import serializers
 
 from core_main_app.rest.data.serializers import ContentField
