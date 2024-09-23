@@ -24,7 +24,7 @@ SSL_CERTIFICATES_DIR = getattr(settings, "SSL_CERTIFICATES_DIR", "certs")
 """
 
 WATCH_REGISTRY_HARVEST_RATE = 60
-""" :py:calss:`int`: Harvesting rate in seconds.
+""" :py:class:`int`: Harvesting rate in seconds.
 """
 
 # Can anonymous access public document

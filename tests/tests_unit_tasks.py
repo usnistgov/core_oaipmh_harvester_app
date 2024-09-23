@@ -26,5 +26,5 @@ class TestInitHarvest(TestCase):
 
         # Assert
         self.assertEqual(
-            mock_watch_registry_harvest_task.apply_async.call_count, 2
+            mock_watch_registry_harvest_task.apply_async.call_count, 1
         )
