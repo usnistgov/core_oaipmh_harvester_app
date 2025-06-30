@@ -2,6 +2,13 @@
 """
 
 from django.utils.decorators import method_decorator
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiExample,
+    OpenApiResponse,
+    OpenApiParameter,
+)
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -27,9 +34,21 @@ from core_oaipmh_harvester_app.components.oai_registry import (
 from core_oaipmh_harvester_app.rest import serializers
 
 
+@extend_schema(
+    tags=["OAI Harvester Registry"],
+    description="Registry List",
+)
 class RegistryList(APIView):
     """Registry List"""
 
+    @extend_schema(
+        summary="Get all registries",
+        description="Get all Registries (Data provider)",
+        responses={
+            200: serializers.RegistrySerializer(many=True),
+            500: OpenApiResponse(description="Internal server error"),
+        },
+    )
     @method_decorator(api_staff_member_required())
     @method_decorator(
         api_permission_required(
@@ -38,13 +57,9 @@ class RegistryList(APIView):
     )
     def get(self, request):
         """Get all Registries (Data provider)
-
         Args:
-
             request: HTTP request
-
         Returns:
-
             - code: 200
               content: List of Registries
             - code: 500
@@ -55,7 +70,6 @@ class RegistryList(APIView):
             serializer = serializers.RegistrySerializer(
                 registry, many=True, context={"request": request}
             )
-
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
@@ -63,24 +77,40 @@ class RegistryList(APIView):
                 content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+    @extend_schema(
+        summary="Create a registry",
+        description="Create a Registry (Data provider)",
+        request=serializers.RegistrySerializer,
+        responses={
+            201: serializers.RegistrySerializer,
+            400: OpenApiResponse(description="Validation error"),
+            500: OpenApiResponse(description="Internal server error"),
+        },
+        examples=[
+            OpenApiExample(
+                "Example request",
+                summary="Example request body",
+                description="Example request body for creating a registry",
+                value={
+                    "url": "value",
+                    "harvest_rate": "number",
+                    "harvest": "True or False",
+                },
+            ),
+        ],
+    )
     @method_decorator(api_staff_member_required())
     def post(self, request):
         """Create a Registry (Data provider)
-
         Parameters:
-
             {
-                "url" : "value",
-                "harvest_rate" : "number",
-                "harvest" : "True or False"
+              "url" : "value",
+              "harvest_rate" : "number",
+              "harvest" : "True or False"
             }
-
         Args:
-
             request: HTTP request
-
         Returns:
-
             - code: 201
               content: Created Registry
             - code: 400
@@ -100,7 +130,6 @@ class RegistryList(APIView):
             content = OaiPmhMessage.get_message_labelled(
                 "Registry {0} added.".format(registry.name)
             )
-
             return Response(content, status=status.HTTP_201_CREATED)
         except ValidationError as validation_exception:
             content = OaiPmhMessage.get_message_labelled(
@@ -116,9 +145,30 @@ class RegistryList(APIView):
             )
 
 
+@extend_schema(
+    tags=["OAI Harvester Registry"],
+    description="Registry Detail",
+)
 class RegistryDetail(APIView):
     """Registry Detail"""
 
+    @extend_schema(
+        summary="Retrieve a registry",
+        description="Retrieve a Registry (Data provider)",
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description="Registry ID",
+            ),
+        ],
+        responses={
+            200: serializers.RegistrySerializer,
+            404: OpenApiResponse(description="Object was not found"),
+            500: OpenApiResponse(description="Internal server error"),
+        },
+    )
     @method_decorator(api_staff_member_required())
     @method_decorator(
         api_permission_required(
@@ -127,14 +177,10 @@ class RegistryDetail(APIView):
     )
     def get(self, request, registry_id):
         """Retrieve a Registry (Data provider)
-
         Args:
-
             request: HTTP request
             registry_id: ObjectId
-
         Returns:
-
             - code: 200
               content: Registry
             - code: 404
@@ -147,7 +193,6 @@ class RegistryDetail(APIView):
             serializer = serializers.RegistrySerializer(
                 registry, context={"request": request}
             )
-
             return Response(serializer.data, status=status.HTTP_200_OK)
         except exceptions.DoesNotExist:
             content = OaiPmhMessage.get_message_labelled(
@@ -162,17 +207,30 @@ class RegistryDetail(APIView):
                 content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+    @extend_schema(
+        summary="Delete a registry",
+        description="Delete a Registry (Data provider)",
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description="Registry ID",
+            ),
+        ],
+        responses={
+            204: None,
+            404: OpenApiResponse(description="Object was not found"),
+            500: OpenApiResponse(description="Internal server error"),
+        },
+    )
     @method_decorator(api_staff_member_required())
     def delete(self, request, registry_id):
         """Delete a Registry (Data provider)
-
         Args:
-
             request: HTTP request
             registry_id: ObjectId
-
         Returns:
-
             - code: 204
               content: Deletion succeed
             - code: 404
@@ -183,7 +241,6 @@ class RegistryDetail(APIView):
         try:
             registry = oai_registry_api.get_by_id(registry_id)
             oai_registry_api.delete(registry)
-
             return Response(status=status.HTTP_204_NO_CONTENT)
         except exceptions.DoesNotExist:
             content = OaiPmhMessage.get_message_labelled(
@@ -198,24 +255,45 @@ class RegistryDetail(APIView):
                 content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+    @extend_schema(
+        summary="Update a registry",
+        description="Update oai-pmh configuration for a given registry (Data provider)",
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description="Registry ID",
+            ),
+        ],
+        request=serializers.UpdateRegistrySerializer,
+        responses={
+            200: OpenApiResponse(description="Success message"),
+            400: OpenApiResponse(description="Validation error"),
+            404: OpenApiResponse(description="Object was not found"),
+            500: OpenApiResponse(description="Internal server error"),
+        },
+        examples=[
+            OpenApiExample(
+                "Example request",
+                summary="Example request body",
+                description="Example request body for updating a registry",
+                value={"harvest_rate": "value", "harvest": "True or False"},
+            ),
+        ],
+    )
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
         """Update oai-pmh configuration for a given registry (Data provider)
-
         Parameters:
-
             {
-                "harvest_rate" : "value",
-                "harvest" : "True or False"
+              "harvest_rate" : "value",
+              "harvest" : "True or False"
             }
-
         Args:
-
             request: HTTP request
             registry_id: ObjectId
-
         Returns:
-
             - code: 200
               content: Success message
             - code: 400
@@ -238,7 +316,6 @@ class RegistryDetail(APIView):
             content = OaiPmhMessage.get_message_labelled(
                 "Registry {0} updated.".format(registry.name)
             )
-
             return Response(content, status=status.HTTP_200_OK)
         except ValidationError as validation_exception:
             content = OaiPmhMessage.get_message_labelled(
@@ -259,20 +336,37 @@ class RegistryDetail(APIView):
             )
 
 
+@extend_schema(
+    tags=["OAI Harvester Registry"],
+    description="Activate Registry",
+)
 class ActivateRegistry(APIView):
     """Activate Registry"""
 
+    @extend_schema(
+        summary="Activate a registry",
+        description="Activate a given registry (Data provider)",
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description="Registry ID",
+            ),
+        ],
+        responses={
+            200: OpenApiResponse(description="Success message"),
+            404: OpenApiResponse(description="Object was not found"),
+            500: OpenApiResponse(description="Internal server error"),
+        },
+    )
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
         """Activate a given registry (Data provider)
-
         Args:
-
             request: HTTP request
             registry_id: ObjectId
-
         Returns:
-
             - code: 200
               content: Success message
             - code: 404
@@ -287,7 +381,6 @@ class ActivateRegistry(APIView):
             content = OaiPmhMessage.get_message_labelled(
                 "Registry {0} activated.".format(registry.name)
             )
-
             return Response(content, status=status.HTTP_200_OK)
         except exceptions.DoesNotExist:
             content = OaiPmhMessage.get_message_labelled(
@@ -303,20 +396,37 @@ class ActivateRegistry(APIView):
             )
 
 
+@extend_schema(
+    tags=["OAI Harvester Registry"],
+    description="Deactivate Registry",
+)
 class DeactivateRegistry(APIView):
     """Deactivate Registry"""
 
+    @extend_schema(
+        summary="Deactivate a registry",
+        description="Deactivate a given registry (Data provider)",
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description="Registry ID",
+            ),
+        ],
+        responses={
+            200: OpenApiResponse(description="Success message"),
+            404: OpenApiResponse(description="Object was not found"),
+            500: OpenApiResponse(description="Internal server error"),
+        },
+    )
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
         """Deactivate a given registry (Data provider)
-
         Args:
-
             request: HTTP request
             registry_id: ObjectId
-
         Returns:
-
             - code: 200
               content: Success message
             - code: 404
@@ -331,7 +441,6 @@ class DeactivateRegistry(APIView):
             content = OaiPmhMessage.get_message_labelled(
                 "Registry {0} deactivated.".format(registry.name)
             )
-
             return Response(content, status=status.HTTP_200_OK)
         except exceptions.DoesNotExist:
             content = OaiPmhMessage.get_message_labelled(
@@ -347,20 +456,37 @@ class DeactivateRegistry(APIView):
             )
 
 
+@extend_schema(
+    tags=["OAI Harvester Registry"],
+    description="Info Registry",
+)
 class InfoRegistry(APIView):
     """Info Registry"""
 
+    @extend_schema(
+        summary="Update oai-pmh information for a registry",
+        description="Update oai-pmh information for a given registry (Data provider)",
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description="Registry ID",
+            ),
+        ],
+        responses={
+            200: OpenApiResponse(description="Success message"),
+            404: OpenApiResponse(description="Object was not found"),
+            500: OpenApiResponse(description="Internal server error"),
+        },
+    )
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
         """Update oai-pmh information for a given registry (Data provider)
-
         Args:
-
             request: HTTP request
             registry_id: ObjectId
-
         Returns:
-
             - code: 200
               content: Success message
             - code: 404
@@ -376,7 +502,6 @@ class InfoRegistry(APIView):
             content = OaiPmhMessage.get_message_labelled(
                 "Registry {0} information updated.".format(registry.name)
             )
-
             return Response(content, status=status.HTTP_200_OK)
         except exceptions.DoesNotExist as exception:
             content = OaiPmhMessage.get_message_labelled(str(exception))
@@ -390,20 +515,37 @@ class InfoRegistry(APIView):
             )
 
 
+@extend_schema(
+    tags=["OAI Harvester Registry"],
+    description="Harvest",
+)
 class Harvest(APIView):
     """Harvest"""
 
+    @extend_schema(
+        summary="Harvest a registry",
+        description="Harvest a given registry (Data provider)",
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description="Registry ID",
+            ),
+        ],
+        responses={
+            200: OpenApiResponse(description="Success message"),
+            404: OpenApiResponse(description="Object was not found"),
+            500: OpenApiResponse(description="Internal server error"),
+        },
+    )
     @method_decorator(api_staff_member_required())
     def patch(self, request, registry_id):
         """Harvest a given registry (Data provider)
-
         Args:
-
             request: HTTP request
             registry_id: ObjectId
-
         Returns:
-
             - code: 200
               content: Success message
             - code: 404
@@ -416,7 +558,8 @@ class Harvest(APIView):
             all_errors = oai_registry_api.harvest_registry(registry)
             if len(all_errors) > 0:
                 raise exceptions_oai.OAIAPISerializeLabelledException(
-                    errors=all_errors, status_code=status.HTTP_400_BAD_REQUEST
+                    errors=all_errors,
+                    status_code=status.HTTP_400_BAD_REQUEST,
                 )
             content = OaiPmhMessage.get_message_labelled(
                 "Registry {0} harvested.".format(registry.name)
@@ -433,25 +576,49 @@ class Harvest(APIView):
                 content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+    @extend_schema(
+        summary="Update harvesting configuration",
+        description="Edit the harvesting configuration of a registry (Data Provider). Configure metadata_formats and sets to harvest.",
+        parameters=[
+            OpenApiParameter(
+                name="id",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description="Registry ID",
+            ),
+        ],
+        request=serializers.HarvestSerializer,
+        responses={
+            200: OpenApiResponse(description="Success message"),
+            400: OpenApiResponse(description="Validation error"),
+            404: OpenApiResponse(description="Object was not found"),
+            500: OpenApiResponse(description="Internal server error"),
+        },
+        examples=[
+            OpenApiExample(
+                "Example request",
+                summary="Example request body",
+                description="Example request body for updating harvesting configuration",
+                value={
+                    "metadata_formats": ["id1", "id2"],
+                    "sets": ["id1", "id2"],
+                },
+            ),
+        ],
+    )
     @method_decorator(api_staff_member_required())
     def put(self, request, registry_id):
         """Edit the harvesting configuration of a registry (Data Provider)
-            Configure metadata_formats and sets to harvest
-
+        Configure metadata_formats and sets to harvest
         Parameters:
-
             {
-                "metadata_formats": ["id1", "id2"..],
-                "sets": ["id1", "id2"..]
+              "metadata_formats": ["id1", "id2"..],
+              "sets": ["id1", "id2"..]
             }
-
         Args:
-
             request: HTTP request
             registry_id: ObjectId
-
         Returns:
-
             - code: 200
               content: Success message
             - code: 400
@@ -495,7 +662,6 @@ class Harvest(APIView):
             content = OaiPmhMessage.get_message_labelled(
                 "Registry harvesting configuration updated."
             )
-
             return Response(content, status=status.HTTP_200_OK)
         except ValidationError as validation_exception:
             content = OaiPmhMessage.get_message_labelled(

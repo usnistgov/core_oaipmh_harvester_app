@@ -2,7 +2,11 @@
 """
 
 import json
+
 from django.conf import settings
+from drf_spectacular.utils import (
+    extend_schema,
+)
 from rest_framework.response import Response
 
 from core_main_app.utils.databases.mongo.pymongo_database import (
@@ -16,6 +20,11 @@ from core_oaipmh_harvester_app.rest.oai_record.abstract_views import (
 )
 
 
+@extend_schema(
+    tags=["OAI Harvester Record"],
+    summary="OAI-PMH Query",
+    description="Execute Query on harvested OAI Records",
+)
 class ExecuteQueryView(AbstractExecuteQueryView):
     """Execute Query View"""
 
@@ -60,6 +69,11 @@ class ExecuteQueryView(AbstractExecuteQueryView):
         return Response(data_serializer.data)
 
 
+@extend_schema(
+    tags=["OAI Harvester Record"],
+    summary="OAI-PMH Query by Keywords",
+    description="Execute Query by Keywords on harvested OAI Records",
+)
 class ExecuteKeywordQueryView(ExecuteQueryView):
     """Execute Keyword Query View"""
 
@@ -69,10 +83,8 @@ class ExecuteKeywordQueryView(ExecuteQueryView):
             query:
             templates:
             options:
-
         Returns:
             The raw query.
-
         """
         # build query builder
         query = json.dumps(get_full_text_query(query))
