@@ -12,7 +12,7 @@ from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_oaipmh_harvester_app.rest.oai_record import (
     views as oai_record_rest_views,
 )
-from core_oaipmh_harvester_app.tasks import init_mongo_indexing
+from core_oaipmh_harvester_app.discover import init_mongo_indexing
 from tests.components.oai_registry.fixtures.fixtures import OaiPmhFixtures
 
 

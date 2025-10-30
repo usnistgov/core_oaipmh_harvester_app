@@ -13,6 +13,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.sites",
+    "django_celery_beat",
     # Local apps
     "core_main_app",
     "core_oaipmh_common_app",
