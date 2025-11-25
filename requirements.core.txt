@@ -1,2 +1,2 @@
-core-main-app==2.18.*
-core-oaipmh-common-app==2.18.*
+core-main-app==2.19.*
+core-oaipmh-common-app==2.19.*
