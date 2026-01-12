@@ -4,9 +4,9 @@
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.test import override_settings, tag
 
-from core_main_app.commons.exceptions import DoesNotExist
 from core_oaipmh_harvester_app import discover
 
 
@@ -100,7 +100,7 @@ class TestInitHarvest(TestCase):
             mock_result,
         )
 
-        mock_periodic_task.objects.get.side_effect = DoesNotExist(
+        mock_periodic_task.objects.get.side_effect = ObjectDoesNotExist(
             "mock_periodic_task_does_not_exist"
         )
 
@@ -157,7 +157,7 @@ class TestInitHarvest(TestCase):
             mock_result,
         )
 
-        mock_periodic_task.objects.get.side_effect = DoesNotExist(
+        mock_periodic_task.objects.get.side_effect = ObjectDoesNotExist(
             "mock_periodic_task_does_not_exist"
         )
         mock_periodic_task.objects.create.side_effect = Exception(

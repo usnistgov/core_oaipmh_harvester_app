@@ -4,10 +4,10 @@
 import logging
 
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import post_save, post_delete
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
-from core_main_app.commons.exceptions import DoesNotExist
 from core_main_app.utils.databases.mongo.pymongo_database import (
     init_text_index,
 )
@@ -24,7 +24,6 @@ def init_harvest():
     """Manage the task that will trigger the harvesting of OAI-PMH registries"""
 
     try:
-
         # Retrieve the harvesting task schedule (every `WATCH_REGISTRY_HARVEST_RATE / 60`
         # minutes).
         scheduled_minute = max(round(WATCH_REGISTRY_HARVEST_RATE / 60), 1)
@@ -41,7 +40,7 @@ def init_harvest():
             if harvest_registries_periodic_task.crontab != schedule:
                 harvest_registries_periodic_task.crontab = schedule
                 harvest_registries_periodic_task.save()
-        except DoesNotExist:  # Create the task if it does not exist
+        except ObjectDoesNotExist:  # Create the task if it does not exist
             PeriodicTask.objects.create(
                 crontab=schedule,
                 name=harvest_registries.__name__,
