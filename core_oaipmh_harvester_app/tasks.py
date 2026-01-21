@@ -35,12 +35,16 @@ def harvest_registries():
                 )
                 continue
 
-            next_update_in_seconds = int(
-                (
-                    registry.last_update
-                    + datetime_timedelta(seconds=registry.harvest_rate)
-                    - datetime_now()
-                ).total_seconds()
+            next_update_in_seconds = (
+                int(
+                    (
+                        registry.last_update
+                        + datetime_timedelta(seconds=registry.harvest_rate)
+                        - datetime_now()
+                    ).total_seconds()
+                )
+                if registry.last_update
+                else 0
             )
 
             if next_update_in_seconds > 0:
