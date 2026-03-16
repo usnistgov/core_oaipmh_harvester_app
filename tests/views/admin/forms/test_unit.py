@@ -1,5 +1,4 @@
-""" Test forms from `views.admin.forms`.
-"""
+"""Test forms from `views.admin.forms`."""
 
 from unittest.case import TestCase
 

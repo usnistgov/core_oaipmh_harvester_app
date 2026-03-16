@@ -1,5 +1,4 @@
-""" Permissions Test for OAI Registry Rest API
-"""
+"""Permissions Test for OAI Registry Rest API"""
 
 from django.db.models.query import QuerySet
 from django.test import SimpleTestCase

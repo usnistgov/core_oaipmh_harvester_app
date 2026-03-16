@@ -1,5 +1,4 @@
-""" fixtures files for Data
-"""
+"""fixtures files for Data"""
 
 import json
 import os

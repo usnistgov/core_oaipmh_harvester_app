@@ -1,5 +1,4 @@
-""" Unit tests for OaiRecord component
-"""
+"""Unit tests for OaiRecord component"""
 
 from unittest.case import TestCase
 from unittest.mock import Mock, patch, MagicMock

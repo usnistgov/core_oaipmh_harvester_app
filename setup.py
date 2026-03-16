@@ -1,5 +1,4 @@
-""" Setup core oaipmh harvester app
-"""
+"""Setup core oaipmh harvester app"""
 
 from os import chdir, pardir
 from os.path import join, exists, dirname, normpath, abspath

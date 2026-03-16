@@ -1,5 +1,4 @@
-""" Unit tests for MongoOaiRecord component
-"""
+"""Unit tests for MongoOaiRecord component"""
 
 from unittest import TestCase
 from unittest.mock import patch, Mock, MagicMock

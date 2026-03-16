@@ -1,5 +1,4 @@
-""" Int Test Rest OaiRegistry
-"""
+"""Int Test Rest OaiRegistry"""
 
 import requests
 from rest_framework import status

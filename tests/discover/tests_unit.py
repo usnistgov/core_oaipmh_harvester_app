@@ -1,5 +1,4 @@
-""" Unit tests for discover.py module.
-"""
+"""Unit tests for discover.py module."""
 
 from unittest import TestCase
 from unittest.mock import patch, MagicMock

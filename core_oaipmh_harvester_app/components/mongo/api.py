@@ -1,5 +1,4 @@
-"""MongoOaiRecord api
-"""
+"""MongoOaiRecord api"""
 
 from django.conf import settings
 

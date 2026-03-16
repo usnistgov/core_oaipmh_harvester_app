@@ -1,5 +1,4 @@
-""" Test settings
-"""
+"""Test settings"""
 
 from os.path import dirname, realpath
 

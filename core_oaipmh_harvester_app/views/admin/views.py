@@ -1,5 +1,4 @@
-""" Admin views
-"""
+"""Admin views"""
 
 from django.contrib.admin.views.decorators import staff_member_required
 

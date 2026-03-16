@@ -1,5 +1,4 @@
-""" Tests unit
-"""
+"""Tests unit"""
 
 import datetime
 from unittest.case import TestCase

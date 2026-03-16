@@ -1,5 +1,4 @@
-""" Rights
-"""
+"""Rights"""
 
 # API Rights
 API_CONTENT_TYPE = "api_oai_pmh"

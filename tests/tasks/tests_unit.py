@@ -1,5 +1,4 @@
-""" Unit tests for tasks.py module.
-"""
+"""Unit tests for tasks.py module."""
 
 from unittest.mock import patch, MagicMock
 

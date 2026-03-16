@@ -1,5 +1,4 @@
-""" OAI-PMH Harvester tasks
-"""
+"""OAI-PMH Harvester tasks"""
 
 import logging
 

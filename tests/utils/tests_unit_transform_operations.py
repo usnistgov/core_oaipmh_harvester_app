@@ -1,5 +1,5 @@
 """
-    Transform operation test class
+Transform operation test class
 """
 
 from unittest import TestCase

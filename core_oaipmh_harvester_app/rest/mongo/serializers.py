@@ -1,5 +1,4 @@
-""" Serializers for MongoDB
-"""
+"""Serializers for MongoDB"""
 
 from rest_framework import serializers
 

@@ -1,5 +1,4 @@
-""" REST abstract views for the Oai Record API
-"""
+"""REST abstract views for the Oai Record API"""
 
 import json
 from abc import ABCMeta, abstractmethod

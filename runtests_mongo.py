@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-""" Run tests for MongoDB configuration
-"""
+"""Run tests for MongoDB configuration"""
+
 import django
 import os
 import sys

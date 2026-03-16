@@ -1,5 +1,4 @@
-""" Tests unit
-"""
+"""Tests unit"""
 
 import requests
 from rest_framework import status

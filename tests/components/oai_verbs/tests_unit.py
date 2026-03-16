@@ -1,5 +1,4 @@
-""" Unit Test oai_verbs
-"""
+"""Unit Test oai_verbs"""
 
 import requests
 from rest_framework import status

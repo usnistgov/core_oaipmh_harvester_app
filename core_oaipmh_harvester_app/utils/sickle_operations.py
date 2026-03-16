@@ -1,5 +1,4 @@
-""" Sickle utils provide tool operation for sickle library.
-"""
+"""Sickle utils provide tool operation for sickle library."""
 
 from rest_framework import status
 from sickle import Sickle

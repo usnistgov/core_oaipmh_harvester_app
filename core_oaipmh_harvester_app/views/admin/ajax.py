@@ -1,5 +1,4 @@
-""" OAI pmh havester Ajax file
-"""
+"""OAI pmh havester Ajax file"""
 
 from os.path import join
 

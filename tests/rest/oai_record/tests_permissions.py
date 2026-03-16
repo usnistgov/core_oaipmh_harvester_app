@@ -1,5 +1,4 @@
-""" Permissions Test for OAI Registry Rest API
-"""
+"""Permissions Test for OAI Registry Rest API"""
 
 from unittest.mock import patch
 

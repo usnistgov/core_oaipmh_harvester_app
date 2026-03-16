@@ -1,5 +1,4 @@
-""" Unit tests for query builder
-"""
+"""Unit tests for query builder"""
 
 from unittest import TestCase
 

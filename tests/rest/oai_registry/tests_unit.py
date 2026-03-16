@@ -1,5 +1,4 @@
-""" Unit Test Rest OaiRegistry
-"""
+"""Unit Test Rest OaiRegistry"""
 
 from rest_framework import status
 from unittest.case import TestCase

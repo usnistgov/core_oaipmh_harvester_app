@@ -1,5 +1,5 @@
 """
-    Sickle serializers
+Sickle serializers
 """
 
 from rest_framework import serializers

@@ -1,5 +1,4 @@
-""" Unit tests for admin AJAX views
-"""
+"""Unit tests for admin AJAX views"""
 
 from unittest.mock import patch
 

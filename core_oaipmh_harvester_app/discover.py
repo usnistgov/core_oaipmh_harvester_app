@@ -1,5 +1,4 @@
-""" Auto discovery of OAI harvester app.
-"""
+"""Auto discovery of OAI harvester app."""
 
 import logging
 
