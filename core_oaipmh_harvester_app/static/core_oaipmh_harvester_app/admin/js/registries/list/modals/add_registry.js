@@ -16,8 +16,9 @@ validateAddRegistry = function()
     if ($( "#id_url" ).val().trim() == ""){
         errors += "<li>Please enter a URL.</li>"
     }
-    harvest = $( "#id_harvest_rate" ).val();
-    if (!(Math.floor(harvest) == harvest && $.isNumeric(harvest) && harvest > 0)){
+    harvest_auto = $( "#id_harvest" ).val();
+    harvest_rate = $( "#id_harvest_rate" ).val();
+    if (!harvest_auto && !(Math.floor(harvest_rate) == harvest_rate && $.isNumeric(harvest_rate) && harvest_rate > 0)){
         errors += "<li>Please enter a positive integer.</li>"
     }
 	if (errors != ""){
@@ -61,4 +62,3 @@ var saveRegistry = function(event) {
 }
 
 $(document).on("click", ".add-registry-btn", openAddRegistryModal);
-
