@@ -47,8 +47,8 @@ checkUpdateData = function()
                 {
                     $("#bannerUpdate"+ item.registry_id).hide(200);
                     $("#update" + item.registry_id).show(200);
-                    $("#name"+ item.registry_id).html(item.name);
-                    $("#lastUpdate"+ item.registry_id).html(item.last_update);
+                    $("#name"+ item.registry_id).text(item.name);
+                    $("#lastUpdate"+ item.registry_id).text(item.last_update);
                 }
              });
         },

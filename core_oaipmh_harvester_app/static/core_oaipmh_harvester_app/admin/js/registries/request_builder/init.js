@@ -35,6 +35,23 @@ initDatetimePicker = function(elementId) {
 };
 
 /**
+ * Build a jQuery collection of <option> elements from a data array.
+ * toOption(item) must return {value, text} for each item.
+ */
+buildOptionList = function(data, toOption) {
+    let $optionList = $();
+
+    for (let i = 0; i < data.length; i++) {
+        let option = toOption(data[i]);
+        $optionList = $optionList.add(
+            $("<option>").val(option.value).text(option.text)
+        );
+    }
+
+    return $optionList;
+};
+
+/**
  * Init selects for request builder form
  */
 initSelects = function() {
@@ -64,15 +81,14 @@ initSelects = function() {
                 "id": dataProviderId
             },
             success: function(data){
-                let options = "<option value='0'>"+emptyEntry+"</option>";
-
-                for (let i = 0; i < data.length; i++) {
-                    options += "<option value='" + data[i]["value"] + "'>"
-                        + data[i]["key"] + "</option>";
-                }
+                let $optionList = $("<option>").val("0").text(emptyEntry).add(
+                    buildOptionList(data, function(item) {
+                        return {value: item["value"], text: item["key"]};
+                    })
+                );
 
                 $idSet.attr("disabled", false);
-                $idSet.html(options);
+                $idSet.empty().append($optionList);
 
                 $("select#id_set option:first").attr("selected", "selected");
             },
@@ -86,13 +102,14 @@ initSelects = function() {
                 "id": dataProviderId
             },
             success: function(data){
-                let options = "<option value='0'>"+emptyEntry+"</option>";
-                for (let i = 0; i < data.length; i++) {
-                    options += "<option value='" + data[i] + "'>" + data[i] +
-                        "</option>";
-                }
+                let $optionList = $("<option>").val("0").text(emptyEntry).add(
+                    buildOptionList(data, function(item) {
+                        return {value: item, text: item};
+                    })
+                );
+
                 $idMetadataPrefix.attr("disabled", false);
-                $idMetadataPrefix.html(options);
+                $idMetadataPrefix.empty().append($optionList);
                 $("select#id_metadata_prefix option:first").attr(
                     "selected", "selected"
                 );

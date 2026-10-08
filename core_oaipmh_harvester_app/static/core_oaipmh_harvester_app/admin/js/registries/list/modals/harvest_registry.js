@@ -44,7 +44,7 @@ checkHarvestData = function()
                 {
                     $("#bannerHarvest"+ item.registry_id).hide(200);
                     $("#harvest" + item.registry_id).show(200);
-                    $("#name"+ item.registry_id).html(item.name);
+                    $("#name"+ item.registry_id).text(item.name);
                 }
              });
         },
