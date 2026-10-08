@@ -2,6 +2,7 @@
 OaiHarvesterMetadataFormat API
 """
 
+from django.core.exceptions import ValidationError
 from rest_framework import status
 
 from core_main_app.commons import exceptions
@@ -11,6 +12,7 @@ from core_main_app.utils.xml import get_hash
 from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
     OaiHarvesterMetadataFormat,
 )
+from core_main_app.utils.validation.url_validation import is_same_origin
 
 
 def upsert(oai_harvester_metadata_format):
@@ -170,14 +172,28 @@ def init_schema_info(oai_harvester_metadata_format, request=None):
         Init OaiHarvesterMetadataFormat.
 
     """
-    # TODO: refactor send request with cookies (same code in other apps)
+    # Only forward the staff session cookie when the schema URL stays on this instance
+    # (e.g. self-harvesting) and never to a provider-controlled schema URL hosted
+    # elsewhere (CWE-522).
+    cookies = {}
+    if is_same_origin(oai_harvester_metadata_format.schema):
+        try:
+            session_id = request.session.session_key
+        except Exception:
+            session_id = None
+        cookies = {"sessionid": session_id}
     try:
-        session_id = request.session.session_key
-    except Exception:
-        session_id = None
-    http_response = send_get_request(
-        oai_harvester_metadata_format.schema, cookies={"sessionid": session_id}
-    )
+        http_response = send_get_request(
+            oai_harvester_metadata_format.schema, cookies=cookies
+        )
+    except ValidationError as validation_error:
+        raise exceptions.ApiError(
+            "Invalid schema URL for the following metadata format: "
+            "{0} ({1}).".format(
+                oai_harvester_metadata_format.metadata_prefix,
+                str(validation_error),
+            )
+        )
     if http_response.status_code == status.HTTP_200_OK:
         string_xml = http_response.text
         oai_harvester_metadata_format.xml_schema = string_xml

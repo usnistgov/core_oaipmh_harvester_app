@@ -510,6 +510,80 @@ class TestInitSchemaInfo(TestCase):
             )
 
 
+class TestInitSchemaInfoValidation(TestCase):
+    """Test init_schema_info validates provider URL"""
+
+    @patch.object(requests, "get")
+    def test_init_schema_info_raises_api_error_for_unsafe_schema_url(
+        self, mock_get
+    ):
+        """init_schema_info should raise ApiError when schema URL is unsafe"""
+        from django.core.exceptions import ValidationError
+        from unittest.mock import patch as mock_patch
+
+        mock_user = create_mock_user("1", is_superuser=True)
+        mock_request = create_mock_request(user=mock_user)
+        mock_fmt = _create_mock_oai_harvester_metadata_format()
+        mock_fmt.schema = "file:///etc/passwd"
+
+        with mock_patch(
+            "core_main_app.utils.requests_utils.requests_utils.send_get_request"
+        ) as mock_send:
+            mock_send.side_effect = ValidationError("Invalid URL")
+            with self.assertRaises(exceptions.ApiError):
+                harvester_metadata_format_api.init_schema_info(
+                    mock_fmt, request=mock_request
+                )
+
+
+class TestInitSchemaInfoSessionKeyException(TestCase):
+    """Test init_schema_info handles session_key exception gracefully"""
+
+    @patch.object(harvester_metadata_format_api, "is_same_origin")
+    @patch.object(harvester_metadata_format_api, "send_get_request")
+    def test_init_schema_info_handles_session_key_exception(
+        self, mock_send_get, mock_is_same_origin
+    ):
+        """init_schema_info should set sessionid to None when session_key raises"""
+        from unittest.mock import Mock, patch
+
+        mock_is_same_origin.return_value = True
+
+        mock_fmt = _create_mock_oai_harvester_metadata_format()
+        mock_fmt.schema = "http://same.origin/schema.xsd"
+        mock_fmt.metadata_prefix = "test"
+        mock_fmt.hash = "abc123"
+
+        with patch.object(
+            harvester_metadata_format_api.api_template,
+            "get_all_accessible_by_hash",
+        ) as mock_templates:
+            mock_templates.return_value = []
+
+            class MockSession:
+                @property
+                def session_key(self):
+                    raise Exception("session error")
+
+            class MockRequest:
+                session = MockSession()
+
+            mock_response = Mock()
+            mock_response.status_code = 200
+            mock_response.text = "<xml/>"
+            mock_send_get.return_value = mock_response
+
+            # Should not raise
+            harvester_metadata_format_api.init_schema_info(
+                mock_fmt, request=MockRequest()
+            )
+
+            # Ensure send_get_request was called with cookies containing sessionid None
+            _, kwargs = mock_send_get.call_args
+            self.assertIn("cookies", kwargs)
+            self.assertEqual(kwargs["cookies"], {"sessionid": None})
+
+
 def _create_oai_harvester_metadata_format():
     """Get an OaiHarvesterMetadataFormat object.
 
@@ -518,7 +592,9 @@ def _create_oai_harvester_metadata_format():
 
     """
     oai_harvester_metadata_format = OaiHarvesterMetadataFormat()
-    _set_oai_harvester_metadata_format_fields(oai_harvester_metadata_format)
+    _set_oai_harvester_metadata_format_fields(
+        oai_harvester_metadata_format
+    )  # noqa
 
     return oai_harvester_metadata_format
 

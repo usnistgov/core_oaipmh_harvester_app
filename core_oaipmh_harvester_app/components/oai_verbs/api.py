@@ -3,6 +3,7 @@ Oai-PMH verbs API.
 """
 
 import requests
+from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -12,6 +13,10 @@ from core_oaipmh_common_app.commons.messages import OaiPmhMessage
 from core_oaipmh_harvester_app.utils import (
     sickle_operations,
     transform_operations,
+)
+from core_main_app.utils.validation.url_validation import (
+    is_same_origin,
+    validate_request_url,
 )
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
@@ -27,6 +32,7 @@ def identify(url):
         Status code.
 
     """
+    validate_request_url(url)
     return sickle_operations.sickle_identify(url)
 
 
@@ -41,7 +47,13 @@ def identify_as_object(url):
         Status code.
 
     """
-    data, status_code = identify(url)
+    try:
+        data, status_code = identify(url)
+    except ValidationError as validation_error:
+        return (
+            OaiPmhMessage.get_message_labelled(str(validation_error)),
+            status.HTTP_400_BAD_REQUEST,
+        )
     if status_code == status.HTTP_200_OK:
         try:
             data = transform_operations.transform_dict_identifier_to_oai_identifier(
@@ -68,6 +80,7 @@ def list_metadata_formats(url):
         Status code.
 
     """
+    validate_request_url(url)
     return sickle_operations.sickle_list_metadata_formats(url)
 
 
@@ -82,7 +95,13 @@ def list_metadata_formats_as_object(url):
         Status code.
 
     """
-    data, status_code = list_metadata_formats(url)
+    try:
+        data, status_code = list_metadata_formats(url)
+    except ValidationError as validation_error:
+        return (
+            OaiPmhMessage.get_message_labelled(str(validation_error)),
+            status.HTTP_400_BAD_REQUEST,
+        )
     if status_code == status.HTTP_200_OK:
         try:
             data = transform_operations.transform_dict_metadata_format_to_oai_harvester_metadata_format(
@@ -109,6 +128,7 @@ def list_sets(url):
         Status code.
 
     """
+    validate_request_url(url)
     return sickle_operations.sickle_list_sets(url)
 
 
@@ -123,7 +143,13 @@ def list_sets_as_object(url):
         Status code.
 
     """
-    data, status_code = list_sets(url)
+    try:
+        data, status_code = list_sets(url)
+    except ValidationError as validation_error:
+        return (
+            OaiPmhMessage.get_message_labelled(str(validation_error)),
+            status.HTTP_400_BAD_REQUEST,
+        )
     if status_code == status.HTTP_200_OK:
         try:
             data = (
@@ -238,14 +264,17 @@ def get_data(url, request=None):
         registry_url = str(url).split("?")[0]
         data, status_code = identify(registry_url)
         if status_code == status.HTTP_200_OK:
-            # TODO: refactor send request with cookies (same code in other apps)
-            try:
-                session_id = request.session.session_key
-            except Exception:
-                session_id = None
-            http_response = send_get_request(
-                url, cookies={"sessionid": session_id}
-            )
+            # Only forward the staff session cookie when the request stays on this
+            # instance (e.g. self-harvesting) and never to a provider-controlled schema
+            # URL hosted elsewhere (CWE-522).
+            cookies = {}
+            if is_same_origin(url):
+                try:
+                    session_id = request.session.session_key
+                except Exception:
+                    session_id = None
+                cookies = {"sessionid": session_id}
+            http_response = send_get_request(url, cookies=cookies)
             if http_response.status_code == status.HTTP_200_OK:
                 return Response(http_response.text, status=status.HTTP_200_OK)
             else:
