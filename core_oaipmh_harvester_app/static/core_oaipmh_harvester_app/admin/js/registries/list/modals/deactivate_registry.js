@@ -23,7 +23,7 @@ deactivate_registry = function(event){
 
     $.ajax({
         url : deactivateRegistryGetUrl,
-        type : "GET",
+        type : "POST",
         data: {
             "id": $("#deactivate-registry-id").val()
         },

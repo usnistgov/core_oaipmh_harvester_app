@@ -12,7 +12,7 @@ updateRegistry = function(event)
 
     $.ajax({
         url : updateRegistryGetUrl,
-        type : "GET",
+        type : "POST",
         dataType: "json",
         async: true,
         data : {

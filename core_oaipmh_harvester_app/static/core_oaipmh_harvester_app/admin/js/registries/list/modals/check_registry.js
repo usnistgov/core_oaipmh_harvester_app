@@ -13,7 +13,7 @@ checkStatus = function(event)
 
     $.ajax({
         url : checkRegistryGetUrl,
-        type : "GET",
+        type : "POST",
         dataType: "json",
         async: true,
         data : {

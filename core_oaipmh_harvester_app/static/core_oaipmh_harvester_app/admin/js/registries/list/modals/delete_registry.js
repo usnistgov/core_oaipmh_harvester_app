@@ -23,7 +23,7 @@ delete_registry = function(event){
 
     $.ajax({
         url : deleteRegistryGetUrl,
-        type : "GET",
+        type : "POST",
         data: {
             "id": $("#delete-registry-id").val()
         },

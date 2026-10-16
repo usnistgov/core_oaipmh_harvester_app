@@ -178,11 +178,15 @@ class TestOaiHarvestMetadataFormatSetGetLastUpdateByMetadataFormatAndSet(
         """test_get_last_update_by_metadata_format_and_set"""
 
         # Arrange
+        from django.utils.timezone import make_aware
+
         oai_harvester_metadata_format_set = (
             _create_oai_harvester_metadata_format_set()
         )
-        oai_harvester_metadata_format_set.last_update = datetime.datetime(
-            year=2016, month=11, day=21, hour=8, minute=40, second=33
+        oai_harvester_metadata_format_set.last_update = make_aware(
+            datetime.datetime(
+                year=2016, month=11, day=21, hour=8, minute=40, second=33
+            )
         )
 
         get_by_metadata_format_and_set.return_value = (

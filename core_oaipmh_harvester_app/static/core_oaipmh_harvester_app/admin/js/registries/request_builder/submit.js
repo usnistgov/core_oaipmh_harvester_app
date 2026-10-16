@@ -95,7 +95,7 @@ submit = function() {
 
     $.ajax({
         url : dataGetUrl,
-        type : "GET",
+        type : "POST",
         dataType: "json",
         data : {
             url : callURL,

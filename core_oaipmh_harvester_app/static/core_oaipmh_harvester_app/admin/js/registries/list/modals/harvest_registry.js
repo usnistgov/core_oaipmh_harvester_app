@@ -9,7 +9,7 @@ harvestRegistry = function(event)
 
     $.ajax({
         url : harvestRegistryGetUrl,
-        type : "GET",
+        type : "POST",
         dataType: "json",
         async: true,
         data : {

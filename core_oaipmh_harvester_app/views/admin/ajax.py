@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.staticfiles import finders
 from django.http.response import HttpResponseBadRequest, HttpResponse
+from django.views.decorators.http import require_POST
 from django.template import loader
 from django.urls import reverse_lazy
 from django.utils import formats
@@ -76,6 +77,7 @@ def add_registry(request):
 
 
 @staff_member_required
+@require_POST
 def deactivate_registry(request):
     """Deactivate a registry.
     Args:
@@ -85,7 +87,7 @@ def deactivate_registry(request):
 
     """
     try:
-        registry = oai_registry_api.get_by_id(request.GET["id"])
+        registry = oai_registry_api.get_by_id(request.POST["id"])
         registry.is_activated = False
         oai_registry_api.upsert(registry)
     except Exception as exception:
@@ -97,6 +99,7 @@ def deactivate_registry(request):
 
 
 @staff_member_required
+@require_POST
 def activate_registry(request):
     """Activate a registry.
     Args:
@@ -106,7 +109,7 @@ def activate_registry(request):
 
     """
     try:
-        registry = oai_registry_api.get_by_id(request.GET["id"])
+        registry = oai_registry_api.get_by_id(request.POST["id"])
         registry.is_activated = True
         oai_registry_api.upsert(registry)
     except Exception as exception:
@@ -118,6 +121,7 @@ def activate_registry(request):
 
 
 @staff_member_required
+@require_POST
 def delete_registry(request):
     """Delete a registry.
     Args:
@@ -127,7 +131,7 @@ def delete_registry(request):
 
     """
     try:
-        registry = oai_registry_api.get_by_id(request.GET["id"])
+        registry = oai_registry_api.get_by_id(request.POST["id"])
         oai_registry_api.delete(registry)
     except Exception as exception:
         return HttpResponseBadRequest(
@@ -138,6 +142,7 @@ def delete_registry(request):
 
 
 @staff_member_required
+@require_POST
 def check_registry(request):
     """Check the availability of a registry.
     Args:
@@ -147,7 +152,7 @@ def check_registry(request):
 
     """
     try:
-        req, status_code = oai_verb_api.identify(request.GET["url"])
+        req, status_code = oai_verb_api.identify(request.POST["url"])
         is_available = status_code == status.HTTP_200_OK
     except Exception as exception:
         return HttpResponseBadRequest(
@@ -283,6 +288,7 @@ class EditHarvestRegistryView(EditObjectModalView):
 
 
 @staff_member_required
+@require_POST
 def update_registry(request):
     """Update information of a registry.
     Args:
@@ -292,7 +298,7 @@ def update_registry(request):
 
     """
     try:
-        registry = oai_registry_api.get_by_id(request.GET["id"])
+        registry = oai_registry_api.get_by_id(request.POST["id"])
         oai_registry_api.update_registry_info(registry, request=request)
 
         return HttpResponse(
@@ -351,6 +357,7 @@ def check_update_registry(request):
 
 
 @staff_member_required
+@require_POST
 def harvest_registry(request):
     """Harvest a registry.
     Args:
@@ -360,7 +367,7 @@ def harvest_registry(request):
 
     """
     try:
-        registry = oai_registry_api.get_by_id(request.GET["id"])
+        registry = oai_registry_api.get_by_id(request.POST["id"])
         oai_registry_api.harvest_registry(registry)
 
         return HttpResponse(
@@ -457,6 +464,7 @@ def all_metadata_prefix(request):
 
 
 @staff_member_required
+@require_POST
 def get_data(request):
     """Perform an OAI-PMH request.
     Args:
@@ -465,8 +473,8 @@ def get_data(request):
     Returns:
 
     """
-    url = request.GET["url"]
-    args_url = json.loads(request.GET["args_url"])
+    url = request.POST["url"]
+    args_url = json.loads(request.POST["args_url"])
     # Encode args for the Get request
     encoded_args = urllib.parse.urlencode(args_url)
     # Build the url

@@ -6,7 +6,7 @@ activate_registry = function(event){
     var $registryRow = $(this).parent().parent();
     $.ajax({
         url : activateRegistryGetUrl,
-        type : "GET",
+        type : "POST",
         data: {
             "id": $registryRow.attr("objectid")
         },
