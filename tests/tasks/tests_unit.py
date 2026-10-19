@@ -155,3 +155,38 @@ class TestHarvestRegistries(TestCase):
 
         mock_oai_registry_api.harvest_registry.assert_called()
         mock_logger.error.assert_called()
+
+    @patch("core_oaipmh_harvester_app.components.oai_registry.api")
+    @patch("core_main_app.utils.datetime.datetime_now")
+    @patch.object(tasks, "logger")
+    def test_harvest_registries_continues_after_exception(
+        self, mock_logger, mock_datetime_now, mock_api
+    ):
+        """test_harvest_registries_continues_after_exception"""
+        mock_datetime_now.return_value = None
+        registry1 = MagicMock(name="registry1")
+        registry1.harvest = True
+        registry1.is_harvesting = False
+        registry1.last_update = None
+        registry1.harvest_rate = 30
+        registry2 = MagicMock(name="registry2")
+        registry2.harvest = True
+        registry2.is_harvesting = False
+        registry2.last_update = None
+        registry2.harvest_rate = 30
+
+        mock_api.get_all_activated_registry.return_value = [
+            registry1,
+            registry2,
+        ]
+        mock_api.update_registry_info.side_effect = [
+            Exception("mock_exception"),
+            None,
+        ]
+        mock_api.harvest_registry.return_value = []
+
+        tasks.harvest_registries()
+
+        self.assertEqual(mock_api.update_registry_info.call_count, 2)
+        self.assertTrue(mock_api.harvest_registry.called)
+        self.assertTrue(mock_logger.error.called)

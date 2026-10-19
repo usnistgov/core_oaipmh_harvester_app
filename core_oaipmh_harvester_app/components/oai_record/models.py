@@ -46,6 +46,7 @@ class OaiRecord(AbstractData):
         indexes = [
             GinIndex(fields=["vector_column"]),
         ]
+        unique_together = (("identifier", "harvester_metadata_format"),)
 
     def get_dict_content(self):
         """Get dict_content from object or from MongoDB

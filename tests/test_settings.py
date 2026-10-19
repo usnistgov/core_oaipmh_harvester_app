@@ -4,6 +4,12 @@ from os.path import dirname, realpath
 
 SECRET_KEY = "fake-key"
 
+SERVER_URI = "http://127.0.0.1:8000"
+
+HTTP_ALLOWED_URL_SCHEMES = ("http", "https")
+BLOCK_URL_LINK_LOCAL = True
+BLOCKED_IP_LIST = []
+
 INSTALLED_APPS = [
     # Django apps
     "django.contrib.admin",
@@ -56,6 +62,11 @@ TEMPLATES = [
 ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# The "tests" app has a "migrations" subpackage used to organize tests that
+# mirror core_oaipmh_harvester_app's migrations (e.g. tests/migrations/0005.../),
+# not actual Django migrations for the "tests" app itself.
+MIGRATION_MODULES = {"tests": None}
 
 OAI_HARVESTER_ROOT = dirname(realpath(__file__))
 

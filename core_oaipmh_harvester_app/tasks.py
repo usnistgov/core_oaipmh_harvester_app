@@ -19,9 +19,16 @@ def harvest_registries():
     try:
         registries = oai_registry_api.get_all_activated_registry()
         logger.info("Retrieved %d registries to watch", len(registries))
+    except Exception as exception:
+        logger.error(
+            "ERROR : Error while retrieving registries to harvest: %s",
+            str(exception),
+        )
+        return
 
-        # Loop over the registries to update and harvest
-        for registry in registries:
+    # Loop over the registries to update and harvest
+    for registry in registries:
+        try:
             if not registry.harvest:
                 logger.info(
                     "Registry %s is not set to be harvested", registry.name
@@ -58,11 +65,13 @@ def harvest_registries():
             oai_registry_api.update_registry_info(registry)
             oai_registry_api.harvest_registry(registry)
             logger.info("Registry %s harvested", registry.name)
-    except Exception as exception:
-        logger.error(
-            "ERROR : Error while watching new registries to harvest: %s",
-            str(exception),
-        )
+        except Exception as exception:
+            logger.error(
+                "ERROR : Error while harvesting registry %s: %s",
+                getattr(registry, "name", registry.pk),
+                str(exception),
+            )
+            continue
 
 
 @shared_task

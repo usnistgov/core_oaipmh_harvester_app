@@ -486,6 +486,8 @@ def _set_oai_registry_fields(oai_registry):
         OaiRegistry with assigned fields.
 
     """
+    oai_registry.pk = 1
+    oai_registry.id = 1
     oai_registry.name = "Registry"
     oai_registry.url = "http://url.com"
     oai_registry.harvest_rate = 3000

@@ -4,6 +4,8 @@ OaiRegistry API
 
 import logging
 
+from django.db import IntegrityError
+
 from rest_framework import status
 from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR
 
@@ -28,6 +30,9 @@ from core_oaipmh_harvester_app.components.oai_registry.models import (
     OaiRegistry,
 )
 from core_oaipmh_harvester_app.components.oai_verbs import api as oai_verbs_api
+from core_oaipmh_harvester_app.settings import (
+    OAI_HARVESTER_MAX_RESUMPTION_ITERATIONS,
+)
 from core_oaipmh_harvester_app.system import api as oai_harvester_system_api
 
 logger = logging.getLogger(__name__)
@@ -186,17 +191,21 @@ def update_registry_info(registry, request=None):
         The OaiRegistry instance.
 
     """
-    # If registry is already updating, skip for now
-    if registry.is_updating:
+    # Atomic conditional update to avoid race
+    updated = OaiRegistry.objects.filter(
+        pk=registry.pk, is_updating=False
+    ).update(is_updating=True)
+    if not updated:
         return []
-
-    registry.is_updating = True
-    upsert(registry)
-    identify_response = _get_identify_as_object(registry.url)
-    sets_response = _get_sets_as_object(registry.url)
-    metadata_formats_response = _get_metadata_formats_as_object(registry.url)
+    registry.refresh_from_db()
 
     try:
+        identify_response = _get_identify_as_object(registry.url)
+        sets_response = _get_sets_as_object(registry.url)
+        metadata_formats_response = _get_metadata_formats_as_object(
+            registry.url
+        )
+
         _upsert_identify_for_registry(identify_response, registry)
         registry.name = identify_response.repository_name
         registry.description = identify_response.description
@@ -211,17 +220,26 @@ def update_registry_info(registry, request=None):
         _handle_deleted_set(registry.id, sets_response)
         # Check if we have some deleted metadata format
         _handle_deleted_metadata_format(registry.id, metadata_formats_response)
-        registry.is_updating = False
-        upsert(registry)
 
         return registry
-    except Exception as exception:
-        registry.is_updating = False
-        upsert(registry)
+    except IntegrityError as exception:
+        # Reset flag on integrity error (e.g., duplicate base_url)
+        OaiRegistry.objects.filter(pk=registry.pk).update(is_updating=False)
         raise oai_pmh_exceptions.OAIAPILabelledException(
             message=str(exception),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+    except oai_pmh_exceptions.OAIAPILabelledException:
+        # Propagate OAI labelled exceptions unchanged
+        raise
+    except Exception as exception:
+        raise oai_pmh_exceptions.OAIAPILabelledException(
+            message=str(exception),
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+    finally:
+        # Ensure flag is always cleared
+        OaiRegistry.objects.filter(pk=registry.pk).update(is_updating=False)
 
 
 def harvest_registry(registry):
@@ -233,14 +251,15 @@ def harvest_registry(registry):
         all_errors: List of errors.
 
     """
-    # If registry is already harvesting, skip for now
-    if registry.is_harvesting:
+    # Atomic conditional update to avoid race
+    updated = OaiRegistry.objects.filter(
+        pk=registry.pk, is_harvesting=False
+    ).update(is_harvesting=True)
+    if not updated:
         return []
+    registry.refresh_from_db()
 
     try:
-        # We are harvesting
-        registry.is_harvesting = True
-        upsert(registry)
         # Set the last update date
         harvest_date = datetime_utils.datetime_now()
         # Get all metadata formats to harvest
@@ -277,20 +296,23 @@ def harvest_registry(registry):
             all_errors = _harvest_by_metadata_formats(
                 registry, metadata_formats, registry_all_sets
             )
-        # Stop harvesting
-        registry.is_harvesting = False
         # Set the last update date
-        registry.last_update = harvest_date
-        upsert(registry)
+        OaiRegistry.objects.filter(pk=registry.pk).update(
+            last_update=harvest_date
+        )
 
         return all_errors
+    except oai_pmh_exceptions.OAIAPILabelledException:
+        # Propagate OAI labelled exceptions unchanged
+        raise
     except Exception as exception:
-        registry.is_harvesting = False
-        upsert(registry)
         raise oai_pmh_exceptions.OAIAPILabelledException(
             message=str(exception),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+    finally:
+        # Ensure flag is always cleared
+        OaiRegistry.objects.filter(pk=registry.pk).update(is_harvesting=False)
 
 
 def _get_identify_as_object(url):
@@ -398,7 +420,14 @@ def _upsert_identify_for_registry(identify, registry):
         pass
 
     identify.registry = registry
-    oai_identify_api.upsert(identify)
+    try:
+        oai_identify_api.upsert(identify)
+    except IntegrityError as exception:
+        # Surface duplicate base_url as per-registry failure
+        raise oai_pmh_exceptions.OAIAPILabelledException(
+            message=str(exception),
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 def _upsert_metadata_format_for_registry(
@@ -582,8 +611,10 @@ def _harvest_records(
     errors = []
     has_data = True
     resumption_token = None
+    previous_resumption_token = None
+    iteration = 0
     # Get all records. Use of the resumption token.
-    while has_data:
+    while has_data and iteration < OAI_HARVESTER_MAX_RESUMPTION_ITERATIONS:
         # Get the list of records
         set_h = None
         if set_ is not None:
@@ -620,8 +651,27 @@ def _harvest_records(
             }
             errors.append(error)
 
+        # Detect loop with same resumption token
+        if resumption_token == previous_resumption_token:
+            logger.warning(
+                "Resumption token loop detected for registry %s, metadata format %s. Breaking.",
+                registry.pk,
+                metadata_format.pk,
+            )
+            has_data = False
+            break
+
+        previous_resumption_token = resumption_token
         # There is more records if we have a resumption token.
         has_data = resumption_token is not None and resumption_token != ""
+        iteration += 1
+
+    if iteration >= OAI_HARVESTER_MAX_RESUMPTION_ITERATIONS:
+        logger.warning(
+            "Maximum resumption iterations reached for registry %s, metadata format %s. Breaking.",
+            registry.pk,
+            metadata_format.pk,
+        )
 
     return errors
 

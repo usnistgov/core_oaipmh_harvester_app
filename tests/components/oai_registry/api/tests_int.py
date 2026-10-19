@@ -44,7 +44,7 @@ from tests.components.oai_registry.fixtures.fixtures import OaiPmhMock
 fixture_data = OaiPmhFixtures()
 
 
-class TestAddRegistry(IntegrationBaseTestCase):
+class TestAddRegistryByUrl(IntegrationBaseTestCase):
     """
     Test Add Registry
     """
@@ -95,14 +95,6 @@ class TestAddRegistry(IntegrationBaseTestCase):
         # Assert
         self.assertIsInstance(result, OaiRegistry)
 
-
-class TestAddRegistryNotAvailable(IntegrationBaseTestCase):
-    """
-    Test Add Registry Not Available
-    """
-
-    fixture = fixture_data
-
     @patch.object(oai_verbs_api, "identify_as_object")
     def test_add_registry_not_available(self, mock_identify):
         """Test add registry not available
@@ -132,14 +124,6 @@ class TestAddRegistryNotAvailable(IntegrationBaseTestCase):
                 self.fixture.harvest,
                 request=mock_request,
             )
-
-
-class TestAddRegistryNoSetsNoMetadataFormats(IntegrationBaseTestCase):
-    """
-    Test Add Registry No Sets No Metadata Formats
-    """
-
-    fixture = fixture_data
 
     @patch.object(requests, "get")
     @patch.object(oai_verbs_api, "list_sets_as_object")
@@ -182,14 +166,6 @@ class TestAddRegistryNoSetsNoMetadataFormats(IntegrationBaseTestCase):
         # Assert
         self.assertIsInstance(result, OaiRegistry)
 
-
-class TestAddRegistryIdentify(IntegrationBaseTestCase):
-    """
-    Test Add Registry Identify
-    """
-
-    fixture = fixture_data
-
     @patch.object(requests, "get")
     @patch.object(oai_verbs_api, "list_sets_as_object")
     @patch.object(oai_verbs_api, "list_metadata_formats_as_object")
@@ -228,14 +204,6 @@ class TestAddRegistryIdentify(IntegrationBaseTestCase):
 
         # Assert
         _assert_identify(self, identify, result.id)
-
-
-class TestAddRegistrySets(IntegrationBaseTestCase):
-    """
-    Test Add Registry Sets
-    """
-
-    fixture = fixture_data
 
     @patch.object(requests, "get")
     @patch.object(oai_verbs_api, "list_sets_as_object")
@@ -278,14 +246,6 @@ class TestAddRegistrySets(IntegrationBaseTestCase):
 
         # Assert
         _assert_set(self, list_sets, result.id)
-
-
-class TestAddRegistryMetadataFormats(IntegrationBaseTestCase):
-    """
-    Test Add Registry Metadata Formats
-    """
-
-    fixture = fixture_data
 
     @patch.object(requests, "get")
     @patch.object(oai_verbs_api, "list_sets_as_object")
@@ -890,6 +850,9 @@ class TestHarvestRegistry(IntegrationBaseTestCase):
 
         # Act
         result = oai_registry_api.harvest_registry(self.fixture.registry)
+
+        # Refresh fixture to see DB update
+        self.fixture.registry.refresh_from_db()
 
         # Assert
         self.assertEqual(result, [])

@@ -28,6 +28,12 @@ WATCH_REGISTRY_HARVEST_RATE = 60
 seconds to minutes, ensuring a minimum interval of 1 minute.
 """
 
+OAI_HARVESTER_MAX_RESUMPTION_ITERATIONS = getattr(
+    settings, "OAI_HARVESTER_MAX_RESUMPTION_ITERATIONS", 10000
+)
+""" :py:class:`int`: Maximum number of iterations for OAI-PMH resumption token loop.
+"""
+
 # Can anonymous access public document
 CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT = getattr(
     settings, "CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT", False

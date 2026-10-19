@@ -1,9 +1,12 @@
 """Unit Test OaiRegistry"""
 
+import uuid
+from unittest.case import TestCase
+from unittest.mock import Mock, patch, MagicMock
+
+from django.test import TestCase as DjangoTestCase
 from rest_framework import status
 from rest_framework.response import Response
-from unittest.case import TestCase
-from unittest.mock import Mock, patch
 
 import core_oaipmh_harvester_app.components.oai_registry.api as registry_api
 from core_main_app.commons import exceptions
@@ -576,10 +579,21 @@ class TestAddRegistry(TestCase):
         self.assertEqual(ex.exception.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class TestUpdateRegistryInfo(TestCase):
+class TestUpdateRegistryInfo(DjangoTestCase):
     """
     Test OaiRegistry Update Info
     """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.registry = OaiRegistry.objects.create(
+            pk=1001,
+            name="Test Registry",
+            url=f"http://example.com/oai-{uuid.uuid4()}",
+            harvest=True,
+            is_updating=False,
+            is_harvesting=False,
+        )
 
     def setUp(self):
         """Set up the test"""
@@ -605,6 +619,8 @@ class TestUpdateRegistryInfo(TestCase):
         mock_user = create_mock_user("1", is_superuser=True)
         mock_request = create_mock_request(user=mock_user)
         mock_oai_registry = _create_mock_oai_registry()
+        mock_oai_registry.pk = self.registry.pk
+        mock_oai_registry.id = self.registry.pk
         mock_get.return_value = mock_oai_registry
         mock_registry.return_value = False
         mock.return_value = (
@@ -649,6 +665,8 @@ class TestUpdateRegistryInfo(TestCase):
         mock_user = create_mock_user("1", is_superuser=True)
         mock_request = create_mock_request(user=mock_user)
         mock_oai_registry = _create_mock_oai_registry()
+        mock_oai_registry.pk = self.registry.pk
+        mock_oai_registry.id = self.registry.pk
         mock_get.return_value = mock_oai_registry
         mock_identify.return_value = [], status.HTTP_200_OK
         mock_registry.return_value = False
@@ -699,6 +717,8 @@ class TestUpdateRegistryInfo(TestCase):
         mock_user = create_mock_user("1", is_superuser=True)
         mock_request = create_mock_request(user=mock_user)
         mock_oai_registry = _create_mock_oai_registry()
+        mock_oai_registry.pk = self.registry.pk
+        mock_oai_registry.id = self.registry.pk
         mock_get.return_value = mock_oai_registry
         mock_sets.return_value = [], status.HTTP_200_OK
         mock_identify.return_value = [], status.HTTP_200_OK
@@ -725,11 +745,90 @@ class TestUpdateRegistryInfo(TestCase):
             ex.exception.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api._get_identify_as_object"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api._get_sets_as_object"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api._get_metadata_formats_as_object"
+    )
+    @patch("core_oaipmh_harvester_app.components.oai_registry.api.upsert")
+    def test_update_registry_info_integrity_error_resets_flag(
+        self, mock_upsert, mock_meta, mock_sets, mock_identify
+    ):
+        from django.db import IntegrityError
 
-class TestHarvestRegistry(TestCase):
+        registry = OaiRegistry.objects.create(
+            name="int err", url="http://example.com/oai-int", harvest=True
+        )
+        mock_identify.return_value = Mock(repository_name="repo")
+        mock_sets.return_value = []
+        mock_meta.return_value = []
+        mock_upsert.side_effect = IntegrityError("duplicate")
+        from core_oaipmh_common_app.commons import exceptions as oai_exceptions
+
+        with self.assertRaises(oai_exceptions.OAIAPILabelledException):
+            oai_registry_api.update_registry_info(registry)
+        registry.refresh_from_db()
+        self.assertFalse(registry.is_updating)
+
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_identify_api"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_verbs_api"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_harvester_metadata_format_api"
+    )
+    def test_update_registry_info_atomic_flag_prevents_second_call(
+        self, mock_mf_api, mock_verbs_api, mock_identify_api
+    ):
+        mock_identify_api.upsert.return_value = None
+        mock_verbs_api.identify_as_object.return_value = (
+            MagicMock(repository_name="Test Registry", description=""),
+            status.HTTP_200_OK,
+        )
+        mock_verbs_api.list_metadata_formats_as_object.return_value = (
+            [],
+            status.HTTP_200_OK,
+        )
+        mock_verbs_api.list_sets_as_object.return_value = (
+            [],
+            status.HTTP_200_OK,
+        )
+
+        oai_registry_api.update_registry_info(self.registry)
+        self.registry.refresh_from_db()
+        self.assertFalse(self.registry.is_updating)
+
+        OaiRegistry.objects.filter(pk=self.registry.pk).update(
+            is_updating=True
+        )
+        result2 = oai_registry_api.update_registry_info(self.registry)
+        self.assertEqual(result2, [])
+        OaiRegistry.objects.filter(pk=self.registry.pk).update(
+            is_updating=False
+        )
+
+
+class TestHarvestRegistry(DjangoTestCase):
     """
     Test OaiRegistry Harvest
     """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.registry = OaiRegistry.objects.create(
+            pk=1000,
+            name="Test Registry",
+            url=f"http://example.com/oai-{uuid.uuid4()}",  # noqa
+            harvest=True,
+            is_updating=False,
+            is_harvesting=False,
+        )
 
     @patch.object(oai_registry_api, "_harvest_by_metadata_formats")
     @patch.object(oai_registry_api, "_harvest_by_metadata_formats_and_sets")
@@ -941,6 +1040,161 @@ class TestHarvestRegistry(TestCase):
         # Assert
         self.assertEqual(result, expected_error)
 
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_verbs_api"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_harvester_metadata_format_api"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_harvester_metadata_format_set_api"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api._upsert_record_for_registry"
+    )
+    def test_resumption_token_loop_breaks_on_same_token(
+        self, mock_upsert, mock_set_api, mock_mf_api, mock_verbs_api
+    ):
+        registry = OaiRegistry.objects.create(
+            name="Loop Registry",
+            url="http://example.com/oai-loop",
+            harvest=True,
+        )
+        from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
+            OaiHarvesterMetadataFormat,
+        )
+
+        mf = OaiHarvesterMetadataFormat.objects.create(
+            registry=registry,
+            metadata_prefix="oai_dc",
+            schema="http://example.com/schema",
+            metadata_namespace="http://example.com",
+            harvest=True,
+            raw={},
+            hash="abc",
+        )
+        mock_response = MagicMock(status_code=200, data=[])
+        mock_verbs_api.list_records.return_value = (
+            mock_response,
+            "same-token",
+        )
+        mock_mf_api.get_all_to_harvest_by_registry_id.return_value = [mf]
+        oai_registry_api.harvest_registry(registry)
+
+        registry.refresh_from_db()
+        self.assertFalse(registry.is_harvesting)
+
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_verbs_api"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_harvester_metadata_format_api"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_harvester_metadata_format_set_api"
+    )
+    def test_harvest_registry_propagates_labelled_exception(
+        self, mock_set_api, mock_mf_api, mock_verbs_api
+    ):
+        from core_oaipmh_common_app.commons import exceptions as oai_exceptions
+
+        registry = OaiRegistry.objects.create(
+            name="label", url="http://example.com/oai-label", harvest=True
+        )
+        mf = OaiHarvesterMetadataFormat.objects.create(
+            registry=registry,
+            metadata_prefix="oai_dc",
+            schema="http://example.com/schema",
+            metadata_namespace="http://example.com",
+            harvest=True,
+            raw={},
+            hash="abc",
+        )
+        mock_mf_api.get_all_to_harvest_by_registry_id.return_value = [mf]
+        mock_oai_exception = oai_exceptions.OAIAPILabelledException(
+            message="mock_oai_api_labelled_exception", status_code=400
+        )
+        mock_verbs_api.list_records.side_effect = mock_oai_exception
+        with self.assertRaises(oai_exceptions.OAIAPILabelledException) as cm:
+            oai_registry_api.harvest_registry(registry)
+
+        self.assertEqual(cm.exception.message, mock_oai_exception.message)
+
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_verbs_api"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_harvester_metadata_format_api"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_harvester_metadata_format_set_api"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api._upsert_record_for_registry"
+    )
+    def test_resumption_token_max_iterations_respected(
+        self, mock_upsert, mock_set_api, mock_mf_api, mock_verbs_api
+    ):
+        registry = OaiRegistry.objects.create(
+            name="Cap Registry", url="http://example.com/oai-cap", harvest=True
+        )
+        from core_oaipmh_harvester_app.components.oai_harvester_metadata_format.models import (
+            OaiHarvesterMetadataFormat,
+        )
+
+        mf = OaiHarvesterMetadataFormat.objects.create(
+            registry=registry,
+            metadata_prefix="oai_dc",
+            schema="http://example.com/schema",
+            metadata_namespace="http://example.com",
+            harvest=True,
+            raw={},
+            hash="abc",
+        )
+        mock_response = MagicMock(status_code=200, data=[])
+
+        def side_effect(*args, **kwargs):
+            token = kwargs.get("resumption_token")
+            return mock_response, f"token-{token or 'start'}"
+
+        mock_verbs_api.list_records.side_effect = side_effect
+        mock_mf_api.get_all_to_harvest_by_registry_id.return_value = [mf]
+        with patch(
+            "core_oaipmh_harvester_app.components.oai_registry.api.OAI_HARVESTER_MAX_RESUMPTION_ITERATIONS",
+            new=3,
+        ):
+            oai_registry_api.harvest_registry(registry)
+        registry.refresh_from_db()
+        self.assertFalse(registry.is_harvesting)
+
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_harvester_metadata_format_api"
+    )
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_verbs_api"
+    )
+    def test_harvest_registry_atomic_flag_prevents_second_call(
+        self, mock_verbs_api, mock_mf_api
+    ):
+        mock_mf_api.get_all_to_harvest_by_registry_id.return_value = []
+        mock_verbs_api.list_records.return_value = (
+            MagicMock(status_code=200, data=[]),
+            None,
+        )
+
+        oai_registry_api.harvest_registry(self.registry)
+        self.registry.refresh_from_db()
+        self.assertFalse(self.registry.is_harvesting)
+
+        OaiRegistry.objects.filter(pk=self.registry.pk).update(
+            is_harvesting=True
+        )
+        result2 = oai_registry_api.harvest_registry(self.registry)
+        self.assertEqual(result2, [])
+        OaiRegistry.objects.filter(pk=self.registry.pk).update(
+            is_harvesting=False
+        )
+
 
 class TestGetIdentifyAsObject(TestCase):
     """
@@ -1134,6 +1388,29 @@ class TestInitRegistry(TestCase):
         self.assertEqual(result.is_activated, True)
 
 
+class TestUpsertIdentifyForRegistry(TestCase):
+
+    @patch(
+        "core_oaipmh_harvester_app.components.oai_registry.api.oai_identify_api"
+    )
+    def test_upsert_identify_integrity_error_raises_labelled(
+        self, mock_identify_api
+    ):
+        from django.db import IntegrityError
+        from core_oaipmh_harvester_app.components.oai_registry.api import (
+            _upsert_identify_for_registry,
+        )
+        from core_oaipmh_common_app.commons import exceptions as oai_exceptions
+
+        registry = OaiRegistry.objects.create(
+            name="upsert id", url="http://example.com/oai-upsert", harvest=True
+        )
+        identify = Mock()
+        mock_identify_api.upsert.side_effect = IntegrityError("dup base_url")
+        with self.assertRaises(oai_exceptions.OAIAPILabelledException):
+            _upsert_identify_for_registry(identify, registry)
+
+
 def _generic_get_all_test(self, mock_get_all, act_function):
     """
 
@@ -1194,6 +1471,8 @@ def _set_oai_registry_fields(oai_registry):
         OaiRegistry with assigned fields.
 
     """
+    oai_registry.pk = 1000
+    oai_registry.id = 1000
     oai_registry.name = "Registry"
     oai_registry.url = "http://url.com"
     oai_registry.harvest_rate = 3000
