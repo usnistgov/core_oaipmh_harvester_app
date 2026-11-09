@@ -51,7 +51,9 @@ def identify_as_object(url):
         data, status_code = identify(url)
     except ValidationError as validation_error:
         return (
-            OaiPmhMessage.get_message_labelled(str(validation_error)),
+            OaiPmhMessage.get_message_labelled(
+                "; ".join(validation_error.messages)
+            ),
             status.HTTP_400_BAD_REQUEST,
         )
     if status_code == status.HTTP_200_OK:
@@ -99,9 +101,12 @@ def list_metadata_formats_as_object(url):
         data, status_code = list_metadata_formats(url)
     except ValidationError as validation_error:
         return (
-            OaiPmhMessage.get_message_labelled(str(validation_error)),
+            OaiPmhMessage.get_message_labelled(
+                "; ".join(validation_error.messages)
+            ),
             status.HTTP_400_BAD_REQUEST,
         )
+
     if status_code == status.HTTP_200_OK:
         try:
             data = transform_operations.transform_dict_metadata_format_to_oai_harvester_metadata_format(
@@ -147,9 +152,12 @@ def list_sets_as_object(url):
         data, status_code = list_sets(url)
     except ValidationError as validation_error:
         return (
-            OaiPmhMessage.get_message_labelled(str(validation_error)),
+            OaiPmhMessage.get_message_labelled(
+                "; ".join(validation_error.messages)
+            ),
             status.HTTP_400_BAD_REQUEST,
         )
+
     if status_code == status.HTTP_200_OK:
         try:
             data = (
